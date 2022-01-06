@@ -1,0 +1,24 @@
+{
+  "users": {
+    "elitracy":{
+      "password": "Password",
+      "name": "Elias Tracy",
+      "email": "elitracy@tamu.edu"
+    }, 
+    "dylannguyen":{
+      "password": "password123",
+      "name": "Dylan Nguyen",
+      "email": "dswimmer29@gmail.com"
+    },
+    "johndoe":{
+      "password": "password",
+      "name": "John Doe",
+      "email": "johndoe32@gmail.com"
+    },
+    "foo":{
+      "password": "password",
+      "name": "Foo User",
+      "email": "johndoe32@gmail.com"
+    }
+  }
+}
