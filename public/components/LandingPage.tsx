@@ -3,7 +3,6 @@ import tailwind from "tailwind-rn";
 import { useState } from "react"
 import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
-//import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "../RootStackParams"
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, "Login">
