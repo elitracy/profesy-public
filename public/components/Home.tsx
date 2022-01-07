@@ -4,6 +4,7 @@ import colors from "../assets/colors"
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from "../RootStackParams"
 import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
+import { Icon } from "react-native-elements"
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, "Home">
 
@@ -74,33 +75,41 @@ export function Home() {
         />
       </View>
       <View style={{width: "80%"}}>
-        <TextInput 
-            onChangeText={handleSearch}
-            onFocus={() => setSearchBG(colors.GREEN)}
-            onBlur={() => setSearchBG(colors.PURPLE)}
-            value={wordEntered}
-            //clearTextOnFocus={true}
-            placeholder="search by professor"
-            //defaultValue="search by professor"
-            style={[styles.inputStyles, {borderColor: searchBG}]}
-          />
+        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", paddingBottom: 10}}>
+          <Icon name="search" style={{opacity: .7}}/>
+          <TextInput 
+              onChangeText={handleSearch}
+              onFocus={() => setSearchBG(colors.GREEN)}
+              onBlur={() => setSearchBG(colors.PURPLE)}
+              value={wordEntered}
+              //clearTextOnFocus={true}
+              placeholder="search by professor"
+              //defaultValue="search by professor"
+              style={[styles.inputStyles, {borderColor: searchBG, flex: 5, marginLeft: -30}]}
+            />
+        </View>
       </View>
       {filteredData.length != 0 && (
-        <View style={{width: "90%", height: "auto", flexDirection: "column", alignItems: "center", paddingTop: 5, marginTop: 20, borderTopWidth: 1, borderColor: colors.GRAY }}>
+        <View style={{width: "90%", height: "auto", flexDirection: "column", alignItems: "center", marginTop: 0}}>
           {filteredData.slice(0, 15).map((value:{name:string, school:string, department:string, gpa:string}, key) => {
             return (
             <TouchableOpacity 
-              style={styles.resultContainer}
+              style={[styles.resultContainer, { shadowColor:  
+                (parseFloat(value.gpa) > 3.4) ? colors.BLUE
+                : (parseFloat(value.gpa) > 2.8) ? colors.GREEN 
+                : (parseFloat(value.gpa)> 2.0) ? colors.ORANGE 
+                : colors.RED }]}
               onPress={() => navigation.navigate("Professor", {profName: value.name})} 
             >
+          
               <Text style={{padding: 5, color: "white", fontSize: 25, textAlign: "center", fontWeight: "500", }}> 
                 {value.name} {" "}
                 <Text style={{textAlign: "right", fontWeight: "800", fontSize: 25, color:  
                 (parseFloat(value.gpa) > 3.4) ? colors.BLUE
                 : (parseFloat(value.gpa) > 2.8) ? colors.GREEN 
                 : (parseFloat(value.gpa)> 2.0) ? colors.ORANGE 
-                : colors.RED }
-              }> 
+                : colors.RED }}
+              > 
                 {value.gpa}
               </Text>
               </Text>
@@ -155,7 +164,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     padding: 5,
-    paddingLeft: 5,
+    paddingLeft: 30,
     fontSize: 15,
   },
   resultContainer:{
@@ -165,6 +174,10 @@ const styles = StyleSheet.create({
     height: "auto",
     flexDirection: "column",
     padding: 5,
-    margin: 10,
+    margin: 10,    
+    //shadowColor: colors.PURPLE,
+    shadowOffset: {width: 4, height: 3},
+    shadowOpacity: 1,
+    shadowRadius: 0,
   }
 })

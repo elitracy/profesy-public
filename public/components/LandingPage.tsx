@@ -4,6 +4,7 @@ import { useState } from "react"
 import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from "../RootStackParams"
+import colors from "../assets/colors"
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, "Login">
 
@@ -34,14 +35,14 @@ export function LandingPage(){
           value={username}
           clearTextOnFocus={true}
           defaultValue="username"
-          style={[styles.inputStyles, {"marginBottom": 6, borderColor: usernameBG}]}
+          style={[styles.inputStyles, {"marginBottom": 6, borderColor: usernameBG, color: username === "username" ? colors.GREY : "black"}]}
         />
         <TextInput
           onChangeText={setPassword}
           clearTextOnFocus={true}
           onFocus={() => setPasswordBG("#10b981")}
           onBlur={() => setPasswordBG("rgba(150, 150, 150, .5)")}
-          style={[styles.inputStyles, {"marginBottom": 6, borderColor: passwordBG}]}
+          style={[styles.inputStyles, {marginBottom: 6, borderColor: passwordBG, color: password === "password" ? colors.GREY : "black"}]}
           value={password}
           defaultValue="password"
           secureTextEntry={password === "password" ? false : true}
@@ -89,10 +90,16 @@ const styles = StyleSheet.create({
   titleStyles:{
     color: "black",
     fontSize: 60,
+    shadowColor: colors.PURPLE,
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 1,
+    shadowRadius: 0
+
+
   },
   titleBorderStyles:{
     borderBottomWidth: 2,
-    borderBottomColor: "orange",
+    borderBottomColor: colors.GREY,
     marginBottom: "3%",
     paddingRight: "8%",
     paddingLeft: "8%",
@@ -104,17 +111,18 @@ const styles = StyleSheet.create({
     //borderColor: "rgba(150, 150, 150, .5)",
     padding: 5,
     paddingLeft: 5,
-    fontSize: 15
+    fontSize: 15,
   },
   forgotPasswordStyles:{
     textAlign: "center",
     padding: 4,
     paddingTop: 8,
+    color: colors.GREY
   },
   signupPasswordStyles:{
     textAlign: "center",
     padding: 2,
-    color: "orange",
+    color: "black",
   },
   loginStyles:{
     color: "black",
@@ -123,6 +131,11 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
     fontWeight: "300",
-    letterSpacing: 5
+    letterSpacing: 5,
+    shadowColor: colors.GREEN,
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 1,
+    shadowRadius: 0
+
   },
 })
