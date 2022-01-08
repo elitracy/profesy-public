@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, View } from "react-native";
+import { LogBox, StyleSheet, Text, SafeAreaView, View } from "react-native";
 import { LandingPage } from "./components/LandingPage";
 import { Home } from "./components/Home"
 import { Professor } from "./components/Professor"
@@ -10,7 +10,7 @@ import { RootStackParamList } from "./RootStackParams"
 import tailwind from "tailwind-rn"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
-
+LogBox.ignoreAllLogs()
 export default function App() {
   return (
       

@@ -1,62 +1,32 @@
 import { StyleSheet, Text, SafeAreaView, View, Platform, Image, TextInput, TouchableOpacity } from "react-native"
 import { useState } from "react"
-import colors from "../assets/colors"
+import { colors } from "../assets/colors"
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from "../RootStackParams"
+import { RootStackParamList, Course } from "../RootStackParams"
 import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
 import { Icon } from "react-native-elements"
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, "Home">
 
-const professors = [
-  {
-    name: "Tanzir Ahmed",
-    school: "Texas A&M University",
-    department: "CSCE",
-    gpa: "4.0",
-  },
-  {
-    name: "Teresa Leyk",
-    school: "Texas A&M University",
-    department: "CSCE",
-    gpa: "3.0"
-  },
-  {
-    name: "Dylan Shell",
-    school: "Texas A&M University",
-    department: "CSCE",
-    gpa: "2.7"
-  },
-  {
-    name: "Shawn Lupoli",
-    school: "Texas A&M University",
-    department: "CSCE",
-    gpa: "1.5"
-  },
-]
+async function getProfessor(name:string, setFilteredData: Function): void{
+  await fetch(`http://localhost:8080/professors?name=${name}`)
+    .then(result => result.json())
+    .then(result => {
+        setFilteredData(result.professors)
+        return result
+    })
+    .catch(err => {
+        console.error(err)
+  })
+}
 
 export function Home() {
-
-  const [search, setSearch] = useState("search by professor")
+  
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
 
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
-
-  const handleSearch = (text:string) => {
-    const searchWord = text;
-    setWordEntered(searchWord);
-    const newFilter:any = professors.filter((value) => {
-      return value.name.toLowerCase().includes(searchWord.toLowerCase());
-    });
-
-    if (searchWord === "") {
-      setFilteredData([]);
-    } else {
-      setFilteredData(newFilter);
-    }
-  }
-
+  
   const navigation = useNavigation<homeScreenProp>()
 
   return (
@@ -78,44 +48,46 @@ export function Home() {
         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", paddingBottom: 10}}>
           <Icon name="search" style={{opacity: .7}}/>
           <TextInput 
-              onChangeText={handleSearch}
+              onChangeText={(data) => {
+                getProfessor(data, setFilteredData)
+                setWordEntered(data === undefined ? "" : data);
+              }}
               onFocus={() => setSearchBG(colors.GREEN)}
               onBlur={() => setSearchBG(colors.PURPLE)}
               value={wordEntered}
               //clearTextOnFocus={true}
-              placeholder="search by professor"
+              placeholder="search for professor"
               //defaultValue="search by professor"
               style={[styles.inputStyles, {borderColor: searchBG, flex: 5, marginLeft: -30}]}
             />
         </View>
       </View>
       {filteredData.length != 0 && (
-        <View style={{width: "90%", height: "auto", flexDirection: "column", alignItems: "center", marginTop: 0}}>
-          {filteredData.slice(0, 15).map((value:{name:string, school:string, department:string, gpa:string}, key) => {
+        <View style={{width: "94%", height: "auto", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: 0}}>
+          {filteredData.slice(0, 15).map((value:{name:string, university:string, overallGPA:string, courses:Course[]}, key) => {
             return (
             <TouchableOpacity 
               style={[styles.resultContainer, { shadowColor:  
-                (parseFloat(value.gpa) > 3.4) ? colors.BLUE
-                : (parseFloat(value.gpa) > 2.8) ? colors.GREEN 
-                : (parseFloat(value.gpa)> 2.0) ? colors.ORANGE 
+                (parseFloat(value.overallGPA) > 3.4) ? colors.BLUE
+                : (parseFloat(value.overallGPA) > 2.8) ? colors.GREEN 
+                : (parseFloat(value.overallGPA)> 2.0) ? colors.ORANGE 
                 : colors.RED }]}
-              onPress={() => navigation.navigate("Professor", {profName: value.name})} 
+              onPress={() => navigation.navigate("Professor", {profName: value.name, courses: value.courses})} 
             >
           
               <Text style={{padding: 5, color: "white", fontSize: 25, textAlign: "center", fontWeight: "500", }}> 
                 {value.name} {" "}
                 <Text style={{textAlign: "right", fontWeight: "800", fontSize: 25, color:  
-                (parseFloat(value.gpa) > 3.4) ? colors.BLUE
-                : (parseFloat(value.gpa) > 2.8) ? colors.GREEN 
-                : (parseFloat(value.gpa)> 2.0) ? colors.ORANGE 
+                (parseFloat(value.overallGPA) > 3.4) ? colors.BLUE
+                : (parseFloat(value.overallGPA) > 2.8) ? colors.GREEN 
+                : (parseFloat(value.overallGPA) > 2.0) ? colors.ORANGE 
                 : colors.RED }}
               > 
-                {value.gpa}
+                {parseFloat(value.overallGPA).toFixed(2)}
               </Text>
               </Text>
-              <Text style={{padding: 5, paddingTop: 0, color: "white", textAlign: "center", fontSize: 18, opacity: .85}}> 
-                {value.school}{" "} 
-                <Text style={{fontWeight:"800", opacity: 1}}>{value.department}</Text>
+              <Text style={{marginTop: -6, paddingBottom: 3, color: "white", textAlign: "center", fontSize: 18, opacity: .85}}> 
+                {value.university} 
               </Text>
               
             </TouchableOpacity>

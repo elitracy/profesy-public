@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, Pressable, View } from "react-native"
 import { useState } from "react"
-import colors from "../assets/colors"
+import { colors } from "../assets/colors"
 import accountIcon from "../assets/accountIcon.png"
 import homeIcon from "../assets/homeIcon.png"
 import favoriteIcon from "../assets/favoriteIcon.png"

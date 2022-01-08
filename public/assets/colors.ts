@@ -1,5 +1,5 @@
 
-const colors = {
+export const colors = {
     RED: "#E27D60",
     BLUE: "#85DCBA",
     ORANGE: "#E8A87C",
@@ -8,4 +8,8 @@ const colors = {
     GRAY: "#5D5C61",
     GREY: "#5D5C61"
 }
-export default colors
+
+export function randomColor(){
+  let color = Object.values(colors).slice(0,5)[Math.floor(Math.random() * 4)]
+  return color 
+}

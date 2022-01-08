@@ -1,7 +1,7 @@
 import { Switch, View, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native"
 import { Icon } from "react-native-elements"
-import colors from "../assets/colors"
-import { RootStackParamList } from "../RootStackParams"
+import { colors } from "../assets/colors"
+import { RootStackParamList, Course as CourseType } from "../RootStackParams"
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from "react"
 import { PieChart } from 'react-native-svg-charts';
@@ -55,22 +55,24 @@ const semesterInfo = [
   },
 ]
 
-interface props{
-route:{params:{courseName: string, profName: string}}
+interface Props{
+  route:{params:{courses:CourseType[], courseName: string, profName: string}}
 }
 
-export function Course(Props:props){
+export function Course(Props:Props){
 
+  const semesterInfo = Props.route.params.courses
   const [filteredData, setFilteredData] = useState([]);
   const [wordEntered, setWordEntered] = useState("");
 
   const [search, setSearch] = useState("search by semester")
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
 
-  const [currentSemester, setCurrentSemester] = useState(semesterInfo.find(s => s.semester === "All Time"))
+  const [currentSemester, setCurrentSemester] = useState(semesterInfo[0])
   const [graphData, setGraphData] = useState([parseInt(currentSemester.A), parseInt(currentSemester.B), parseInt(currentSemester.C), parseInt(currentSemester.F), parseInt(currentSemester.Q)])
   const [togglePercentages, setTogglePercentages] = useState(false)
 
+  console.log(currentSemester)
   const handleSearch = (text:string) => {
     const searchWord = text;
     setWordEntered(searchWord);
@@ -83,6 +85,7 @@ export function Course(Props:props){
       setFilteredData(newFilter);
     }
   }
+
   const Gradient = () => {
 
     let start = `0%`
@@ -108,7 +111,6 @@ export function Course(Props:props){
 
   const Labels = ({ slices, height, width }) => {
     return slices.map((slice, index) => {
-      console.log(slice);
       const { labelCentroid, pieCentroid, data } = slice;
       return (
           <SVGText
@@ -130,8 +132,11 @@ export function Course(Props:props){
  return(
     <SafeAreaView style={styles.container}>
       <View style={styles.courseTitle}>
-        <Text style={{fontSize: 40, paddingHorizontal: 30, paddingVertical: 10, color: "white"}}>
-          {Props.route.params.courseName}
+        <Text style={{fontSize: 40, paddingHorizontal: 30, paddingVertical: 10, color: "white", fontWeight:"500"}}>
+          {Props.route.params.courseName.substring(0,4)}
+          <Text style={{fontWeight:"300"}}>
+            {Props.route.params.courseName.substring(4,7)}
+          </Text>
           <Text style={{fontSize: 20, opacity: .75, paddingBottom: 2 }}>
             {" "}{Props.route.params.profName}
           </Text>
@@ -153,7 +158,7 @@ export function Course(Props:props){
         </View>
         {filteredData.length != 0 && (
           <View style={{width: "100%", flexDirection: "column", alignItems: "center", marginTop: -1, position: "absolute", top: "17%", zIndex: 3}}>
-            {filteredData.slice(0, 15).map((value:{semester:string, avgGPA: string, A:string, B:string, C:string, D:string, F:string, Q:string, courseTotal:string }, key) => {
+            {filteredData.slice(0, 15).map((value:CourseType, key) => {
               return (
                 <TouchableOpacity
                   style={styles.resultContainer}
@@ -181,13 +186,13 @@ export function Course(Props:props){
 
         <View style={{width: "40%", paddingVertical: 10, borderRadius: 10,
           shadowColor: colors.GRAY, shadowOpacity: 1, shadowOffset: {width: 1, height: 2}, shadowRadius: 1, backgroundColor:
-            (parseFloat(currentSemester.avgGPA) > 3.4) ? colors.BLUE
-            : (parseFloat(currentSemester.avgGPA) > 2.8) ? colors.GREEN
-            : (parseFloat(currentSemester.avgGPA)> 2.0) ? colors.ORANGE
+            (parseFloat(currentSemester.semGPA) > 3.4) ? colors.BLUE
+            : (parseFloat(currentSemester.semGPA) > 2.8) ? colors.GREEN
+            : (parseFloat(currentSemester.semGPA)> 2.0) ? colors.ORANGE
             : colors.RED
         }}>
           <Text style={{fontSize: 25, textAlign: "center", color: "white", fontWeight: "500"}}>
-            {currentSemester.avgGPA}
+            {currentSemester.semGPA}
           </Text>
         </View>
         <View style={{flexDirection: "column", alignItems: "center", marginTop: 15, paddingHorizontal: 12, width: "120%"}}>
@@ -200,7 +205,7 @@ export function Course(Props:props){
           {["A","B","C","F","Q"].map(letter => {
             return(
               <TouchableOpacity
-                style={[styles.distLetter, styles[`dist${letter}`],{flex: parseFloat(currentSemester[`${letter}`]/currentSemester.courseTotal)}]}
+                style={[styles.distLetter, styles[`dist${letter}`],{flex: parseFloat(currentSemester[`${letter}`]/currentSemester.CourseTotal)}]}
               >
                 <Text style={{marginLeft: -16, fontWeight: "700"}}>
                   {letter}
@@ -233,7 +238,7 @@ export function Course(Props:props){
                 : (index === 3) ? colors.RED
                 : colors.PURPLE
               },
-              key: togglePercentages ? `${parseFloat(value/currentSemester.courseTotal*100).toFixed(0)}%` 
+              key: togglePercentages ? `${parseFloat(value/currentSemester.CourseTotal*100).toFixed(0)}%` 
                 :  (index === 0) ? "A" 
                 : (index === 1) ? "B"
                 : (index === 2) ? "C"
