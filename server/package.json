@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "mongodb": "^4.3.0",
+    "mongosh": "^1.1.7"
   },
   "scripts": {
     "start": "nodemon ."
