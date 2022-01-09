@@ -1,78 +1,48 @@
-import { Switch, View, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native"
+import { 
+  Image, 
+  Switch, 
+  View, 
+  SafeAreaView, 
+  Keyboard, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  ScrollView, 
+  Pressable
+ } from "react-native"
+
 import { Icon } from "react-native-elements"
 import { colors } from "../assets/colors"
 import { RootStackParamList, Course as CourseType } from "../RootStackParams"
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
 import { useState } from "react"
-import { PieChart } from 'react-native-svg-charts';
-import { Defs, LinearGradient, Stop, Text as SVGText} from 'react-native-svg'
+import { LineChart } from 'react-native-svg-charts';
+import { G, Text as SVGText, Circle} from 'react-native-svg'
 import * as shape from "d3-shape"
-
-const semesterInfo = [
-  {
-    semester: "Fall 2019",
-    avgGPA: "3.406",
-    A: "83",
-    B: "45",
-    C: "6",
-    D: "4",
-    F: "4",
-    Q: "7",
-    courseTotal: "150"
-  },
-  {
-    semester: "Summer 2019",
-    avgGPA: "2.512",
-    A: "93",
-    B: "25",
-    C: "2",
-    D: "9",
-    F: "9",
-    Q: "3",
-    courseTotal: "141"
-  },
-  {
-    semester: "Spring 2019",
-    avgGPA: "3.261",
-    A: "46",
-    B: "28",
-    C: "24",
-    D: "4",
-    F: "7",
-    Q: "9",
-    courseTotal: "118"
-  },
-  {
-    semester: "All Time",
-    avgGPA: "3.261",
-    A: "46",
-    B: "28",
-    C: "24",
-    D: "4",
-    F: "7",
-    Q: "9",
-    courseTotal: "118"
-  },
-]
+import backIcon from "../assets/arrow.png"
 
 interface Props{
-  route:{params:{courses:CourseType[], courseName: string, profName: string}}
+  route:{params:{courses:CourseType[], courseName: string, profName: string, allCourses:CourseType[]}}
 }
 
-export function Course(Props:Props){
 
+export function Course(Props:Props){
   const semesterInfo = Props.route.params.courses
-  const [filteredData, setFilteredData] = useState([]);
+  const semesterGPAs = semesterInfo.map(s => {return parseFloat(s.semGPA)})
+  const courseAvg = semesterGPAs.reduce((total,next) => total + next, 0)/semesterGPAs.length 
+  const [filteredData, setFilteredData] = useState<string[]>([]);
   const [wordEntered, setWordEntered] = useState("");
 
   const [search, setSearch] = useState("search by semester")
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
 
-  const [currentSemester, setCurrentSemester] = useState(semesterInfo[0])
+  const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])
   const [graphData, setGraphData] = useState([parseInt(currentSemester.A), parseInt(currentSemester.B), parseInt(currentSemester.C), parseInt(currentSemester.F), parseInt(currentSemester.Q)])
   const [togglePercentages, setTogglePercentages] = useState(false)
-
-  console.log(currentSemester)
+  const [selectedNode, setSelectedNode] = useState(0)
+    
   const handleSearch = (text:string) => {
     const searchWord = text;
     setWordEntered(searchWord);
@@ -80,59 +50,35 @@ export function Course(Props:Props){
       return value.semester.toLowerCase().includes(searchWord.toLowerCase());
     });
     if (searchWord === undefined) {
-      setFilteredData(semesterInfo.map(info => info.semester));
+      setFilteredData(semesterInfo.map(info => info.semester))
     } else {
-      setFilteredData(newFilter);
+      setFilteredData(newFilter)
     }
   }
 
-  const Gradient = () => {
-
-    let start = `0%`
-    let A = `${parseFloat(currentSemester.A/currentSemester.courseTotal)*100}%`
-    let B = `${parseFloat((currentSemester.A+currentSemester.B)/currentSemester.courseTotal)*100}%`
-    let C = `${parseFloat((currentSemester.A+currentSemester.B+currentSemester.C)/currentSemester.courseTotal)*100}%`
-    let F = `${parseFloat((currentSemester.A+currentSemester.B+currentSemester.C+currentSemester.F)/currentSemester.courseTotal)*100}%`
-    let Q = `${parseFloat((currentSemester.A+currentSemester.B+currentSemester.C+currentSemester.F+currentSemester.Q)/currentSemester.courseTotal)*100}%`
-    let end = `100%`
-    return(
-      <Defs key={'gradient'}>
-          <LinearGradient id={'gradient'} x1={'0'} y1={'1'} x2={'0'} y2={'0'}>
-              <Stop offset={start} stopColor={colors.BLUE}/>
-              <Stop offset={A} stopColor={colors.BLUE}/>
-              <Stop offset={B} stopColor={colors.GREEN}/>
-              <Stop offset={C} stopColor={colors.ORANGE}/>
-              <Stop offset={F} stopColor={colors.RED}/>
-              <Stop offset={Q} stopColor={colors.RED}/>
-              <Stop offset={end} stopColor={colors.RED}/>
-          </LinearGradient>
-      </Defs>
-  )}
-
-  const Labels = ({ slices, height, width }) => {
-    return slices.map((slice, index) => {
-      const { labelCentroid, pieCentroid, data } = slice;
-      return (
-          <SVGText
-            key={index}
-            x={labelCentroid[0]}
-            y={labelCentroid[1]}
-            fill={'#000'}
-            textAnchor={'middle'}
-            alignmentBaseline={'center'}
-            fontSize={togglePercentages ? 14 : 20}
-            fontWeight={"400"}
-          >
-            {data.key}
-          </SVGText>
-        );
-    });
-  }; 
+  const Decorator = ({ x, y, data }: {x:any, y:any, data:number[]}) => {
+    return data.map((value:number, index) => (
+        <Circle
+            key={ index }
+            cx={ x(index) }
+            cy={ y(value) }
+            r={ 12 }
+            stroke={ 'rgb(134, 65, 244)' }
+            strokeWidth={3}
+            fill={ selectedNode === index ? 'rgb(134, 65, 244)' : 'white' }
+            onPress={() => {
+              setCurrentSemester(semesterInfo.find(s => parseFloat(s.semGPA) === value))
+              setSelectedNode(index)
+            }}
+        />
+    ))
+  }
 
  return(
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} onPress={() => {Keyboard.dismiss()}}>
+
       <View style={styles.courseTitle}>
-        <Text style={{fontSize: 40, paddingHorizontal: 30, paddingVertical: 10, color: "white", fontWeight:"500"}}>
+                <Text style={{fontSize: 40, paddingHorizontal: 30, paddingVertical: 10, color: "white", fontWeight:"500"}}>
           {Props.route.params.courseName.substring(0,4)}
           <Text style={{fontWeight:"300"}}>
             {Props.route.params.courseName.substring(4,7)}
@@ -143,22 +89,24 @@ export function Course(Props:Props){
         </Text>
       </View>
 
-      <View style={{width: "70%", marginTop: 20, alignItems: "center"}}>
+      <View style={{width: "70%", marginTop: 10, alignItems: "center"}}>
         <View style={{flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "center"}}>
-          <Icon name="search" style={{opacity: .7}}/>
+          <Icon name="search" style={{opacity: .7}} tvParallaxProperties={null}/>
           <TextInput
               onChangeText={handleSearch}
-              onFocus={() => setSearchBG(colors.GREEN)}
+              onFocus={() => {
+                setSearchBG(colors.GREEN)
+                handleSearch("")
+              }}
               onBlur={() => setSearchBG(colors.PURPLE)}
               value={wordEntered}
               placeholder="search by semester"
-              //defaultValue="search by professor"
               style={[styles.inputStyles, {borderColor: searchBG, paddingLeft: 30}]}
           />
         </View>
         {filteredData.length != 0 && (
-          <View style={{width: "100%", flexDirection: "column", alignItems: "center", marginTop: -1, position: "absolute", top: "17%", zIndex: 3}}>
-            {filteredData.slice(0, 15).map((value:CourseType, key) => {
+          <ScrollView style={{width: "105%", paddingHorizontal: 5, flexDirection: "column", height: "40%", position: "absolute", top: "16%", zIndex: 3, borderRadius: 10}}>
+            {filteredData.slice(0, 15).map((value:any, key) => {
               return (
                 <TouchableOpacity
                   style={styles.resultContainer}
@@ -167,6 +115,7 @@ export function Course(Props:Props){
                     setWordEntered(value.semester)
                     setFilteredData([])
                     setGraphData([parseInt(currentSemester.A), parseInt(currentSemester.B), parseInt(currentSemester.C), parseInt(currentSemester.F), parseInt(currentSemester.Q)])
+                    Keyboard.dismiss()
                   }}
                 >
                   <Text style={styles.result}>
@@ -175,40 +124,47 @@ export function Course(Props:Props){
                 </TouchableOpacity>
               );
             })}
-          </View>
+          </ScrollView>
         )}
         <Text style={{fontSize: 25, textAlign: "center", marginVertical: 15}}>
-          GPA
           <Text style={{textAlign: "center", fontSize: 20, opacity: .6, letterSpacing: -1}}>
-            {" "}{currentSemester.semester}
+            {" "}{currentSemester.semester.length > 0 ? currentSemester.semester : "N/A"}
           </Text>
         </Text>
 
-        <View style={{width: "40%", paddingVertical: 10, borderRadius: 10,
+        <View style={{width: "60%", padding: 10, borderRadius: 10,
           shadowColor: colors.GRAY, shadowOpacity: 1, shadowOffset: {width: 1, height: 2}, shadowRadius: 1, backgroundColor:
-            (parseFloat(currentSemester.semGPA) > 3.4) ? colors.BLUE
-            : (parseFloat(currentSemester.semGPA) > 2.8) ? colors.GREEN
-            : (parseFloat(currentSemester.semGPA)> 2.0) ? colors.ORANGE
+              (parseFloat(currentSemester.semGPA).toFixed(2) >= 3.50) ? colors.BLUE
+            : (parseFloat(currentSemester.semGPA).toFixed(2) >= 3.00) ? colors.GREEN
+            : (parseFloat(currentSemester.semGPA).toFixed(2) >= 2.50) ? colors.ORANGE
             : colors.RED
         }}>
-          <Text style={{fontSize: 25, textAlign: "center", color: "white", fontWeight: "500"}}>
-            {currentSemester.semGPA}
+          <Text style={{fontSize: 30, textAlign: "center", color: "white", fontWeight: "700"}}>
+            <Text style={{fontWeight: "400", opacity: .8}}>
+              GPA{" "}
+            </Text>
+            {parseFloat(currentSemester.semGPA).toFixed(2)}
           </Text>
         </View>
-        <View style={{flexDirection: "column", alignItems: "center", marginTop: 15, paddingHorizontal: 12, width: "120%"}}>
+        <View style={{flexDirection: "column", alignItems: "center", marginTop: 15, paddingHorizontal: 12, width: "120%", 
+                    paddingBottom: 15, borderBottomWidth: .3, borderBottomColor: colors.GREY}}>
           <Text style={{fontSize: 30, fontWeight: "300"}}>
             Grade Distribution
           </Text>
 
+
           <View style={{flexDirection: "row", justifyContent:"flex-start", marginTop: 15, alignItems: "center"}}>
           
           {["A","B","C","F","Q"].map(letter => {
+            let letterPercentage:any = parseFloat(currentSemester[letter]/currentSemester.CourseTotal*100).toFixed(0)
+            
             return(
               <TouchableOpacity
-                style={[styles.distLetter, styles[`dist${letter}`],{flex: parseFloat(currentSemester[`${letter}`]/currentSemester.CourseTotal)}]}
+                style={[styles.distLetter, styles[`dist${letter}`], {flex: letterPercentage < 5 ? .06 : letterPercentage/100}]}
+                onPress={() => setTogglePercentages(!togglePercentages)}
               >
-                <Text style={{marginLeft: -16, fontWeight: "700"}}>
-                  {letter}
+                <Text style={[{marginLeft: -16, fontWeight: "700"},togglePercentages && {fontWeight: "400"}]}>
+                  {togglePercentages ? `${letterPercentage}%` :  letter}
                 </Text>
               </TouchableOpacity>
             )
@@ -217,43 +173,54 @@ export function Course(Props:Props){
         </View>
       </View>
 
-      <View style={{flexDirection:"row", alignItems:"flex-start", justifyContent:"flex-start", 
-        marginTop: 25, paddingHorizontal: 30, paddingTop: 10 }}>
-        <Switch
-              trackColor={{ false: colors.GREY, true: colors.GREEN }}
-              thumbColor={togglePercentages ? "#f4f3f4" : "#f4f3f4"}
-              ios_backgroundColor={colors.GREY}
-              onValueChange={setTogglePercentages }
-              value={togglePercentages}
-              style={{marginTop: 20, marginRight: -20, transform: [{rotate: "-90deg"}]}}
+        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", width: "60%", marginTop: 15,
+          padding: 10, borderRadius: 10,
+          shadowColor: colors.GRAY, shadowOpacity: 1, shadowOffset: {width: 1, height: 2}, shadowRadius: 1, backgroundColor:
+              (courseAvg.toFixed(2) >= 3.50) ? colors.BLUE
+            : (courseAvg.toFixed(2) >= 3.00) ? colors.GREEN
+            : (courseAvg.toFixed(2) >= 2.50) ? colors.ORANGE
+            : colors.RED
+        }}>
+          <Text style={{fontSize: 20, color: "white", marginRight: 10, opacity: .8}}>
+            Course Average
+          </Text>
+          <Text style={{fontSize: 25, textAlign: "center", color: "white", fontWeight: "500"}}>
+            {courseAvg.toFixed(2)}
+          </Text>
+        </View>
+                
+        <LineChart
+            data={semesterGPAs}
+            style={{height: 200, width: "90%", zIndex: 1}}
+            svg={{
+              strokeWidth: 3,
+              stroke: 
+              (courseAvg.toFixed(2) >= 3.50) ? colors.BLUE
+            : (courseAvg.toFixed(2) >= 3.00) ? colors.GREEN
+            : (courseAvg.toFixed(2) >= 2.50) ? colors.ORANGE
+            : colors.RED
+            }}
+            contentInset={ { top: 30, bottom: 20, left: 25, right: 25} }
+            curve={shape.curveCatmullRom}
+          > 
+            <Decorator/>
+          </LineChart>  
+          <TouchableOpacity 
+            style={{zIndex: 0, position: "absolute", bottom: 0, right: 0, height: "100%", width: "20%"}}
+            onPress={() => {
+              setSelectedNode(selectedNode === semesterInfo.length - 1 ? 0 : selectedNode+1)
+              setCurrentSemester(selectedNode+1 === semesterInfo.length ? semesterInfo[0] : semesterInfo[selectedNode+1])
+            }}
           />
-          <PieChart
-            style={ { height: 300, width: "100%"} }
-            data={graphData.map((value,index) => ({
-              value,
-              svg:{
-              fill: (index === 0) ? colors.BLUE 
-                : (index === 1) ? colors.GREEN
-                : (index === 2) ? colors.ORANGE
-                : (index === 3) ? colors.RED
-                : colors.PURPLE
-              },
-              key: togglePercentages ? `${parseFloat(value/currentSemester.CourseTotal*100).toFixed(0)}%` 
-                :  (index === 0) ? "A" 
-                : (index === 1) ? "B"
-                : (index === 2) ? "C"
-                : (index === 3) ? "F" 
-                :  "Q"
-,
-            }))}
-            labelRadius={'70%'}
-            outerRadius={'100%'}
-            innerRadius={'40%'}
-          >
-            <Labels/>
-          </PieChart>
-      </View>
-            
+          <TouchableOpacity 
+            style={{zIndex: 0, position: "absolute", bottom: 0, left: 0, height: "100%", width: "20%"}}
+            onPress={() => {
+              setSelectedNode(selectedNode === 0 ? semesterInfo.length-1 : selectedNode-1)
+              setCurrentSemester(selectedNode-1 === -1 ? semesterInfo[semesterInfo.length-1] : semesterInfo[selectedNode-1])
+            }}
+          />
+          <View style={{width: "80%", height: 40, borderBottomWidth: .3, }}>
+          </View>
     </SafeAreaView>
   )
 }
@@ -272,17 +239,17 @@ const styles = StyleSheet.create({
     shadowColor: colors.PURPLE,
     shadowOffset: {width: 2, height: 2},
     shadowRadius: 1,
-    shadowOpacity: 1
+    shadowOpacity: 1,
+    width: "90%",
   },
   resultContainer:{
-    borderRadius: 0,
     backgroundColor: colors.GRAY,
     padding: 8,
-    width: "102%",
+    width: "100%",
     marginLeft: -4,
-    borderBottomWidth: 1,
-    borderBottomColor: "white",
-    borderRadius: 8,
+    borderWidth: .3,
+    borderColor: "white",
+    borderRadius: 10,
   },
   result:{
     color:"white",
@@ -296,7 +263,7 @@ const styles = StyleSheet.create({
   inputStyles:{
     borderWidth: 2,
     borderRadius: 5,
-    padding: 5,
+    padding: 10,
     fontSize: 15,
     flex: 5,
     marginLeft: -30

@@ -13,7 +13,7 @@ type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 export function Navigation(){
   
   const navigation = useNavigation<navScreenProp>()
-  const [navSelected, setNavSelected] = useState("Home")
+  const [navSelected, setNavSelected] = useState("home")
   
   return(
     <View style={styles.navContainer}>
@@ -24,7 +24,6 @@ export function Navigation(){
       >
         <Image 
           source={homeIcon} 
-          tintColor="white"
           style={{width: 37, height: 37, padding: 5, marginBottom: 3}}
         />
       </Pressable>
@@ -34,7 +33,6 @@ export function Navigation(){
       >
         <Image 
           source={favoriteIcon} 
-          tintColor="white"
           style={{width: 40, height: 40, padding: 5
           }}
         />
@@ -45,7 +43,6 @@ export function Navigation(){
       >
         <Image 
           source={accountIcon} 
-          tintColor="white"
           style={{width: 45, height: 45, marginBottom: -5}}
         />
       </Pressable>

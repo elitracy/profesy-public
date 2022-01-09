@@ -1,24 +1,26 @@
-import { StyleSheet, SafeAreaView, Text, TextInput, View, Pressable, TouchableOpacity }  from "react-native";
+import { StyleSheet, SafeAreaView, Text, TextInput, View, Pressable, TouchableOpacity, AsyncStorage }  from "react-native";
 import tailwind from "tailwind-rn";
 import { useState } from "react"
 import { NavigationContainer, useNavigation, RouteProp} from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from "../RootStackParams"
 import { colors } from "../assets/colors"
+import { sha256 } from "js-sha256"
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, "Login">
-async function loginAPI(username:string, password:string){
+
+async function loginAPI(username:string, password:string, setBadLogin:Function){
   return await fetch(`http://localhost:8080/login?username=${username}&password=${password}`)
-    .then(response => {
-        console.log(response.status)
-        if(response.status === 200) return true
-        else return false
-    })
-    //.then(data => {return true})
-    .catch(err => {
-      console.error(err)
-      return false 
-    })  
+   .then(res => {
+      setBadLogin(res.status === 400)  
+      return res.json()
+   }).then(data =>{
+    return data.message
+   })
+  .catch(err => {
+    setBadLogin(true)
+    console.error(err)
+  })
 }
 
 export function LandingPage(){
@@ -91,21 +93,18 @@ export function LandingPage(){
         <TouchableOpacity 
           style={{borderColor: "black", width: "100%", borderWidth: 2, borderRadius: 20,}}
           onPress={() => {
-            console.log("USER LOGIN: " + username + ", " + password)
-            loginAPI(username,password).then(data => {
-                setBadLogin(!data) 
-                return data ? navigation.navigate("Home") : null
+            loginAPI(username,password,setBadLogin).then(data => {
+                if(!badLogin) navigation.navigate("Home")
           })}}
         >
-            <Text style={styles.loginStyles}>
-              Login
-            </ Text>
-          </ TouchableOpacity>
+          <Text style={styles.loginStyles}>
+            Login
+          </ Text>
+        </ TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   

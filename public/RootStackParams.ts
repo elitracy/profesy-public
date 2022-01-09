@@ -2,7 +2,7 @@ export type RootStackParamList = {
   Login: undefined,
   Home: undefined,
   Professor: {profName: string, courses:Course[]},
-  Course: {courses:Course[], courseName: string, profName: string}
+  Course: {courses:Course[], courseName: string, profName: string, allCourses:Course[]}
 }
 
 export type Course = {
@@ -17,5 +17,6 @@ export type Course = {
     numSections:string,
     semGPA:string,
     semester:string,
-    totalGPA:string
-  }
+    totalGPA:string,
+}
+

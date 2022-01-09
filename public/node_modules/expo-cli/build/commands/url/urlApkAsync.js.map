@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/commands/url/urlApkAsync.ts"],"names":["actionAsync"],"mappings":";;;;;;;AAAA;AAAA;;AAAA;AAAA;AAAA;;AAAA;AAAA;;AAEO,MAAMA,WAAW,GAAG,sCAAe,SAAf,CAApB","sourcesContent":["import { logArtifactUrl } from './logArtifactUrl';\n\nexport const actionAsync = logArtifactUrl('android');\n"],"file":"urlApkAsync.js"}

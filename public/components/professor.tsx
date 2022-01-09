@@ -13,6 +13,13 @@ interface Props{
 
 type professorScreenProp = NativeStackNavigationProp<RootStackParamList, "Professor">
 
+const seasons = {
+  SPRING: 3,
+  SUMMER: 2,
+  FALL:   1,
+  WINTER: 0
+}
+
 export function Professor(Props:Props){
 
   const allCourses = Array.from([... new Set(Props.route.params.courses.map(obj => {
@@ -33,7 +40,7 @@ export function Professor(Props:Props){
   return(
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>
+        <Text style={[styles.title, {paddingHorizontal: 10}]}>
           {Props.route.params.profName}
         </Text>
         <View style={{borderTopWidth: 1, borderColor: colors.GRAY,flex: .5, opacity: .7, paddingVertical: 6}}>
@@ -43,7 +50,7 @@ export function Professor(Props:Props){
         </View>
         <View style={{width: "80%", marginLeft: 40, marginTop: 5}}>
           <View style={{flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "center", paddingBottom: 10}}>
-            <Icon name="search" style={{opacity: .7}}/>
+            <Icon name="search" style={{opacity: .7}} tvParallaxProperties={null}/>
             <TextInput 
                 onChangeText={(word) => {
                   setWordEntered(word)
@@ -61,16 +68,25 @@ export function Professor(Props:Props){
 
         <View style={styles.departments}>
           {courses.map((course,value) => {
-            console.log(course)
             return (
               <TouchableOpacity 
                 style={[styles.departmentContainer,{ shadowColor: randomColor() }]}
                 onPress={() => {
                   navigation.navigate("Course", {
-                    courses: Props.route.params.courses
-                             .filter(c => {return c.course.includes(course)}),
+                    courses: 
+                      Props.route.params.courses
+                             .filter(c => {return c.course.includes(course)})
+                             .sort((a,b) => {
+                                let aY = parseInt(a.semester.substring(a.semester.length-4,a.semester.length))  
+                                let bY = parseInt(b.semester.substring(b.semester.length-4,b.semester.length))  
+                                let aS = a.semester.substring(0,a.semester.length-5)
+                                let bS = b.semester.substring(0,b.semester.length-5)
+                                return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
+                             })
+                    ,
                     profName: Props.route.params.profName,
                     courseName: course,
+                    allCourses: allCourses
                   }) 
                 }}
               >
@@ -105,7 +121,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 40,
     marginTop: 15,
-    marginBottom: 5
+    marginBottom: 5,
+    paddingHorizontal: 10
   },
   departmentTitle:{
     fontSize: 30,

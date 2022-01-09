@@ -9,7 +9,7 @@ import { Icon } from "react-native-elements"
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, "Home">
 
 async function getProfessor(name:string, setFilteredData: Function): void{
-  await fetch(`http://localhost:8080/professors?name=${name}`)
+  await fetch(`http://192.168.0.22:8080/professors?name=${name}`)
     .then(result => result.json())
     .then(result => {
         setFilteredData(result.professors)
@@ -20,7 +20,7 @@ async function getProfessor(name:string, setFilteredData: Function): void{
   })
 }
 
-export function Home() {
+export const Home = () => {
   
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
 
@@ -46,7 +46,7 @@ export function Home() {
       </View>
       <View style={{width: "80%"}}>
         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", paddingBottom: 10}}>
-          <Icon name="search" style={{opacity: .7}}/>
+          <Icon name="search" style={{opacity: .7}} tvParallaxProperties={null}/>
           <TextInput 
               onChangeText={(data) => {
                 getProfessor(data, setFilteredData)
@@ -68,9 +68,9 @@ export function Home() {
             return (
             <TouchableOpacity 
               style={[styles.resultContainer, { shadowColor:  
-                (parseFloat(value.overallGPA) > 3.4) ? colors.BLUE
-                : (parseFloat(value.overallGPA) > 2.8) ? colors.GREEN 
-                : (parseFloat(value.overallGPA)> 2.0) ? colors.ORANGE 
+                  (parseFloat(value.overallGPA) > 3.6) ? colors.BLUE
+                : (parseFloat(value.overallGPA) > 3.0) ? colors.GREEN 
+                : (parseFloat(value.overallGPA) > 2.4) ? colors.ORANGE 
                 : colors.RED }]}
               onPress={() => navigation.navigate("Professor", {profName: value.name, courses: value.courses})} 
             >
@@ -78,16 +78,19 @@ export function Home() {
               <Text style={{padding: 5, color: "white", fontSize: 25, textAlign: "center", fontWeight: "500", }}> 
                 {value.name} {" "}
                 <Text style={{textAlign: "right", fontWeight: "800", fontSize: 25, color:  
-                (parseFloat(value.overallGPA) > 3.4) ? colors.BLUE
-                : (parseFloat(value.overallGPA) > 2.8) ? colors.GREEN 
-                : (parseFloat(value.overallGPA) > 2.0) ? colors.ORANGE 
+                  (parseFloat(value.overallGPA) > 3.6) ? colors.BLUE
+                : (parseFloat(value.overallGPA) > 3.0) ? colors.GREEN 
+                : (parseFloat(value.overallGPA) > 2.4) ? colors.ORANGE 
                 : colors.RED }}
               > 
                 {parseFloat(value.overallGPA).toFixed(2)}
               </Text>
               </Text>
               <Text style={{marginTop: -6, paddingBottom: 3, color: "white", textAlign: "center", fontSize: 18, opacity: .85}}> 
-                {value.university} 
+                {value.university}{" "}
+                <Text style={{fontWeight: "800"}}>
+                  {value.department} 
+                </Text>
               </Text>
               
             </TouchableOpacity>

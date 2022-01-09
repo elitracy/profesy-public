@@ -14,6 +14,7 @@ mongoUtil.connectToServer((err,client) => {
   if(err) console.log("Profesy server: 🛑 Error Connecting to Server")  
   console.log("Profesy server: ✅ Server Connected") 
   const profs = mongoUtil.getDb().collection("professors")
+  const users = mongoUtil.getDb().collection("Users")
   
   app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -25,30 +26,25 @@ mongoUtil.connectToServer((err,client) => {
       res.send({"professors" : results}) 
     })
   })
-  app.get("/semester", function (req, res) {
-    let course = req.query.course
-    let semester = req.query.semester
-    let name = req.query.name
-
-    profs.find({name: name},{courses: {$elemMatch: {semester: req.query.semester, course: course}}})
-      .toArray((err,results) => {
-      res.send({"semester" : results}) 
-    })
-  })
   app.get("/", (req,res) => {
     res.send("Hello from Profesi server!")
   })
-  //
-  //app.get("/login", (req,res) => {
-  //  if(users.users.hasOwnProperty(req.query.username) && users.users[req.query.username].password === req.query.password){
-  //    res.send({"message":`${users.users[req.query.username].name} successfully logged in`}) 
-  //    console.log(`${users.users[req.query.username].name} successfully logged in!`) 
-  //  }else{
-  //    console.log("Failed login attempt")
-  //    res.status(400).send({"message": "Failed Login Attempt"})
-  //  } 
-  //})
-  //
+  
+  app.get("/login", (req,res) => {
+    let user = req.query.username 
+    let pw = req.query.password
+    users.findOne({username:user, password:pw}, (err,results) => {
+      if(err){
+          res.status.send(400)
+      }else{
+        console.log(results)
+        res.status(results === null ? 400 : 200)
+        res.send({"message": results})
+      }
+      
+    })
+  })
+  
   app.listen(PORT, () => {
     console.log(`Profesy server: 🦧 started on http://localhost:${PORT}`)
   })

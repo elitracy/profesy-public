@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/commands/url/urlIpaAsync.ts"],"names":["actionAsync"],"mappings":";;;;;;;AAAA;AAAA;;AAAA;AAAA;AAAA;;AAAA;AAAA;;AAEO,MAAMA,WAAW,GAAG,sCAAe,KAAf,CAApB","sourcesContent":["import { logArtifactUrl } from './logArtifactUrl';\n\nexport const actionAsync = logArtifactUrl('ios');\n"],"file":"urlIpaAsync.js"}
