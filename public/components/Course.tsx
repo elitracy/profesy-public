@@ -281,7 +281,7 @@ export function Course(Props: Props) {
                       togglePercentages && { fontWeight: '400' },
                     ]}
                   >
-                    {togglePercentages ? `${letterPercentage}%` : letter}
+                    {togglePercentages ? `${letterPercentage.toFixed(0)}%` : letter}
                   </Text>
                 </TouchableOpacity>
               )
