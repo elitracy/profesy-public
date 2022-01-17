@@ -29,7 +29,7 @@ type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
 function loginAPI(username: string, password: string) {
   return fetch(
-    `http://192.168.0.22:8080/login?username=${username}&password=${password}`
+    `http://192.168.0.19:8080/login?username=${username}&password=${password}`
   )
     .then((res) => {
       return res.json()
@@ -51,7 +51,6 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
-console.log(AsyncStorage)
 export function LandingPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -129,7 +128,7 @@ export function LandingPage() {
 
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Signup')}
           >
             <Text style={styles.signupPasswordStyles}>
               Don't have an account?
@@ -144,16 +143,33 @@ export function LandingPage() {
             borderRadius: 20,
           }}
           onPress={() => {
-            loginAPI(username, password).then((res) => {
+            loginAPI(username, sha256(password)).then((res) => {
               if (res.loggedIn) {
-                console.log(res.message.name)
+                console.log(res.message)
                 storeItem('name', res.message.name)
+                storeItem('username', res.message.username)
+                storeItem('email', res.message.email)
+                storeItem('loggedIn', 'true')
               }
               res.loggedIn ? navigation.navigate('Home') : null
             })
           }}
         >
           <Text style={styles.loginStyles}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
+          style={{ width: '100%', marginTop: 5 }}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              paddingVertical: 5,
+              color: colors.GRAY,
+            }}
+          >
+            Skip
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

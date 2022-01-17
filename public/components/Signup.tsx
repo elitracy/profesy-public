@@ -25,21 +25,27 @@ import { RootStackParamList } from '../RootStackParams'
 import { colors } from '../assets/colors'
 import { sha256 } from 'js-sha256'
 
-type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
+type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
 function signupAPI(
   username: string,
   password: string,
   email: string,
-  name: string
+  name: string,
+  setUsernameExists: Function,
+  setEmailExists: Function
 ) {
   return fetch(
-    `http://192.168.0.22:8080/signup?username=${username}&password=${password}&email=${email}&name=${name}`
+    `http://192.168.0.19:8080/signup?username=${username}&password=${password}&email=${email}&name=${name}`
   )
     .then((res) => {
       return res.json()
     })
     .then((data) => {
+      if (data.userInsert === 0) {
+        setEmailExists(data.emailExists)
+        setUsernameExists(data.usernameExists)
+      }
       return data
     })
     .catch((err) => {
@@ -56,17 +62,24 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
-console.log(AsyncStorage)
-export function LandingPage() {
+export function Signup() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('')
+  const [passwordConf, setPasswordConf] = useState('')
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [usernameBG, setUsernameBG] = useState('rgba(150, 150, 150, .5)')
   const [passwordBG, setPasswordBG] = useState('rgba(150, 150, 150, .5)')
-  const [badLogin, setBadLogin] = useState(false)
+  const [passwordConfBG, setPasswordConfBG] = useState(
+    'rgba(150, 150, 150, .5)'
+  )
+  const [nameBG, setNameBG] = useState('rgba(150, 150, 150, .5)')
+  const [emailBG, setEmailBG] = useState('rgba(150, 150, 150, .5)')
+  const [usernameExists, setUsernameExists] = useState(false)
+  const [passwordMatch, setPasswordMatch] = useState(true)
+  const [emailExists, setEmailExists] = useState(false)
 
-  const navigation = useNavigation<loginScreenProp>()
+  const navigation = useNavigation<signupScreenProp>()
   return (
     <SafeAreaView
       style={tailwind('w-full h-full justify-start items-center mt-20')}
@@ -109,38 +122,86 @@ export function LandingPage() {
             {
               marginBottom: 6,
               borderColor: passwordBG,
-              color: password === 'password' ? colors.GREY : 'black',
             },
           ]}
           value={password}
           placeholder="Password"
           secureTextEntry={true}
         />
-        <View style={{ flexDirection: 'column', height: '20%' }}>
-          {badLogin ? (
-            <Text style={styles.incorrectLoginStyles}>Incorrect login</Text>
-          ) : null}
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => console.log('USER FORGOT PASSWORD')}
-          >
-            <Text
-              style={[
-                styles.forgotPasswordStyles,
-                { paddingTop: badLogin ? 4 : 8 },
-              ]}
-            >
-              Forgot Password?
+        <TextInput
+          onChangeText={setPasswordConf}
+          autoCapitalize="none"
+          clearTextOnFocus={true}
+          onFocus={() => setPasswordConfBG('#10b981')}
+          onBlur={() => setPasswordConfBG('rgba(150, 150, 150, .5)')}
+          style={[
+            styles.inputStyles,
+            {
+              marginBottom: 6,
+              borderColor: passwordConfBG,
+            },
+          ]}
+          value={passwordConf}
+          placeholder="Confirm Password"
+          secureTextEntry={true}
+        />
+        <TextInput
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          clearTextOnFocus={true}
+          onFocus={() => setEmailBG('#10b981')}
+          onBlur={() => setEmailBG('rgba(150, 150, 150, .5)')}
+          style={[
+            styles.inputStyles,
+            {
+              marginBottom: 6,
+              borderColor: emailBG,
+            },
+          ]}
+          value={email}
+          placeholder="Email"
+        />
+        <TextInput
+          onChangeText={setName}
+          autoCapitalize="none"
+          clearTextOnFocus={true}
+          onFocus={() => setNameBG('#10b981')}
+          onBlur={() => setNameBG('rgba(150, 150, 150, .5)')}
+          style={[
+            styles.inputStyles,
+            {
+              marginBottom: 6,
+              borderColor: nameBG,
+            },
+          ]}
+          value={name}
+          placeholder="Name"
+        />
+
+        <View style={{ flexDirection: 'column' }}>
+          {!passwordMatch ? (
+            <Text style={styles.incorrectSignupStyles}>
+              Passwords do not match
             </Text>
-          </TouchableOpacity>
+          ) : null}
+
+          {usernameExists ? (
+            <Text style={styles.incorrectSignupStyles}>
+              Username already exists
+            </Text>
+          ) : null}
+
+          {emailExists ? (
+            <Text style={styles.incorrectSignupStyles}>
+              Email already exists
+            </Text>
+          ) : null}
 
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Login')}
           >
-            <Text style={styles.signupPasswordStyles}>
-              Don't have an account?
-            </Text>
+            <Text style={styles.signupPasswordStyles}>Have an account?</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -149,18 +210,30 @@ export function LandingPage() {
             width: '100%',
             borderWidth: 2,
             borderRadius: 20,
+            marginTop: 5,
           }}
           onPress={() => {
-            signupAPI(username, password, email, name).then((res) => {
-              if (res.loggedIn) {
-                console.log(res.message.name)
-                storeItem('name', res.message.name)
-              }
-              res.loggedIn ? navigation.navigate('Home') : null
-            })
+            setPasswordMatch(password === passwordConf)
+            if (passwordMatch) {
+              signupAPI(
+                username,
+                sha256(password),
+                email,
+                name,
+                setUsernameExists,
+                setEmailExists
+              ).then((res) => {
+                if (res.userInsert === 1) {
+                  storeItem('name', res.name)
+                  storeItem('username', res.username)
+                  storeItem('email', res.email)
+                }
+                res.userInsert === 1 ? navigation.navigate('Home') : null
+              })
+            }
           }}
         >
-          <Text style={styles.loginStyles}>Login</Text>
+          <Text style={styles.signupStyles}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -191,7 +264,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     fontSize: 15,
   },
-  incorrectLoginStyles: {
+  incorrectSignupStyles: {
     textAlign: 'center',
     padding: 4,
     paddingTop: 4,
@@ -208,12 +281,11 @@ const styles = StyleSheet.create({
     padding: 2,
     color: 'black',
   },
-  loginStyles: {
+  signupStyles: {
     color: 'black',
     fontSize: 40,
     textAlign: 'center',
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingVertical: 8,
     fontWeight: '300',
     letterSpacing: 5,
     shadowColor: colors.GREEN,

@@ -9,6 +9,7 @@ export type RootStackParamList = {
     allCourses: Course[]
   }
   Signup: undefined
+  Account: undefined
 }
 
 export type Course = {

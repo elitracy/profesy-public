@@ -29,7 +29,7 @@ async function getProfessor(
   name: string,
   setFilteredData: Function
 ): Promise<any> {
-  return await fetch(`http://192.168.0.22:8080/professors?name=${name}`)
+  return await fetch(`http://192.168.0.19:8080/professors?name=${name}`)
     .then((result) => result.json())
     .then((result) => {
       setFilteredData(result.professors)
@@ -40,10 +40,10 @@ async function getProfessor(
     })
 }
 
-const getItem = async (key: string, setNameTitle: Function) => {
+const getItem = async (key: string, setStateItem: Function) => {
   try {
     const val = await AsyncStorage.getItem(key)
-    setNameTitle(await val)
+    setStateItem(await val)
     return val
   } catch (e: any) {
     console.log('error', e.message)
@@ -54,18 +54,25 @@ export const Home = (Props: any) => {
   const [filteredData, setFilteredData] = useState([])
   const [wordEntered, setWordEntered] = useState('')
   const [nameTitle, setNameTitle] = useState('')
+  const [loggedIn, setLoggedIn] = useState('false')
 
   getItem('name', setNameTitle)
+  getItem('loggedIn', setLoggedIn)
   const navigation = useNavigation<homeScreenProp>()
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.nav}>
         <Text style={styles.title}>Profesi</Text>
-        <Text style={styles.username}>{nameTitle}</Text>
+        <Text
+          style={[styles.username, { opacity: loggedIn === 'true' ? 1 : 0 }]}
+        >
+          {nameTitle}
+        </Text>
 
         <Image
           source={{ uri: 'https://picsum.photos/50/50' }}
-          style={styles.userImage}
+          style={[styles.userImage, { opacity: loggedIn === 'true' ? 1 : 0 }]}
         />
       </View>
       <View style={{ width: '80%' }}>

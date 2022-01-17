@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.17.2",
     "mongodb": "^4.3.0",
-    "mongosh": "^1.1.7"
+    "mongosh": "^1.1.7",
+    "nodemailer": "^6.7.2"
   },
   "scripts": {
     "start": "nodemon ."

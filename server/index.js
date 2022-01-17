@@ -3,6 +3,7 @@ const app = express();
 const PORT = 8080;
 const mongoUtil = require("./connect");
 const bodyParser = require("body-parser");
+const emailUtil = require("./email");
 
 const PROF_SEARCH_LIMIT = 6;
 
@@ -46,9 +47,66 @@ mongoUtil.connectToServer((err, client) => {
     });
   });
 
-  app.put("/signup", (req, res) => {});
+  app.get("/signup", (req, res) => {
+    //add new users
+    //TODO:
+    // - determine if user exists
+    // - add user to database otherwise send back fail status (look at login)
+    // - send back confirmation as well as user object
+    // - add sha256 encryption for both login in sign up.
+    //      - this can be done on the front end. the passwords should never leave the front end without being
+    //        encrypted, i've already import a library called js-sha256
+    let user = req.query.username;
+    let pw = req.query.password;
+    let email = req.query.email;
+    let name = req.query.name;
+    let emailExists = false;
+    let usernameExists = false;
+    users.findOne(
+      { $or: [{ username: user }, { email: email }] },
+      (err, results) => {
+        if (results) {
+          if (results.email === email) emailExists = true;
+          if (results.username === user) usernameExists = true;
+        }
 
-  app.put("/favorites", (req, res) => {});
+        if (!emailExists && !usernameExists) {
+          users.insertOne(
+            {
+              username: user,
+              password: pw,
+              email: email,
+              name: name,
+              favProfs: [],
+            },
+            (err, data) => {
+              res.send({
+                userInsert: 1,
+                name: name,
+                username: user,
+                email: email,
+              });
+
+              return;
+            }
+          );
+        } else {
+          res.send({
+            userInsert: 0,
+            emailExists: emailExists,
+            usernameExists: usernameExists,
+          });
+          console.log("USER CREATED");
+        }
+      }
+    );
+  });
+
+  app.get("/resetPass", (req, res) => {
+    const emailAddress = req.query.email;
+    const code = emailUtil.sendEmail(emailAddress);
+    res.send({ code: code });
+  });
 
   app.listen(PORT, () => {
     console.log(`Profesy server: 🦧 started on http://localhost:${PORT}`);

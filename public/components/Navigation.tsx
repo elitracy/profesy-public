@@ -2,18 +2,11 @@ import { Image, StyleSheet, Text, Pressable, View } from 'react-native'
 import { useState } from 'react'
 import { colors } from '../assets/colors'
 import accountIcon from '../assets/accountIcon.png'
-import homeIcon from '../assets/homeIcon.png'
-import favoriteIcon from '../assets/favoriteIcon.png'
+import searchIcon from '../assets/searchIcon.png'
+// import favoriteIcon from '../assets/favoriteIcon.png'
 import { RootStackParamList } from '../RootStackParams'
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
-import {
-  NavigationContainer,
-  useNavigation,
-  RouteProp,
-} from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
 
 type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 
@@ -41,11 +34,17 @@ export function Navigation() {
         ]}
       >
         <Image
-          source={homeIcon}
-          style={{ width: 37, height: 37, padding: 5, marginBottom: 3 }}
+          source={searchIcon}
+          style={{
+            width: 34,
+            height: 34,
+            padding: 6,
+            marginBottom: 3,
+            transform: [{ rotate: '75deg' }],
+          }}
         />
       </Pressable>
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           console.log('favorites pressed!')
           setNavSelected('favorites')
@@ -66,11 +65,12 @@ export function Navigation() {
           source={favoriteIcon}
           style={{ width: 40, height: 40, padding: 5 }}
         />
-      </Pressable>
+      </Pressable> */}
       <Pressable
         onPress={() => {
           console.log('account pressed!')
           setNavSelected('account')
+          navigation.navigate('Account')
         }}
         style={[
           navSelected === 'account' && styles.pressed,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     borderTopWidth: 6,
   },
   pressed: {
