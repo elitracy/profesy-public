@@ -26,12 +26,10 @@ const storeItem = async (key: string, value: any) => {
 }
 
 async function getCode(email: string, setPassCode: Function): Promise<any> {
-  return await fetch(`http://192.168.0.19:8080/resetPass?email=${email}`)
+  return await fetch(`http://10.229.62.38:8080/resetPass?email=${email}`)
     .then((result) => result.json())
     .then((result) => {
-      console.log(result)
       setPassCode(result.code)
-      console.log('poop')
       return result
     })
     .catch((err) => {

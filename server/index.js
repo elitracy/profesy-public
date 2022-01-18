@@ -4,6 +4,7 @@ const PORT = 8080;
 const mongoUtil = require("./connect");
 const bodyParser = require("body-parser");
 const emailUtil = require("./email");
+const { Db } = require("mongodb");
 
 const PROF_SEARCH_LIMIT = 6;
 
@@ -106,6 +107,20 @@ mongoUtil.connectToServer((err, client) => {
     const emailAddress = req.query.email;
     const code = emailUtil.sendEmail(emailAddress);
     res.send({ code: code });
+  });
+
+  app.get("/changePass", (req, res) => {
+    const username = req.query.username;
+    const password = req.query.password;
+
+    users.updateOne(
+      { username: username },
+      { $set: { password: password } },
+      (err, data) => {
+        if (err) res.send({ message: "error" });
+        else res.send({ message: "Password successfully updated!" });
+      }
+    );
   });
 
   app.listen(PORT, () => {

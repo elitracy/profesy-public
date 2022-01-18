@@ -3,7 +3,6 @@ import {
   Text,
   SafeAreaView,
   View,
-  Platform,
   Image,
   TextInput,
   TouchableOpacity,
@@ -11,16 +10,9 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
 import { colors } from '../assets/colors'
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList, Course } from '../RootStackParams'
-import {
-  NavigationContainer,
-  useNavigation,
-  RouteProp,
-} from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>

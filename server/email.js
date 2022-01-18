@@ -12,6 +12,8 @@ const generateId = (length) => {
 
 module.exports = {
   sendEmail: function (emailAddress) {
+    const id = generateId(4);
+
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -23,11 +25,10 @@ module.exports = {
     let mailOptions = {
       from: "et135202@gmail.com",
       to: emailAddress,
-      subject: "Sending Email using Node.js",
-      text: "Test Email",
+      subject: "Your code is: " + id,
+      text: "Reset Password - Profesy",
     };
 
-    const id = generateId(4);
     transporter.sendMail(mailOptions, async function (error, info) {
       if (error) {
         console.log(error.response);

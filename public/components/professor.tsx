@@ -74,7 +74,7 @@ export function Professor(Props: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <View>
         <Text style={[styles.title, { paddingHorizontal: 10 }]}>
           {Props.route.params.profName}
         </Text>
@@ -89,7 +89,7 @@ export function Professor(Props: Props) {
         >
           <Text style={styles.departmentTitle}>Courses</Text>
         </View>
-        <View style={{ width: '80%', marginLeft: 40, marginTop: 5 }}>
+        <View style={{ width: '90%', marginLeft: 15, marginTop: 5 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -121,8 +121,8 @@ export function Professor(Props: Props) {
             />
           </View>
         </View>
-
-        <View style={styles.departments}>
+        {/* add scroll view to prevent clipping */}
+        <ScrollView style={styles.departments}>
           {courses.map((course, value) => {
             return (
               <TouchableOpacity
@@ -178,23 +178,23 @@ export function Professor(Props: Props) {
               </TouchableOpacity>
             )
           })}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    height: '88%',
   },
   title: {
     textAlign: 'center',
     fontSize: 40,
-    marginTop: 15,
+    marginTop: 1,
     marginBottom: 5,
     paddingHorizontal: 10,
   },
@@ -222,8 +222,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   departments: {
-    flex: 6,
-    justifyContent: 'flex-start',
+    // flex: 6,
+    // justifyContent: 'flex-start',
+    // paddingBottom: 100,
+    // height: '80%',
   },
   inputStyles: {
     borderWidth: 2,
