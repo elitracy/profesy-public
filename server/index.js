@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const emailUtil = require("./email");
 const { Db } = require("mongodb");
 
-const PROF_SEARCH_LIMIT = 6;
+const PROF_SEARCH_LIMIT = 10;
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");

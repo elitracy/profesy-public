@@ -17,7 +17,7 @@ module.exports = {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "et135202@gmail.com",
+        user: "profesyapp@gmail.com",
         pass: "Lefty(7518)",
       },
     });
@@ -25,8 +25,8 @@ module.exports = {
     let mailOptions = {
       from: "et135202@gmail.com",
       to: emailAddress,
-      subject: "Your code is: " + id,
-      text: "Reset Password - Profesy",
+      subject: "Reset Password - Profesy",
+      text: "Your code is: " + id,
     };
 
     transporter.sendMail(mailOptions, async function (error, info) {
