@@ -26,7 +26,7 @@ const storeItem = async (key: string, value: any) => {
 }
 
 async function getCode(email: string, setPassCode: Function): Promise<any> {
-  return await fetch(`http://10.229.62.38:8080/resetPass?email=${email}`)
+  return await fetch(`https://profesy.herokuapp.com/resetPass?email=${email}`)
     .then((result) => result.json())
     .then((result) => {
       setPassCode(result.code)
@@ -138,7 +138,7 @@ export function Account(Props: any) {
               {email}
             </Text>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               width: '75%',
               padding: 10,
@@ -166,7 +166,7 @@ export function Account(Props: any) {
             >
               Reset Password
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
       <TouchableOpacity

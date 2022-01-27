@@ -10,7 +10,8 @@
     "nodemailer": "^6.7.2"
   },
   "scripts": {
-    "start": "nodemon ."
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

@@ -2,10 +2,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
-  Keyboard,
   TextInput,
   View,
-  Pressable,
   StatusBar,
   TouchableOpacity,
 } from 'react-native'
@@ -13,12 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import tailwind from 'tailwind-rn'
 import { useState } from 'react'
 import {
-  NavigationContainer,
   useNavigation,
-  RouteProp,
 } from '@react-navigation/native'
 import {
-  createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
@@ -27,9 +22,9 @@ import { sha256 } from 'js-sha256'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
-function loginAPI(username: string, password: string) {
+async function loginAPI(username: string, password: string) {
   return fetch(
-    `http://192.168.0.19:8080/login?username=${username}&password=${password}`
+    `https://profesy.herokuapp.com/login?username=${username}&password=${password}`
   )
     .then((res) => {
       return res.json()
@@ -51,14 +46,30 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
+const getItem = async (key: string, setItemState: Function) => {
+  try {
+    const val = await AsyncStorage.getItem(key)
+    setItemState(val)
+    return val
+  } catch (e: any) {
+    console.log('error', e.message)
+  }
+}
+
 export function LandingPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [usernameBG, setUsernameBG] = useState('rgba(150, 150, 150, .5)')
   const [passwordBG, setPasswordBG] = useState('rgba(150, 150, 150, .5)')
   const [badLogin, setBadLogin] = useState(false)
+  const [loggedIn, setLoggedIn] = useState('false')
 
   const navigation = useNavigation<loginScreenProp>()
+  getItem('loggedIn', setLoggedIn)
+  if (loggedIn === 'true') {
+    navigation.navigate('Home')
+  }
+
   return (
     <SafeAreaView
       style={tailwind('w-full h-full justify-start items-center mt-20')}
@@ -108,11 +119,13 @@ export function LandingPage() {
           placeholder="Password"
           secureTextEntry={true}
         />
-        <View style={{ flexDirection: 'column', height: '20%' }}>
+        <View
+          style={{ flexDirection: 'column', height: badLogin ? '16%' : '10%' }}
+        >
           {badLogin ? (
             <Text style={styles.incorrectLoginStyles}>Incorrect login</Text>
           ) : null}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => console.log('USER FORGOT PASSWORD')}
           >
@@ -124,7 +137,7 @@ export function LandingPage() {
             >
               Forgot Password?
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             style={{ flex: 1 }}
@@ -145,12 +158,12 @@ export function LandingPage() {
           onPress={() => {
             loginAPI(username, sha256(password)).then((res) => {
               if (res.loggedIn) {
-                console.log(res.message)
                 storeItem('name', res.message.name)
                 storeItem('username', res.message.username)
                 storeItem('email', res.message.email)
                 storeItem('loggedIn', 'true')
-              }
+                setBadLogin(false)
+              } else setBadLogin(true)
               res.loggedIn ? navigation.navigate('Home') : null
             })
           }}
@@ -166,6 +179,7 @@ export function LandingPage() {
               textAlign: 'center',
               paddingVertical: 5,
               color: colors.GRAY,
+              fontSize: 15,
             }}
           >
             Skip
@@ -191,7 +205,6 @@ const styles = StyleSheet.create({
     marginBottom: '3%',
     paddingRight: '8%',
     paddingLeft: '8%',
-    paddingBottom: '-0%',
   },
   inputStyles: {
     borderWidth: 2,

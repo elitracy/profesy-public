@@ -10,13 +10,10 @@ import {
 import { colors, randomColor } from '../assets/colors'
 import { RootStackParamList, Course } from '../RootStackParams'
 import {
-  createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack'
 import {
-  NavigationContainer,
   useNavigation,
-  RouteProp,
 } from '@react-navigation/native'
 import { useState } from 'react'
 import { Icon } from 'react-native-elements'
@@ -82,7 +79,6 @@ export function Professor(Props: Props) {
           style={{
             borderTopWidth: 1,
             borderColor: colors.GRAY,
-            flex: 0.5,
             opacity: 0.7,
             paddingVertical: 6,
           }}
@@ -95,7 +91,6 @@ export function Professor(Props: Props) {
               flexDirection: 'row',
               width: '100%',
               alignItems: 'center',
-              justifyContent: 'center',
               paddingBottom: 10,
             }}
           >
@@ -121,9 +116,8 @@ export function Professor(Props: Props) {
             />
           </View>
         </View>
-        {/* add scroll view to prevent clipping */}
         <ScrollView style={styles.departments}>
-          {courses.map((course, value) => {
+          {courses.map((course) => {
             return (
               <TouchableOpacity
                 style={[
@@ -187,8 +181,9 @@ export function Professor(Props: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 'auto',
     height: '88%',
   },
   title: {

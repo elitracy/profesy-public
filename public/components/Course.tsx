@@ -77,13 +77,17 @@ export function Course(Props: Props) {
     }
   }
 
-  function Decorator({ x, y, data }: { x: any; y: any; data: number[] }): any {
-    return data.map((value: number, index) => (
+  function Decorator({
+    x,
+    y,
+    data,
+  }: { x: any; y: any; data: number[] } | any): any {
+    return data.map((value: number, index: any) => (
       <Circle
         key={index}
         cx={x(index)}
         cy={y(value)}
-        r={12}
+        r={8.5}
         stroke={'rgb(134, 65, 244)'}
         strokeWidth={3}
         fill={selectedNode === index ? 'rgb(134, 65, 244)' : 'white'}
@@ -258,7 +262,7 @@ export function Course(Props: Props) {
             }}
           >
             {['A', 'B', 'C', 'F', 'Q'].map((letter) => {
-              let letterPercentage: any = parseFloat(
+              let letterPercentage = parseFloat(
                 (currentSemester[letter] / currentSemester.CourseTotal) *
                   (100).toFixed(0)
               )
@@ -281,7 +285,9 @@ export function Course(Props: Props) {
                       togglePercentages && { fontWeight: '400' },
                     ]}
                   >
-                    {togglePercentages ? `${letterPercentage.toFixed(0)}%` : letter}
+                    {togglePercentages
+                      ? `${letterPercentage.toFixed(0)}%`
+                      : letter}
                   </Text>
                 </TouchableOpacity>
               )
@@ -356,12 +362,13 @@ export function Course(Props: Props) {
       </LineChart>
       <TouchableOpacity
         style={{
-          zIndex: 0,
+          zIndex: -1,
+          // backgroundColor: 'blue',
           position: 'absolute',
           bottom: 0,
           right: 0,
           height: '100%',
-          width: '20%',
+          width: '50%',
         }}
         onPress={() => {
           setSelectedNode(
@@ -376,12 +383,13 @@ export function Course(Props: Props) {
       />
       <TouchableOpacity
         style={{
-          zIndex: 0,
+          zIndex: -1,
+          // backgroundColor: 'red',
           position: 'absolute',
           bottom: 0,
           left: 0,
           height: '100%',
-          width: '20%',
+          width: '50%',
         }}
         onPress={() => {
           setSelectedNode(

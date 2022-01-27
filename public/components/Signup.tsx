@@ -2,10 +2,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
-  Keyboard,
   TextInput,
   View,
-  Pressable,
   StatusBar,
   TouchableOpacity,
 } from 'react-native'
@@ -13,12 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import tailwind from 'tailwind-rn'
 import { useState } from 'react'
 import {
-  NavigationContainer,
   useNavigation,
-  RouteProp,
 } from '@react-navigation/native'
 import {
-  createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
@@ -27,7 +22,7 @@ import { sha256 } from 'js-sha256'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
-function signupAPI(
+async function signupAPI(
   username: string,
   password: string,
   email: string,
@@ -36,7 +31,7 @@ function signupAPI(
   setEmailExists: Function
 ) {
   return fetch(
-    `http://192.168.0.19:8080/signup?username=${username}&password=${password}&email=${email}&name=${name}`
+    `https://profesy.herokuapp.com/signup?username=${username}&password=${password}&email=${email}&name=${name}`
   )
     .then((res) => {
       return res.json()

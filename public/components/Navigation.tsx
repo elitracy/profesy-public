@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, Pressable, View } from 'react-native'
+import { Image, StyleSheet, Pressable, View } from 'react-native'
 import { useState } from 'react'
 import { colors } from '../assets/colors'
 import accountIcon from '../assets/accountIcon.png'
@@ -68,7 +68,6 @@ export function Navigation() {
       </Pressable> */}
       <Pressable
         onPress={() => {
-          console.log('account pressed!')
           setNavSelected('account')
           navigation.navigate('Account')
         }}

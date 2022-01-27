@@ -3,9 +3,9 @@ import {
   Text,
   SafeAreaView,
   View,
-  Image,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
@@ -21,7 +21,7 @@ async function getProfessor(
   name: string,
   setFilteredData: Function
 ): Promise<any> {
-  return await fetch(`http://192.168.0.19:8080/professors?name=${name}`)
+  return await fetch(`https://profesy.herokuapp.com/professors?name=${name}`)
     .then((result) => result.json())
     .then((result) => {
       setFilteredData(result.professors)
@@ -31,17 +31,16 @@ async function getProfessor(
       console.error(err)
     })
 }
-
 const getItem = async (key: string, setStateItem: Function) => {
   try {
     const val = await AsyncStorage.getItem(key)
-    setStateItem(await val)
+    setStateItem(val)
     return val
   } catch (e: any) {
     console.log('error', e.message)
   }
 }
-export const Home = (Props: any) => {
+export const Home = () => {
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
   const [filteredData, setFilteredData] = useState([])
   const [wordEntered, setWordEntered] = useState('')
@@ -61,11 +60,11 @@ export const Home = (Props: any) => {
         >
           {nameTitle}
         </Text>
-
+        {/* 
         <Image
           source={{ uri: 'https://picsum.photos/50/50' }}
           style={[styles.userImage, { opacity: loggedIn === 'true' ? 1 : 0 }]}
-        />
+        /> */}
       </View>
       <View style={{ width: '80%' }}>
         <View
@@ -100,13 +99,13 @@ export const Home = (Props: any) => {
         </View>
       </View>
       {filteredData.length != 0 && (
-        <View
+        <ScrollView
           style={{
             width: '94%',
             height: 'auto',
             flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
+            // justifyContent: 'center',
+            // alignItems: 'center',
             marginTop: 0,
           }}
         >
@@ -118,8 +117,7 @@ export const Home = (Props: any) => {
                 overallGPA: string
                 courses: Course[]
                 department: string
-              },
-              key
+              }
             ) => {
               return (
                 <TouchableOpacity
@@ -190,7 +188,7 @@ export const Home = (Props: any) => {
               )
             }
           )}
-        </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   )
