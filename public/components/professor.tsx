@@ -9,15 +9,12 @@ import {
 } from 'react-native'
 import { colors, randomColor } from '../assets/colors'
 import { RootStackParamList, Course } from '../RootStackParams'
-import {
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
-import {
-  useNavigation,
-} from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { Icon } from 'react-native-elements'
 import fuzzysort from 'fuzzysort'
+import React from 'react'
 
 interface Props {
   route: { params: { profName: string; courses: Course[] } }
@@ -55,11 +52,7 @@ export function Professor(Props: Props) {
 
   const [courses, setCourses] = useState(allCourses)
 
-  function handleSearch(
-    search: string,
-    courses: string[],
-    setCourses: Function
-  ) {
+  function handleSearch(search: string, courses: string[], setCourses: any) {
     setCourses(
       search.length === 0
         ? allCourses
@@ -131,20 +124,26 @@ export function Professor(Props: Props) {
                         return c.course.includes(course)
                       })
                       .sort((a, b) => {
-                        let aY = parseInt(
+                        const aY = parseInt(
                           a.semester.substring(
                             a.semester.length - 4,
                             a.semester.length
                           )
                         )
-                        let bY = parseInt(
+                        const bY = parseInt(
                           b.semester.substring(
                             b.semester.length - 4,
                             b.semester.length
                           )
                         )
-                        let aS = a.semester.substring(0, a.semester.length - 5)
-                        let bS = b.semester.substring(0, b.semester.length - 5)
+                        const aS = a.semester.substring(
+                          0,
+                          a.semester.length - 5
+                        )
+                        const bS = b.semester.substring(
+                          0,
+                          b.semester.length - 5
+                        )
                         return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
                       }),
                     profName: Props.route.params.profName,
@@ -152,6 +151,7 @@ export function Professor(Props: Props) {
                     allCourses: Props.route.params.courses,
                   })
                 }}
+                key={undefined}
               >
                 <Text style={styles.department}>
                   {course.substring(0, 4)}

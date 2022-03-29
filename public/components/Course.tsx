@@ -9,8 +9,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Pressable,
 } from 'react-native'
+Pressable,
 
 import { Icon } from 'react-native-elements'
 import { colors } from '../assets/colors'
@@ -124,7 +124,7 @@ export function Course(Props: Props) {
         </Text>
       </View>
 
-      <View style={{ width: '70%', marginTop: 10, alignItems: 'center' }}>
+      <View style={{marginTop: 10, width: "70%", alignItems: 'center' }}>
         <View
           style={{
             flexDirection: 'row',
@@ -157,7 +157,7 @@ export function Course(Props: Props) {
           <ScrollView
             style={{
               width: '105%',
-              paddingHorizontal: 5,
+              paddingHorizontal: 0,
               flexDirection: 'column',
               height: '40%',
               position: 'absolute',

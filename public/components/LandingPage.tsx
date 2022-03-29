@@ -10,15 +10,12 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import tailwind from 'tailwind-rn'
 import { useState } from 'react'
-import {
-  useNavigation,
-} from '@react-navigation/native'
-import {
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
 import { colors } from '../assets/colors'
 import { sha256 } from 'js-sha256'
+import React from 'react'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
@@ -46,7 +43,7 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
-const getItem = async (key: string, setItemState: Function) => {
+const getItem = async (key: string, setItemState: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
     setItemState(val)
@@ -144,7 +141,7 @@ export function LandingPage() {
             onPress={() => navigation.navigate('Signup')}
           >
             <Text style={styles.signupPasswordStyles}>
-              Don't have an account?
+              Don\'t have an account?
             </Text>
           </TouchableOpacity>
         </View>

@@ -10,15 +10,12 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import tailwind from 'tailwind-rn'
 import { useState } from 'react'
-import {
-  useNavigation,
-} from '@react-navigation/native'
-import {
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
 import { colors } from '../assets/colors'
 import { sha256 } from 'js-sha256'
+import React from 'react'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
@@ -27,8 +24,8 @@ async function signupAPI(
   password: string,
   email: string,
   name: string,
-  setUsernameExists: Function,
-  setEmailExists: Function
+  setUsernameExists: any,
+  setEmailExists: any
 ) {
   return fetch(
     `https://profesy.herokuapp.com/signup?username=${username}&password=${password}&email=${email}&name=${name}`

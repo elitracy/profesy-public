@@ -5,11 +5,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '../assets/colors'
+import React from 'react'
 
-const getItem = async (key: string, setItemState: Function) => {
+const getItem = async (key: string, setItemState: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
-    setItemState(await val)
+    setItemState(val)
     return val
   } catch (e: any) {
     console.log('error', e.message)
@@ -25,7 +26,7 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
-async function getCode(email: string, setPassCode: Function): Promise<any> {
+async function getCode(email: string, setPassCode: any): Promise<any> {
   return await fetch(`https://profesy.herokuapp.com/resetPass?email=${email}`)
     .then((result) => result.json())
     .then((result) => {

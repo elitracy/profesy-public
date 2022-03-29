@@ -14,13 +14,11 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList, Course } from '../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
+import React from 'react'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
-async function getProfessor(
-  name: string,
-  setFilteredData: Function
-): Promise<any> {
+async function getProfessor(name: string, setFilteredData: any): Promise<any> {
   return await fetch(`https://profesy.herokuapp.com/professors?name=${name}`)
     .then((result) => result.json())
     .then((result) => {
@@ -31,7 +29,7 @@ async function getProfessor(
       console.error(err)
     })
 }
-const getItem = async (key: string, setStateItem: Function) => {
+const getItem = async (key: string, setStateItem: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
     setStateItem(val)
@@ -109,54 +107,22 @@ export const Home = () => {
             marginTop: 0,
           }}
         >
-          {filteredData.slice(0, 15).map(
-            (
-              value: {
+          {filteredData
+            .slice(0, 15)
+            .map(
+              (value: {
                 name: string
                 university: string
                 overallGPA: string
                 courses: Course[]
                 department: string
-              }
-            ) => {
-              return (
-                <TouchableOpacity
-                  style={[
-                    styles.resultContainer,
-                    {
-                      shadowColor:
-                        parseFloat(value.overallGPA) > 3.6
-                          ? colors.BLUE
-                          : parseFloat(value.overallGPA) > 3.0
-                          ? colors.GREEN
-                          : parseFloat(value.overallGPA) > 2.4
-                          ? colors.ORANGE
-                          : colors.RED,
-                    },
-                  ]}
-                  onPress={() =>
-                    navigation.navigate('Professor', {
-                      profName: value.name,
-                      courses: value.courses,
-                    })
-                  }
-                >
-                  <Text
-                    style={{
-                      padding: 5,
-                      color: 'white',
-                      fontSize: 25,
-                      textAlign: 'center',
-                      fontWeight: '500',
-                    }}
-                  >
-                    {value.name}{' '}
-                    <Text
-                      style={{
-                        textAlign: 'right',
-                        fontWeight: '800',
-                        fontSize: 25,
-                        color:
+              }) => {
+                return (
+                  <TouchableOpacity
+                    style={[
+                      styles.resultContainer,
+                      {
+                        shadowColor:
                           parseFloat(value.overallGPA) > 3.6
                             ? colors.BLUE
                             : parseFloat(value.overallGPA) > 3.0
@@ -164,30 +130,63 @@ export const Home = () => {
                             : parseFloat(value.overallGPA) > 2.4
                             ? colors.ORANGE
                             : colors.RED,
+                      },
+                    ]}
+                    onPress={() =>
+                      navigation.navigate('Professor', {
+                        profName: value.name,
+                        courses: value.courses,
+                      })
+                    }
+                    key={undefined}
+                  >
+                    <Text
+                      style={{
+                        padding: 5,
+                        color: 'white',
+                        fontSize: 25,
+                        textAlign: 'center',
+                        fontWeight: '500',
                       }}
                     >
-                      {parseFloat(value.overallGPA).toFixed(2)}
+                      {value.name}{' '}
+                      <Text
+                        style={{
+                          textAlign: 'right',
+                          fontWeight: '800',
+                          fontSize: 25,
+                          color:
+                            parseFloat(value.overallGPA) > 3.6
+                              ? colors.BLUE
+                              : parseFloat(value.overallGPA) > 3.0
+                              ? colors.GREEN
+                              : parseFloat(value.overallGPA) > 2.4
+                              ? colors.ORANGE
+                              : colors.RED,
+                        }}
+                      >
+                        {parseFloat(value.overallGPA).toFixed(2)}
+                      </Text>
                     </Text>
-                  </Text>
-                  <Text
-                    style={{
-                      marginTop: -6,
-                      paddingBottom: 3,
-                      color: 'white',
-                      textAlign: 'center',
-                      fontSize: 18,
-                      opacity: 0.85,
-                    }}
-                  >
-                    {value.university}{' '}
-                    <Text style={{ fontWeight: '800' }}>
-                      {value.department}
+                    <Text
+                      style={{
+                        marginTop: -6,
+                        paddingBottom: 3,
+                        color: 'white',
+                        textAlign: 'center',
+                        fontSize: 18,
+                        opacity: 0.85,
+                      }}
+                    >
+                      {value.university}{' '}
+                      <Text style={{ fontWeight: '800' }}>
+                        {value.department}
+                      </Text>
                     </Text>
-                  </Text>
-                </TouchableOpacity>
-              )
-            }
-          )}
+                  </TouchableOpacity>
+                )
+              }
+            )}
         </ScrollView>
       )}
     </SafeAreaView>
