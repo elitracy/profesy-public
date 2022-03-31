@@ -1,3 +1,4 @@
+//imports
 import {
   StyleSheet,
   Text,
@@ -18,6 +19,7 @@ import React from 'react'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
+// getProfessor - Params(name: string, setFilteredData: function) => Promise
 async function getProfessor(name: string, setFilteredData: any): Promise<any> {
   return await fetch(`https://profesy.herokuapp.com/professors?name=${name}`)
     .then((result) => result.json())
@@ -29,6 +31,8 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
       console.error(err)
     })
 }
+
+// getItem - Params(key: string, setStateItem: function) => string
 const getItem = async (key: string, setStateItem: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
@@ -38,7 +42,9 @@ const getItem = async (key: string, setStateItem: any) => {
     console.log('error', e.message)
   }
 }
+
 export const Home = () => {
+  // set states
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
   const [filteredData, setFilteredData] = useState([])
   const [wordEntered, setWordEntered] = useState('')
@@ -47,10 +53,12 @@ export const Home = () => {
 
   getItem('name', setNameTitle)
   getItem('loggedIn', setLoggedIn)
+
   const navigation = useNavigation<homeScreenProp>()
 
   return (
     <SafeAreaView style={styles.container}>
+      {/*header titles*/}
       <View style={styles.nav}>
         <Text style={styles.title}>Profesi</Text>
         <Text
@@ -58,12 +66,15 @@ export const Home = () => {
         >
           {nameTitle}
         </Text>
+        {/* NOTE: add user images*/}
         {/* 
         <Image
           source={{ uri: 'https://picsum.photos/50/50' }}
           style={[styles.userImage, { opacity: loggedIn === 'true' ? 1 : 0 }]}
         /> */}
       </View>
+
+      {/*search bar*/}
       <View style={{ width: '80%' }}>
         <View
           style={{
@@ -96,6 +107,8 @@ export const Home = () => {
           />
         </View>
       </View>
+
+      {/*search results*/}
       {filteredData.length != 0 && (
         <ScrollView
           style={{
@@ -103,7 +116,6 @@ export const Home = () => {
             height: 'auto',
             flexDirection: 'column',
             // justifyContent: 'center',
-            // alignItems: 'center',
             marginTop: 0,
           }}
         >
@@ -193,6 +205,7 @@ export const Home = () => {
   )
 }
 
+//Styles - NOTE(Need to be converted into inline)
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',

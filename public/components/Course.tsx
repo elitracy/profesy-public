@@ -1,6 +1,5 @@
+//imports
 import {
-  Image,
-  Switch,
   View,
   SafeAreaView,
   Keyboard,
@@ -10,26 +9,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-Pressable,
-
+import React from 'react'
 import { Icon } from 'react-native-elements'
 import { colors } from '../assets/colors'
 import { RootStackParamList, Course as CourseType } from '../RootStackParams'
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
-import {
-  NavigationContainer,
-  useNavigation,
-  RouteProp,
-} from '@react-navigation/native'
 import { useState } from 'react'
 import { LineChart } from 'react-native-svg-charts'
 import { G, Text as SVGText, Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
-import backIcon from '../assets/arrow.png'
-
 interface Props {
   route: {
     params: {
@@ -48,6 +35,8 @@ export function Course(Props: Props) {
   })
   const courseAvg =
     semesterGPAs.reduce((total, next) => total + next, 0) / semesterGPAs.length
+
+  // SET STATES
   const [filteredData, setFilteredData] = useState<string[]>([])
   const [wordEntered, setWordEntered] = useState<any>('')
 
@@ -64,6 +53,7 @@ export function Course(Props: Props) {
   const [togglePercentages, setTogglePercentages] = useState(false)
   const [selectedNode, setSelectedNode] = useState(0)
 
+  // FZF STRING MATCH
   const handleSearch = (text: string) => {
     const searchWord = text
     setWordEntered(searchWord)
@@ -77,6 +67,7 @@ export function Course(Props: Props) {
     }
   }
 
+  // CHART POINTS
   function Decorator({
     x,
     y,
@@ -103,6 +94,7 @@ export function Course(Props: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/*HEADER*/}
       <View style={styles.courseTitle}>
         <Text
           style={{
@@ -124,7 +116,8 @@ export function Course(Props: Props) {
         </Text>
       </View>
 
-      <View style={{marginTop: 10, width: "70%", alignItems: 'center' }}>
+      <View style={{ marginTop: 10, width: '70%', alignItems: 'center' }}>
+        {/*SEARCH BAR*/}
         <View
           style={{
             flexDirection: 'row',
@@ -153,6 +146,8 @@ export function Course(Props: Props) {
             ]}
           />
         </View>
+
+        {/*SEMSTER LIST*/}
         {filteredData.length != 0 && (
           <ScrollView
             style={{
@@ -183,6 +178,7 @@ export function Course(Props: Props) {
                     ])
                     Keyboard.dismiss()
                   }}
+                  key={undefined}
                 >
                   <Text style={styles.result}>{value.semester}</Text>
                 </TouchableOpacity>
@@ -190,6 +186,8 @@ export function Course(Props: Props) {
             })}
           </ScrollView>
         )}
+
+        {/*SELECTED SEMSTER*/}
         <Text style={{ fontSize: 25, textAlign: 'center', marginVertical: 15 }}>
           <Text
             style={{
@@ -206,6 +204,7 @@ export function Course(Props: Props) {
           </Text>
         </Text>
 
+        {/*GPA*/}
         <View
           style={{
             width: '60%',
@@ -237,6 +236,8 @@ export function Course(Props: Props) {
             {parseFloat(currentSemester.semGPA).toFixed(2)}
           </Text>
         </View>
+
+        {/*GRADE DISTRIBUTION*/}
         <View
           style={{
             flexDirection: 'column',
@@ -278,6 +279,7 @@ export function Course(Props: Props) {
                     },
                   ]}
                   onPress={() => setTogglePercentages(!togglePercentages)}
+                  key={undefined}
                 >
                   <Text
                     style={[
@@ -296,6 +298,7 @@ export function Course(Props: Props) {
         </View>
       </View>
 
+      {/*COURSE AVERAGE*/}
       <View
         style={{
           flexDirection: 'row',
@@ -341,6 +344,7 @@ export function Course(Props: Props) {
         </Text>
       </View>
 
+      {/*DISTRIBUTION GRAPH*/}
       <LineChart
         data={semesterGPAs}
         style={{ height: 200, width: '90%', zIndex: 1 }}
@@ -360,10 +364,11 @@ export function Course(Props: Props) {
       >
         <Decorator />
       </LineChart>
+
+      {/*SIDE-SCROLL BUTTONS*/}
       <TouchableOpacity
         style={{
           zIndex: -1,
-          // backgroundColor: 'blue',
           position: 'absolute',
           bottom: 0,
           right: 0,
@@ -402,11 +407,13 @@ export function Course(Props: Props) {
           )
         }}
       />
+
       <View style={{ width: '80%', height: 40, borderBottomWidth: 0.3 }}></View>
     </SafeAreaView>
   )
 }
 
+// STLYES - NOTE: Convert to inline
 const styles: any = StyleSheet.create({
   container: {
     flex: 1,
