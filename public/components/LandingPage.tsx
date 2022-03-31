@@ -141,7 +141,7 @@ export function LandingPage() {
             onPress={() => navigation.navigate('Signup')}
           >
             <Text style={styles.signupPasswordStyles}>
-              Don\'t have an account?
+              Don{"'"}t have an account?
             </Text>
           </TouchableOpacity>
         </View>

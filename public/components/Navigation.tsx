@@ -6,6 +6,7 @@ import searchIcon from '../assets/searchIcon.png'
 import { RootStackParamList } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
+import React from 'react'
 
 type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 

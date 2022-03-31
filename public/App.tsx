@@ -9,6 +9,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { RootStackParamList } from './RootStackParams'
 import { Account } from './components/Account'
+import React from 'react'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 LogBox.ignoreAllLogs()
