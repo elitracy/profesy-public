@@ -1,4 +1,4 @@
-//imports
+//IMPORTS
 import {
   StyleSheet,
   Text,

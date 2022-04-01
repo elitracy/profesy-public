@@ -1,3 +1,4 @@
+// IMPORTS
 import { Image, StyleSheet, Pressable, View } from 'react-native'
 import { useState } from 'react'
 import { colors } from '../assets/colors'
@@ -11,11 +12,13 @@ import React from 'react'
 type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 
 export function Navigation() {
+  // SET STATES
   const navigation = useNavigation<navScreenProp>()
   const [navSelected, setNavSelected] = useState('home')
 
   return (
     <View style={styles.navContainer}>
+      {/*HOME BUTTON*/}
       <Pressable
         onPress={() => {
           navigation.navigate('Home')
@@ -44,6 +47,8 @@ export function Navigation() {
           }}
         />
       </Pressable>
+
+      {/*FAVORITES BUTTON*/}
       {/* <Pressable
         onPress={() => {
           console.log('favorites pressed!')
@@ -66,6 +71,8 @@ export function Navigation() {
           style={{ width: 40, height: 40, padding: 5 }}
         />
       </Pressable> */}
+
+      {/*ACCOUNT BUTTON*/}
       <Pressable
         onPress={() => {
           setNavSelected('account')
@@ -93,6 +100,7 @@ export function Navigation() {
   )
 }
 
+// STYLES - NOTE: convert to inline
 const styles = StyleSheet.create({
   navContainer: {
     height: '12%',

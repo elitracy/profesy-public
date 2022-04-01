@@ -1,3 +1,4 @@
+// IMPORTS
 import {
   StyleSheet,
   SafeAreaView,
@@ -19,6 +20,7 @@ import React from 'react'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
+// signupAPI - Params(username:string,password:string,email:string,name:string,setUsernameExists:function,setEmailExists:function)
 async function signupAPI(
   username: string,
   password: string,
@@ -45,6 +47,7 @@ async function signupAPI(
     })
 }
 
+// storeItem - Params(key:string, value:any) => value:any
 const storeItem = async (key: string, value: any) => {
   try {
     const val = await AsyncStorage.setItem(key, value)
@@ -55,6 +58,7 @@ const storeItem = async (key: string, value: any) => {
 }
 
 export function Signup() {
+  // SET STATES
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConf, setPasswordConf] = useState('')
@@ -72,6 +76,7 @@ export function Signup() {
   const [emailExists, setEmailExists] = useState(false)
 
   const navigation = useNavigation<signupScreenProp>()
+
   return (
     <SafeAreaView
       style={tailwind('w-full h-full justify-start items-center mt-20')}
@@ -85,7 +90,10 @@ export function Signup() {
       <View style={styles.titleBorderStyles}>
         <Text style={styles.titleStyles}>Profesi</Text>
       </View>
+
+      {/*INPUTS*/}
       <View style={{ width: '65%', marginTop: 15 }}>
+        {/*Username*/}
         <TextInput
           onChangeText={setUsername}
           autoCapitalize="none"
@@ -103,6 +111,7 @@ export function Signup() {
             },
           ]}
         />
+        {/*Password*/}
         <TextInput
           onChangeText={setPassword}
           autoCapitalize="none"
@@ -120,6 +129,7 @@ export function Signup() {
           placeholder="Password"
           secureTextEntry={true}
         />
+        {/*Confirm Password*/}
         <TextInput
           onChangeText={setPasswordConf}
           autoCapitalize="none"
@@ -137,6 +147,7 @@ export function Signup() {
           placeholder="Confirm Password"
           secureTextEntry={true}
         />
+        {/*Email*/}
         <TextInput
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -153,6 +164,7 @@ export function Signup() {
           value={email}
           placeholder="Email"
         />
+        {/*Name*/}
         <TextInput
           onChangeText={setName}
           autoCapitalize="none"
@@ -170,25 +182,30 @@ export function Signup() {
           placeholder="Name"
         />
 
+        {/*Error checking for inputs*/}
         <View style={{ flexDirection: 'column' }}>
+          {/*passwords don't match*/}
           {!passwordMatch ? (
             <Text style={styles.incorrectSignupStyles}>
               Passwords do not match
             </Text>
           ) : null}
 
+          {/*username already exists*/}
           {usernameExists ? (
             <Text style={styles.incorrectSignupStyles}>
               Username already exists
             </Text>
           ) : null}
 
+          {/*email already exists*/}
           {emailExists ? (
             <Text style={styles.incorrectSignupStyles}>
               Email already exists
             </Text>
           ) : null}
 
+          {/*user has account => go to login screen*/}
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => navigation.navigate('Login')}
@@ -196,6 +213,7 @@ export function Signup() {
             <Text style={styles.signupPasswordStyles}>Have an account?</Text>
           </TouchableOpacity>
         </View>
+        {/*Signup Button*/}
         <TouchableOpacity
           style={{
             borderColor: 'black',
@@ -207,6 +225,7 @@ export function Signup() {
           onPress={() => {
             setPasswordMatch(password === passwordConf)
             if (passwordMatch) {
+              //check database
               signupAPI(
                 username,
                 sha256(password),
@@ -216,6 +235,7 @@ export function Signup() {
                 setEmailExists
               ).then((res) => {
                 if (res.userInsert === 1) {
+                  //store user info in cache
                   storeItem('name', res.name)
                   storeItem('username', res.username)
                   storeItem('email', res.email)
@@ -232,6 +252,7 @@ export function Signup() {
   )
 }
 
+// STYLES - NOTE: convert to inline
 const styles = StyleSheet.create({
   titleStyles: {
     color: 'black',

@@ -1,4 +1,4 @@
-//imports
+//IMPORTS
 import {
   View,
   SafeAreaView,
@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { LineChart } from 'react-native-svg-charts'
 import { G, Text as SVGText, Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
+
 interface Props {
   route: {
     params: {
@@ -54,6 +55,7 @@ export function Course(Props: Props) {
   const [selectedNode, setSelectedNode] = useState(0)
 
   // FZF STRING MATCH
+  // handleSearch - Params(text:string)
   const handleSearch = (text: string) => {
     const searchWord = text
     setWordEntered(searchWord)

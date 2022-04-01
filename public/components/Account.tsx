@@ -1,3 +1,4 @@
+// IMPORTS
 import { Text, SafeAreaView, View, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -7,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '../assets/colors'
 import React from 'react'
 
+// getItem - Params(key:string, setItemState: function) => string
 const getItem = async (key: string, setItemState: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
@@ -17,6 +19,7 @@ const getItem = async (key: string, setItemState: any) => {
   }
 }
 
+// storeItem - Params(key:string, value:any) => value
 const storeItem = async (key: string, value: any) => {
   try {
     const val = await AsyncStorage.setItem(key, value)
@@ -26,6 +29,7 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
+// getCode - Params(email:string, setPassCode: function) => Promise
 async function getCode(email: string, setPassCode: any): Promise<any> {
   return await fetch(`https://profesy.herokuapp.com/resetPass?email=${email}`)
     .then((result) => result.json())
@@ -44,6 +48,7 @@ type accountScreenProp = NativeStackNavigationProp<
 >
 
 export function Account(Props: any) {
+  // SET STATES
   const [username, setUsername] = useState('N/A')
   const [email, setEmail] = useState('N/A')
   const [name, setName] = useState('N/A')
@@ -69,6 +74,8 @@ export function Account(Props: any) {
       >
         Account
       </Text>
+
+      {/*user is logged in*/}
       {loggedIn === 'true' && (
         <View
           style={{
@@ -77,6 +84,7 @@ export function Account(Props: any) {
             alignItems: 'center',
           }}
         >
+          {/*NAME/USERNAME*/}
           <View
             style={{
               width: '75%',
@@ -113,6 +121,8 @@ export function Account(Props: any) {
               </Text>
             </Text>
           </View>
+
+          {/*EMAIL*/}
           <View
             style={{
               width: '75%',
@@ -139,6 +149,8 @@ export function Account(Props: any) {
               {email}
             </Text>
           </View>
+
+          {/*CHANGE PASS*/}
           {/* <TouchableOpacity
             style={{
               width: '75%',
@@ -170,6 +182,9 @@ export function Account(Props: any) {
           </TouchableOpacity> */}
         </View>
       )}
+
+      {/*user is logged out*/}
+      {/*LOGOUT BUTTON*/}
       <TouchableOpacity
         style={{
           width: '75%',

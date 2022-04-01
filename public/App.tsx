@@ -23,6 +23,7 @@ export default function App() {
           headerShown: false,
         }}
       >
+        {/*SCREENS*/}
         <Stack.Screen name="Login" component={LandingPage} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Home" component={Home} />

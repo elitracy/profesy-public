@@ -1,3 +1,4 @@
+//IMPORTS
 import {
   StyleSheet,
   SafeAreaView,
@@ -19,6 +20,7 @@ import React from 'react'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
+// loginAPI - Params(username:string, password:string) => {message:{}, loggedIn:bool}
 async function loginAPI(username: string, password: string) {
   return fetch(
     `https://profesy.herokuapp.com/login?username=${username}&password=${password}`
@@ -34,6 +36,7 @@ async function loginAPI(username: string, password: string) {
     })
 }
 
+// storeItem - Params(key:string, value:any) => val:any
 const storeItem = async (key: string, value: any) => {
   try {
     const val = await AsyncStorage.setItem(key, value)
@@ -43,6 +46,7 @@ const storeItem = async (key: string, value: any) => {
   }
 }
 
+// getItem - Params(key:string, steItemState:any) => val:any
 const getItem = async (key: string, setItemState: any) => {
   try {
     const val = await AsyncStorage.getItem(key)
@@ -54,6 +58,7 @@ const getItem = async (key: string, setItemState: any) => {
 }
 
 export function LandingPage() {
+  // SET STATES
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [usernameBG, setUsernameBG] = useState('rgba(150, 150, 150, .5)')
@@ -62,11 +67,14 @@ export function LandingPage() {
   const [loggedIn, setLoggedIn] = useState('false')
 
   const navigation = useNavigation<loginScreenProp>()
+
+  // navigate to home screen if logged in
   getItem('loggedIn', setLoggedIn)
   if (loggedIn === 'true') {
     navigation.navigate('Home')
   }
 
+  // not logged in
   return (
     <SafeAreaView
       style={tailwind('w-full h-full justify-start items-center mt-20')}
@@ -122,6 +130,8 @@ export function LandingPage() {
           {badLogin ? (
             <Text style={styles.incorrectLoginStyles}>Incorrect login</Text>
           ) : null}
+
+          {/*NOTE - Implement forgot password functionality*/}
           {/* <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => console.log('USER FORGOT PASSWORD')}
@@ -136,6 +146,7 @@ export function LandingPage() {
             </Text>
           </TouchableOpacity> */}
 
+          {/*SIGN UP*/}
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => navigation.navigate('Signup')}
@@ -145,6 +156,7 @@ export function LandingPage() {
             </Text>
           </TouchableOpacity>
         </View>
+        {/*LOGIN BUTTON*/}
         <TouchableOpacity
           style={{
             borderColor: 'black',
@@ -155,6 +167,7 @@ export function LandingPage() {
           onPress={() => {
             loginAPI(username, sha256(password)).then((res) => {
               if (res.loggedIn) {
+                // store user info in cache
                 storeItem('name', res.message.name)
                 storeItem('username', res.message.username)
                 storeItem('email', res.message.email)
@@ -167,6 +180,8 @@ export function LandingPage() {
         >
           <Text style={styles.loginStyles}>Login</Text>
         </TouchableOpacity>
+
+        {/*SKIP LOGIN*/}
         <TouchableOpacity
           onPress={() => navigation.navigate('Home')}
           style={{ width: '100%', marginTop: 5 }}
@@ -187,6 +202,7 @@ export function LandingPage() {
   )
 }
 
+// STYLES - NOTE: move to inline
 const styles = StyleSheet.create({
   titleStyles: {
     color: 'black',

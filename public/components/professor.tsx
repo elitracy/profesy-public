@@ -1,3 +1,4 @@
+// IMPORTS
 import {
   TouchableOpacity,
   TextInput,
@@ -25,8 +26,9 @@ type professorScreenProp = NativeStackNavigationProp<
   'Professor'
 >
 
+// Seasons object for sorting
 const seasons: {
-  [SPRING: string]: number
+  SPRING: number
   SUMMER: number
   FALL: number
   WINTER: number
@@ -38,6 +40,7 @@ const seasons: {
 }
 
 export function Professor(Props: Props) {
+  // sort all of professor courses
   const allCourses = Array.from([
     ...new Set(
       Props.route.params.courses.map((obj) => {
@@ -46,12 +49,15 @@ export function Professor(Props: Props) {
     ),
   ]).sort()
 
+  // SET STATES
   const [wordEntered, setWordEntered] = useState('')
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
-  const navigation = useNavigation<professorScreenProp>()
-
   const [courses, setCourses] = useState(allCourses)
 
+  const navigation = useNavigation<professorScreenProp>()
+
+  // FZF String match
+  // handleSearch - Params(search:string, course:string[], setCourses:function)
   function handleSearch(search: string, courses: string[], setCourses: any) {
     setCourses(
       search.length === 0
@@ -65,6 +71,7 @@ export function Professor(Props: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <View>
+        {/*HEADERS*/}
         <Text style={[styles.title, { paddingHorizontal: 10 }]}>
           {Props.route.params.profName}
         </Text>
@@ -78,6 +85,8 @@ export function Professor(Props: Props) {
         >
           <Text style={styles.departmentTitle}>Courses</Text>
         </View>
+
+        {/*SEARCH*/}
         <View style={{ width: '90%', marginLeft: 15, marginTop: 5 }}>
           <View
             style={{
@@ -109,6 +118,8 @@ export function Professor(Props: Props) {
             />
           </View>
         </View>
+
+        {/*COURSE LIST*/}
         <ScrollView style={styles.departments}>
           {courses.map((course) => {
             return (
@@ -119,6 +130,7 @@ export function Professor(Props: Props) {
                 ]}
                 onPress={() => {
                   navigation.navigate('Course', {
+                    //filter course list by selected course and sort semesters
                     courses: Props.route.params.courses
                       .filter((c) => {
                         return c.course.includes(course)
@@ -178,6 +190,7 @@ export function Professor(Props: Props) {
   )
 }
 
+// STYLES
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
