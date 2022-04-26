@@ -123,6 +123,21 @@ mongoUtil.connectToServer((err, client) => {
     );
   });
 
+  app.get("/profsByCourse", (req, res) => {
+    const course = req.query.course;
+
+    profs
+      .aggregate([
+        { $unwind: "$courses" },
+        { $match: { "courses.course": { $in: [course] } } },
+        { $group: { _id: null, profList: { $addToSet: "$name" } } },
+      ])
+      .toArray((err, results) => {
+        if (err) console.error(err);
+        else res.send({ message: results });
+      });
+  });
+
   app.listen(PORT, () => {
     console.log(`Profesy server: 🦧 started on http://localhost:${PORT}`);
   });
