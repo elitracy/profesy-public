@@ -138,6 +138,22 @@ mongoUtil.connectToServer((err, client) => {
       });
   });
 
+  app.get("/courses", (req, res) => {
+    const course = req.query.course;
+    const regex = new RegExp(escapeRegex(course), "gi");
+
+    profs
+      .aggregate([
+        { $unwind: "$courses" },
+        { $match: { "courses.course": { $in: [regex] } } },
+        { $group: { _id: null, courseList: { $addToSet: "$courses.course" } } },
+      ])
+      .toArray((err, results) => {
+        if (err) console.error(err);
+        else res.send({ message: results });
+      });
+  });
+
   app.listen(PORT, () => {
     console.log(`Profesy server: 🦧 started on http://localhost:${PORT}`);
   });
