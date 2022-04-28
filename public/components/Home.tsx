@@ -115,7 +115,6 @@ export const Home = () => {
             width: '94%',
             height: 'auto',
             flexDirection: 'column',
-            // justifyContent: 'center',
             marginTop: 0,
           }}
         >

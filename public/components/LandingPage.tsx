@@ -52,7 +52,7 @@ const getItem = async (key: string, setItemState: any) => {
     const val = await AsyncStorage.getItem(key)
     setItemState(val)
     return val
-  } catch (e: any) {
+  } catch (e) {
     console.log('error', e.message)
   }
 }
@@ -69,10 +69,11 @@ export function LandingPage() {
   const navigation = useNavigation<loginScreenProp>()
 
   // navigate to home screen if logged in
-  getItem('loggedIn', setLoggedIn)
-  if (loggedIn === 'true') {
-    navigation.navigate('Home')
-  }
+  getItem('loggedIn', setLoggedIn).then((response) => {
+    if (loggedIn === 'true') {
+      navigation.navigate('Home')
+    }
+  })
 
   // not logged in
   return (
