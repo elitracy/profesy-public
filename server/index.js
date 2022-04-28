@@ -1,3 +1,4 @@
+// IMPORTS
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -8,18 +9,22 @@ const { Db } = require("mongodb");
 
 const PROF_SEARCH_LIMIT = 10;
 
+// FZF Function
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
+// Connect to MongoDB
 mongoUtil.connectToServer((err, client) => {
   if (err) console.log("Profesy server: 🛑 Error Connecting to Server");
   console.log("Profesy server: ✅ Server Connected");
+
   const profs = mongoUtil.getDb().collection("professors");
   const users = mongoUtil.getDb().collection("Users");
 
   app.use(bodyParser.urlencoded({ extended: true }));
 
+  // SEARCH PROFESSORS
   app.get("/professors", function (req, res) {
     let name = req.query.name;
     const regex = new RegExp(escapeRegex(req.query.name), "gi");
@@ -31,10 +36,13 @@ mongoUtil.connectToServer((err, client) => {
         res.send({ professors: results });
       });
   });
+
+  // ROOT
   app.get("/", (req, res) => {
-    res.send("Hello from Profesi server!");
+    res.send("Hello from Profesy server!");
   });
 
+  // CHECK USER LOGIN
   app.get("/login", (req, res) => {
     let user = req.query.username;
     let pw = req.query.password;
@@ -48,6 +56,7 @@ mongoUtil.connectToServer((err, client) => {
     });
   });
 
+  // CREATE USER (SIGNUP)
   app.get("/signup", (req, res) => {
     //add new users
     //TODO:
@@ -63,6 +72,8 @@ mongoUtil.connectToServer((err, client) => {
     let name = req.query.name;
     let emailExists = false;
     let usernameExists = false;
+
+    // see if user exists
     users.findOne(
       { $or: [{ username: user }, { email: email }] },
       (err, results) => {
@@ -71,6 +82,7 @@ mongoUtil.connectToServer((err, client) => {
           if (results.username === user) usernameExists = true;
         }
 
+        // check for existing email and username
         if (!emailExists && !usernameExists) {
           users.insertOne(
             {
@@ -103,12 +115,14 @@ mongoUtil.connectToServer((err, client) => {
     );
   });
 
+  // RESET USER PASSWORD (NOT IMPLEMENTED)
   app.get("/resetPass", (req, res) => {
     const emailAddress = req.query.email;
     const code = emailUtil.sendEmail(emailAddress);
     res.send({ code: code });
   });
 
+  // CHANGE USER PASSWORD (NOT IMPLEMENTED)
   app.get("/changePass", (req, res) => {
     const username = req.query.username;
     const password = req.query.password;
@@ -123,6 +137,7 @@ mongoUtil.connectToServer((err, client) => {
     );
   });
 
+  // SEARCH BY COURSE
   app.get("/profsByCourse", (req, res) => {
     const course = req.query.course;
 
@@ -138,6 +153,7 @@ mongoUtil.connectToServer((err, client) => {
       });
   });
 
+  // SEARCH FOR COURSES
   app.get("/courses", (req, res) => {
     const course = req.query.course;
     const regex = new RegExp(escapeRegex(course), "gi");
