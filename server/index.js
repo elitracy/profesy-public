@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const emailUtil = require("./email");
 const { Db } = require("mongodb");
 
-const PROF_SEARCH_LIMIT = 10;
+const SEARCH_LIMIT = 10;
 
 // FZF Function
 function escapeRegex(text) {
@@ -31,7 +31,7 @@ mongoUtil.connectToServer((err, client) => {
 
     profs
       .find({ name: regex })
-      .limit(PROF_SEARCH_LIMIT)
+      .limit(SEARCH_LIMIT)
       .toArray((err, results) => {
         res.send({ professors: results });
       });
@@ -145,11 +145,14 @@ mongoUtil.connectToServer((err, client) => {
       .aggregate([
         { $unwind: "$courses" },
         { $match: { "courses.course": { $in: [course] } } },
-        { $group: { _id: null, profList: { $addToSet: "$name" } } },
+        // { $group: { $in: { _id: null, prof: "$name" } } },
       ])
+      .map((prof) => {
+        return { name: prof.name, gpa: prof.overallGPA };
+      })
       .toArray((err, results) => {
         if (err) console.error(err);
-        else res.send({ message: results });
+        else res.send({ courses: results });
       });
   });
 
@@ -158,6 +161,8 @@ mongoUtil.connectToServer((err, client) => {
     const course = req.query.course;
     const regex = new RegExp(escapeRegex(course), "gi");
 
+    console.log(course);
+    console.log(regex);
     profs
       .aggregate([
         { $unwind: "$courses" },
@@ -166,7 +171,9 @@ mongoUtil.connectToServer((err, client) => {
       ])
       .toArray((err, results) => {
         if (err) console.error(err);
-        else res.send({ message: results });
+        else if (results.length > 0)
+          res.send({ message: results[0].courseList });
+        else res.send({ message: [] });
       });
   });
 
