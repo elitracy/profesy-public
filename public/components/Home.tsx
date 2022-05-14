@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Pressable,
   ScrollView,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -32,6 +33,19 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
     })
 }
 
+async function getCourses(course: string, setFilteredData: any): Promise<any> {
+  // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
+  return await fetch(`http://localhost:8080/courses?course=${course}`)
+    .then((result) => result.json())
+    .then((result) => {
+      setFilteredData(result.message)
+      return result
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+}
+
 // getItem - Params(key: string, setStateItem: function) => string
 const getItem = async (key: string, setStateItem: any) => {
   try {
@@ -45,11 +59,13 @@ const getItem = async (key: string, setStateItem: any) => {
 
 export const Home = () => {
   // set states
-  const [searchBG, setSearchBG] = useState(colors.PURPLE)
-  const [filteredData, setFilteredData] = useState([])
+  const [searchBG, setSearchBG] = useState('black')
+  const [filteredProfData, setFilteredProfData] = useState([])
+  const [filteredCourseData, setFilteredCourseData] = useState([])
   const [wordEntered, setWordEntered] = useState('')
   const [nameTitle, setNameTitle] = useState('')
   const [loggedIn, setLoggedIn] = useState('false')
+  const [filterType, setFilterType] = useState('p')
 
   getItem('name', setNameTitle)
   getItem('loggedIn', setLoggedIn)
@@ -60,109 +76,181 @@ export const Home = () => {
     <SafeAreaView style={styles.container}>
       {/*header titles*/}
       <View style={styles.nav}>
-        <Text style={styles.title}>Profesi</Text>
+        <Text style={styles.title}>Profesy</Text>
         <Text
           style={[styles.username, { opacity: loggedIn === 'true' ? 1 : 0 }]}
         >
           {nameTitle}
         </Text>
-        {/* NOTE: add user images*/}
-        {/* 
-        <Image
-          source={{ uri: 'https://picsum.photos/50/50' }}
-          style={[styles.userImage, { opacity: loggedIn === 'true' ? 1 : 0 }]}
-        /> */}
       </View>
 
       {/*search bar*/}
-      <View style={{ width: '80%' }}>
+      <View
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            paddingBottom: 10,
+            backgroundColor: 'white',
+            borderRadius: 5,
+            width: '100%',
           }}
         >
           <Icon
             name="search"
-            style={{ opacity: 0.7 }}
+            style={{ opacity: 0.7, marginLeft: 5 }}
             tvParallaxProperties={null}
           />
           <TextInput
+            // queries both at first time for better UX
             onChangeText={(data) => {
-              getProfessor(data, setFilteredData)
               setWordEntered(data === undefined ? '' : data)
+              // if (filterType === 'p') {
+              getProfessor(data, setFilteredProfData)
+              // } else if (filterType === 'c') {
+              getCourses(data, setFilteredCourseData)
+              // }
             }}
-            onFocus={() => setSearchBG(colors.GREEN)}
-            onBlur={() => setSearchBG(colors.PURPLE)}
+            // onFocus={() => setSearchBG(colors.GREY)}
+            // onBlur={() => setSearchBG(colors.GREY)}
             value={wordEntered}
-            //clearTextOnFocus={true}
-            placeholder="search for professor"
-            //defaultValue="search by professor"
+            placeholder="search"
             style={[
               styles.inputStyles,
-              { borderColor: searchBG, flex: 5, marginLeft: -30 },
+              { borderColor: searchBG, width: '100%', marginLeft: -30 },
             ]}
           />
+        </View>
+
+        {/*filter buttons*/}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: 5,
+          }}
+        >
+          <Pressable
+            style={{
+              backgroundColor: filterType === 'p' ? colors.GREY : null,
+              width: '49%',
+              borderColor: colors.GREY,
+              borderWidth: 2,
+              borderRadius: 5,
+            }}
+            onPress={() => {
+              setFilterType('p')
+            }}
+          >
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: '800',
+                textAlign: 'center',
+                padding: 5,
+                paddingVertical: 7,
+              }}
+            >
+              Professor
+            </Text>
+          </Pressable>
+          <Pressable
+            style={{
+              backgroundColor: filterType === 'c' ? colors.GREY : null,
+              width: '49%',
+              borderColor: colors.GREY,
+              borderColor: colors.GREY,
+              borderWidth: 2,
+              borderRadius: 5,
+            }}
+            onPress={() => {
+              setFilterType('c')
+            }}
+          >
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                padding: 5,
+                paddingVertical: 7,
+                fontWeight: '800',
+              }}
+            >
+              Course
+            </Text>
+          </Pressable>
         </View>
       </View>
 
       {/*search results*/}
-      {filteredData.length != 0 && (
+      {filteredProfData.length != 0 && (
         <ScrollView
           style={{
-            width: '94%',
+            width: '100%',
             height: 'auto',
             flexDirection: 'column',
-            marginTop: 0,
           }}
         >
-          {filteredData
-            .slice(0, 15)
-            .map(
-              (value: {
-                name: string
-                university: string
-                overallGPA: string
-                courses: Course[]
-                department: string
-              }) => {
-                return (
-                  <TouchableOpacity
-                    style={[
-                      styles.resultContainer,
-                      {
-                        shadowColor:
-                          parseFloat(value.overallGPA) > 3.6
-                            ? colors.BLUE
-                            : parseFloat(value.overallGPA) > 3.0
-                            ? colors.GREEN
-                            : parseFloat(value.overallGPA) > 2.4
-                            ? colors.ORANGE
-                            : colors.RED,
-                      },
-                    ]}
-                    onPress={() =>
-                      navigation.navigate('Professor', {
-                        profName: value.name,
-                        courses: value.courses,
-                      })
-                    }
-                    key={undefined}
-                  >
-                    <Text
-                      style={{
-                        padding: 5,
-                        color: 'white',
-                        fontSize: 25,
-                        textAlign: 'center',
-                        fontWeight: '500',
-                      }}
+          {/**Professor Result Container**/}
+          {filterType === 'p' &&
+            filteredProfData
+              .slice(0, 10)
+              .map(
+                (value: {
+                  name: string
+                  university: string
+                  overallGPA: string
+                  courses: Course[]
+                  department: string
+                }) => {
+                  return (
+                    <TouchableOpacity
+                      style={[
+                        styles.profResultContainer,
+                        {
+                          shadowColor:
+                            parseFloat(value.overallGPA) > 3.6
+                              ? colors.BLUE
+                              : parseFloat(value.overallGPA) > 3.0
+                              ? colors.GREEN
+                              : parseFloat(value.overallGPA) > 2.4
+                              ? colors.ORANGE
+                              : colors.RED,
+                        },
+                      ]}
+                      onPress={() =>
+                        navigation.navigate('Professor', {
+                          profName: value.name,
+                          courses: value.courses,
+                        })
+                      }
+                      key={undefined}
                     >
-                      {value.name}{' '}
                       <Text
                         style={{
+                          padding: 5,
+                          paddingLeft: 15,
+                          color: 'white',
+                          fontSize: 25,
+                          textAlign: 'left',
+                          fontWeight: '500',
+                        }}
+                      >
+                        {value.name}{' '}
+                      </Text>
+                      <Text
+                        style={{
+                          paddingRight: 15,
                           textAlign: 'right',
                           fontWeight: '800',
                           fontSize: 25,
@@ -178,26 +266,54 @@ export const Home = () => {
                       >
                         {parseFloat(value.overallGPA).toFixed(2)}
                       </Text>
-                    </Text>
+                      {/*<Text
+                        style={{
+                          marginTop: -6,
+                          paddingBottom: 3,
+                          color: 'white',
+                          textAlign: 'center',
+                          fontSize: 18,
+                          opacity: 0.85,
+                        }}
+                      >
+                        {value.university}{' '}
+                      </Text>*/}
+                    </TouchableOpacity>
+                  )
+                }
+              )}
+
+          {/**Courses Result Container**/}
+          {filterType === 'c' &&
+            filteredCourseData
+              .sort()
+              .slice(0, 10)
+              .map((value: string) => {
+                return (
+                  <TouchableOpacity
+                    style={[styles.courseResultContainer]}
+                    onPress={() =>
+                      navigation.navigate('Courses', {
+                        courseName: value,
+                      })
+                    }
+                    key={undefined}
+                  >
                     <Text
                       style={{
-                        marginTop: -6,
-                        paddingBottom: 3,
+                        padding: 5,
+                        paddingLeft: 15,
                         color: 'white',
-                        textAlign: 'center',
-                        fontSize: 18,
-                        opacity: 0.85,
+                        fontSize: 25,
+                        textAlign: 'left',
+                        fontWeight: '500',
                       }}
                     >
-                      {value.university}{' '}
-                      <Text style={{ fontWeight: '800' }}>
-                        {value.department}
-                      </Text>
+                      {value}
                     </Text>
                   </TouchableOpacity>
                 )
-              }
-            )}
+              })}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -209,57 +325,60 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    flex: 1,
     flexDirection: 'column',
+    height: '88%',
+    backgroundColor: 'black',
+    width: '100%',
   },
   title: {
     fontSize: 35,
     textAlign: 'left',
     flex: 3,
     fontWeight: '700',
+    color: 'white',
   },
   nav: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     paddingBottom: 15,
     marginTop: 8,
-    marginBottom: 15,
+    color: 'white',
   },
   username: {
     flex: 3,
     textAlign: 'right',
     paddingRight: 10,
     fontSize: 25,
-    shadowColor: colors.BLUE,
-    shadowOffset: { width: 1, height: 2 },
-    shadowRadius: 0,
-    shadowOpacity: 0.7,
-  },
-  userImage: {
-    width: 50,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 50,
+    color: 'white',
   },
   inputStyles: {
     borderWidth: 2,
-    borderRadius: 5,
+    borderRightWidth: 0,
+    borderLeftWidth: 0,
     padding: 10,
     paddingLeft: 30,
     fontSize: 15,
   },
-  resultContainer: {
-    borderRadius: 25,
-    backgroundColor: colors.GRAY,
-    width: '90%',
-    height: 'auto',
+  profResultContainer: {
+    backgroundColor: 'black',
+    width: '100%',
+    flexDirection: 'row',
+    padding: 5,
+    paddingVertical: 8,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  courseResultContainer: {
+    borderRadius: 15,
+    backgroundColor: 'black',
+    width: '100%',
     flexDirection: 'column',
     padding: 5,
-    margin: 10,
-    //shadowColor: colors.PURPLE,
+    marginVertical: 8,
     shadowOffset: { width: 4, height: 3 },
     shadowOpacity: 1,
     shadowRadius: 0,
