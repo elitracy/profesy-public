@@ -145,12 +145,18 @@ mongoUtil.connectToServer((err, client) => {
       .aggregate([
         { $unwind: "$courses" },
         { $match: { "courses.course": { $in: [course] } } },
-        // { $group: { $in: { _id: null, prof: "$name" } } },
+        {
+          $group: {
+            _id: {
+              name: "$name",
+              gpa: "$overallGPA",
+            },
+          },
+        },
+        { $sort: { "_id.gpa": -1 } },
       ])
-      .map((prof) => {
-        return { name: prof.name, gpa: prof.overallGPA };
-      })
       .toArray((err, results) => {
+        console.log(results);
         if (err) console.error(err);
         else res.send({ courses: results });
       });
@@ -175,6 +181,21 @@ mongoUtil.connectToServer((err, client) => {
           res.send({ message: results[0].courseList });
         else res.send({ message: [] });
       });
+  });
+
+  app.get("/courseAndProf", (req, res) => {
+    const course = req.query.course;
+    const prof = req.query.prof;
+
+    profs.findOne(
+      {
+        $and: [{ name: prof }, { "courses.course": { $in: [course] } }],
+      },
+      (err, result) => {
+        if (err) console.error(err);
+        else res.send({ message: result });
+      }
+    );
   });
 
   app.listen(PORT, () => {
