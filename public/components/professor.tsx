@@ -9,11 +9,11 @@ import {
   Text,
 } from 'react-native'
 import { colors, randomColor } from '../assets/colors'
+import { Icon } from 'react-native-elements'
 import { RootStackParamList, Course } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
-import { Icon } from 'react-native-elements'
 import fuzzysort from 'fuzzysort'
 import React from 'react'
 
@@ -38,7 +38,6 @@ export function Professor(Props: Props) {
 
   // SET STATES
   const [wordEntered, setWordEntered] = useState('')
-  const [searchBG, setSearchBG] = useState(colors.PURPLE)
   const [courses, setCourses] = useState(allCourses)
 
   const navigation = useNavigation<professorScreenProp>()
@@ -59,49 +58,48 @@ export function Professor(Props: Props) {
     <SafeAreaView style={styles.container}>
       <View>
         {/*HEADERS*/}
-        <Text style={[styles.title, { paddingHorizontal: 10 }]}>
-          {Props.route.params.profName}
-        </Text>
         <View
           style={{
-            borderTopWidth: 1,
-            borderColor: colors.GRAY,
-            opacity: 0.7,
-            paddingVertical: 6,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            width: '90%',
+            marginBottom: 5,
           }}
         >
-          <Text style={styles.departmentTitle}>Courses</Text>
+          <Text style={[styles.title, { width: '100%' }]}>
+            {Props.route.params.profName}{' '}
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 25,
+                fontWeight: '300',
+                textAlign: 'right',
+              }}
+            >
+              Courses
+            </Text>
+          </Text>
         </View>
 
         {/*SEARCH*/}
-        <View style={{ width: '90%', marginLeft: 15, marginTop: 5 }}>
+        <View style={{ width: '95%', marginBottom: 10 }}>
           <View
             style={{
               flexDirection: 'row',
               width: '100%',
               alignItems: 'center',
-              paddingBottom: 10,
             }}
           >
-            <Icon
-              name="search"
-              style={{ opacity: 0.7 }}
-              tvParallaxProperties={null}
-            />
             <TextInput
               onChangeText={(word) => {
                 setWordEntered(word)
                 handleSearch(word, courses, setCourses)
               }}
-              onFocus={() => setSearchBG(colors.GREEN)}
-              onBlur={() => setSearchBG(colors.PURPLE)}
               value={wordEntered}
               clearTextOnFocus={true}
               placeholder="search for course"
-              style={[
-                styles.inputStyles,
-                { borderColor: searchBG, flex: 5, marginLeft: -30 },
-              ]}
+              style={[styles.inputStyles]}
             />
           </View>
         </View>
@@ -155,37 +153,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 'auto',
-    height: '88%',
+    height: '85%',
+    backgroundColor: 'black',
   },
   title: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontSize: 40,
-    marginTop: 1,
-    marginBottom: 5,
-    paddingHorizontal: 10,
+    color: 'white',
   },
   departmentTitle: {
     fontSize: 30,
-    paddingHorizontal: 30,
-    textAlign: 'center',
-  },
-  departmentContainer: {
-    backgroundColor: colors.GREEN,
-    borderRadius: 30,
-    marginHorizontal: 30,
-    marginVertical: 10,
-    shadowOffset: { width: 3, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-  },
-  department: {
-    fontSize: 40,
     textAlign: 'center',
     color: 'white',
+  },
+  departmentContainer: {
+    // marginHorizontal: 30,
+    // marginVertical: 10,
+    // shadowOffset: { width: 3, height: 2 },
+    // shadowOpacity: 1,
+    // shadowRadius: 0,
+  },
+  department: {
+    fontSize: 30,
+    textAlign: 'left',
+    color: 'white',
     fontWeight: '500',
-    letterSpacing: 5,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
+    letterSpacing: 3,
+    paddingVertical: 8,
   },
   departments: {
     // flex: 6,
@@ -194,10 +188,10 @@ const styles = StyleSheet.create({
     // height: '80%',
   },
   inputStyles: {
-    borderWidth: 2,
     borderRadius: 5,
-    padding: 5,
-    paddingLeft: 30,
+    padding: 10,
     fontSize: 15,
+    width: '95%',
+    backgroundColor: 'white',
   },
 })

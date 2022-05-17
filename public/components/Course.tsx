@@ -142,9 +142,11 @@ export function Course(Props: Props) {
         cx={x(index)}
         cy={y(value)}
         r={8.5}
-        stroke={'rgb(134, 65, 244)'}
+        // stroke={'rgb(134, 65, 244)'}
+        stroke={colors.GREEN}
         strokeWidth={3}
-        fill={selectedNode === index ? 'rgb(134, 65, 244)' : 'black'}
+        // fill={selectedNode === index ? 'rgb(134, 65, 244)' : 'black'}
+        fill={selectedNode === index ? colors.GREEN : 'black'}
         onPress={() => {
           setCurrentSemester(
             semesterInfo.find((s: CourseType) => parseFloat(s.semGPA) === value)
@@ -162,7 +164,7 @@ export function Course(Props: Props) {
         <Text
           style={{
             fontSize: 40,
-            paddingHorizontal: 30,
+            paddingHorizontal: 10,
             paddingVertical: 5,
             color: 'white',
             fontWeight: '500',
@@ -172,8 +174,8 @@ export function Course(Props: Props) {
           <Text style={{ fontWeight: '300' }}>
             {Props.route.params.course.substring(4, 7)}
           </Text>
-          <Text style={{ fontSize: 20, opacity: 0.75, paddingBottom: 2 }}>
-            {' '}
+          <Text style={{ fontSize: 20, fontWeight: '300', paddingBottom: 2 }}>
+            {' \n'}
             {Props.route.params.prof}
           </Text>
         </Text>
@@ -345,7 +347,11 @@ export function Course(Props: Props) {
                       >
                         <Text
                           style={[
-                            { marginLeft: -16, fontWeight: '700' },
+                            {
+                              marginLeft: -16,
+                              fontWeight: '400',
+                              fontSize: 15,
+                            },
                             togglePercentages && { fontWeight: '400' },
                           ]}
                         >
@@ -383,7 +389,7 @@ export function Course(Props: Props) {
           {/*GPA*/}
           <View
             style={{
-              width: '60%',
+              width: '70%',
               padding: 10,
               borderRadius: 10,
               borderWidth: 2,
@@ -417,7 +423,7 @@ export function Course(Props: Props) {
               textAlign: 'left',
               fontSize: 25,
               color: 'white',
-              marginTop: 5,
+              marginTop: 10,
             }}
           >
             {' '}
@@ -427,14 +433,14 @@ export function Course(Props: Props) {
           </Text>
 
           {/*SIDE-SCROLL BUTTONS*/}
-          <TouchableOpacity
+          <Pressable
             style={{
-              zIndex: -1,
+              zIndex: 5,
               position: 'absolute',
               bottom: 0,
               right: 0,
-              height: '100%',
-              width: '50%',
+              height: '65%',
+              width: '40%',
             }}
             onPress={() => {
               setSelectedNode(
@@ -447,14 +453,14 @@ export function Course(Props: Props) {
               )
             }}
           />
-          <TouchableOpacity
+          <Pressable
             style={{
-              zIndex: -1,
+              zIndex: 5,
               position: 'absolute',
               bottom: 0,
               left: 0,
-              height: '100%',
-              width: '50%',
+              height: '65%',
+              width: '40%',
             }}
             onPress={() => {
               setSelectedNode(

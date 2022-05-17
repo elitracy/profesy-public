@@ -165,14 +165,18 @@ mongoUtil.connectToServer((err, client) => {
   // SEARCH FOR COURSES
   app.get("/courses", (req, res) => {
     const course = req.query.course;
-    const regex = new RegExp(escapeRegex(course), "gi");
+    // const regex = new RegExp(escapeRegex(course.toLowerCase()), "gi");
 
-    console.log(course);
-    console.log(regex);
     profs
       .aggregate([
         { $unwind: "$courses" },
-        { $match: { "courses.course": { $in: [regex] } } },
+        {
+          $match: {
+            "courses.course": {
+              $in: [new RegExp(`${course.toUpperCase()}*`)],
+            },
+          },
+        },
         { $group: { _id: null, courseList: { $addToSet: "$courses.course" } } },
       ])
       .toArray((err, results) => {

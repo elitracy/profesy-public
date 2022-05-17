@@ -87,7 +87,7 @@ export const Home = () => {
       {/*search bar*/}
       <View
         style={{
-          width: '100%',
+          width: '95%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -353,9 +353,10 @@ const styles = StyleSheet.create({
     flex: 3,
     fontWeight: '700',
     color: 'white',
+    width: '100%',
   },
   nav: {
-    width: '100%',
+    width: '95%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
   username: {
     flex: 3,
     textAlign: 'right',
-    paddingRight: 10,
+    paddingRight: 0,
     fontSize: 25,
     color: 'white',
   },
