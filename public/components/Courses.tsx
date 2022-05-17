@@ -57,7 +57,9 @@ async function getProfsByCourse(
   setOriginalProfList: any
 ): Promise<any> {
   // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
-  return await fetch(`http://localhost:8080/profsByCourse?course=${course}`)
+  return await fetch(
+    `https://profesy.herokuapp.com/profsByCourse?course=${course}`
+  )
     .then((result) => result.json())
     .then((result) => {
       console.log(result.courses)

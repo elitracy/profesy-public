@@ -47,7 +47,7 @@ async function getSemesters(
   setCurrentSemester: Function
 ): Promise<any> {
   return await fetch(
-    `http://localhost:8080/courseAndProf?course=${course}&prof=${prof}`
+    `https://profesy.herokuapp.com/courseAndProf?course=${course}&prof=${prof}`
   )
     .then((result) => result.json())
     .then((result) => {
