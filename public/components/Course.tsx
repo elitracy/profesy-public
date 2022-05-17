@@ -7,13 +7,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Pressable,
   ScrollView,
 } from 'react-native'
 import React from 'react'
-import { Icon } from 'react-native-elements'
 import { colors } from '../assets/colors'
 import { RootStackParamList, Course as CourseType } from '../RootStackParams'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LineChart } from 'react-native-svg-charts'
 import { G, Text as SVGText, Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
@@ -21,16 +21,67 @@ import * as shape from 'd3-shape'
 interface Props {
   route: {
     params: {
-      courses: CourseType[]
-      courseName: string
-      profName: string
-      allCourses: CourseType[]
+      course: string
+      prof: string
     }
   }
 }
 
+// Seasons object for sorting
+const seasons: {
+  SPRING: number
+  SUMMER: number
+  FALL: number
+  WINTER: number
+} = {
+  SPRING: 3,
+  SUMMER: 2,
+  FALL: 1,
+  WINTER: 0,
+}
+
+async function getSemesters(
+  course: string,
+  prof: string,
+  setSemesterInfo: Function,
+  setCurrentSemester: Function
+): Promise<any> {
+  return await fetch(
+    `http://localhost:8080/courseAndProf?course=${course}&prof=${prof}`
+  )
+    .then((result) => result.json())
+    .then((result) => {
+      let sortedCourses = sortFilterCourses(course, result.message.courses)
+      setSemesterInfo(sortedCourses)
+      setCurrentSemester(sortedCourses[0])
+      return result
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function sortFilterCourses(courseName: string, courses: CourseType[]) {
+  return courses
+    .sort((a, b) => {
+      const aY = parseInt(
+        a.semester.substring(a.semester.length - 4, a.semester.length)
+      )
+      const bY = parseInt(
+        b.semester.substring(b.semester.length - 4, b.semester.length)
+      )
+      const aS = a.semester.substring(0, a.semester.length - 5)
+      const bS = b.semester.substring(0, b.semester.length - 5)
+      return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
+    })
+    .filter((c: CourseType) => {
+      return c.course === courseName
+    })
+}
+
 export function Course(Props: Props) {
-  const semesterInfo = Props.route.params.courses
+  // const semesterInfo = Props.route.params.courses
+  const [semesterInfo, setSemesterInfo] = useState([])
   const semesterGPAs = semesterInfo.map((s) => {
     return parseFloat(s.semGPA)
   })
@@ -40,30 +91,40 @@ export function Course(Props: Props) {
   // SET STATES
   const [filteredData, setFilteredData] = useState<string[]>([])
   const [wordEntered, setWordEntered] = useState<any>('')
-
   const [searchBG, setSearchBG] = useState(colors.PURPLE)
-
   const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])
-  const [graphData, setGraphData] = useState<number[]>([
-    parseInt(currentSemester.A),
-    parseInt(currentSemester.B),
-    parseInt(currentSemester.C),
-    parseInt(currentSemester.F),
-    parseInt(currentSemester.Q),
-  ])
+  const [graphData, setGraphData] = useState<number[]>(
+    currentSemester !== undefined
+      ? [
+          parseInt(currentSemester.A),
+          parseInt(currentSemester.B),
+          parseInt(currentSemester.C),
+          parseInt(currentSemester.F),
+          parseInt(currentSemester.Q),
+        ]
+      : []
+  )
   const [togglePercentages, setTogglePercentages] = useState(false)
   const [selectedNode, setSelectedNode] = useState(0)
+  useEffect((): Promise<any> => {
+    getSemesters(
+      Props.route.params.course,
+      Props.route.params.prof,
+      setSemesterInfo,
+      setCurrentSemester
+    )
+  }, [])
 
   // FZF STRING MATCH
   // handleSearch - Params(text:string)
   const handleSearch = (text: string) => {
     const searchWord = text
     setWordEntered(searchWord)
-    const newFilter: any = semesterInfo.filter((value) => {
+    const newFilter: any = semesterInfo.filter((value: CourseType) => {
       return value.semester.toLowerCase().includes(searchWord.toLowerCase())
     })
     if (searchWord === undefined) {
-      setFilteredData(semesterInfo.map((info) => info.semester))
+      setFilteredData(semesterInfo.map((info: CourseType) => info.semester))
     } else {
       setFilteredData(newFilter)
     }
@@ -83,10 +144,10 @@ export function Course(Props: Props) {
         r={8.5}
         stroke={'rgb(134, 65, 244)'}
         strokeWidth={3}
-        fill={selectedNode === index ? 'rgb(134, 65, 244)' : 'white'}
+        fill={selectedNode === index ? 'rgb(134, 65, 244)' : 'black'}
         onPress={() => {
           setCurrentSemester(
-            semesterInfo.find((s) => parseFloat(s.semGPA) === value)
+            semesterInfo.find((s: CourseType) => parseFloat(s.semGPA) === value)
           )
           setSelectedNode(index)
         }}
@@ -102,101 +163,261 @@ export function Course(Props: Props) {
           style={{
             fontSize: 40,
             paddingHorizontal: 30,
-            paddingVertical: 10,
+            paddingVertical: 5,
             color: 'white',
             fontWeight: '500',
           }}
         >
-          {Props.route.params.courseName.substring(0, 4)}
+          {Props.route.params.course.substring(0, 4)}
           <Text style={{ fontWeight: '300' }}>
-            {Props.route.params.courseName.substring(4, 7)}
+            {Props.route.params.course.substring(4, 7)}
           </Text>
           <Text style={{ fontSize: 20, opacity: 0.75, paddingBottom: 2 }}>
             {' '}
-            {Props.route.params.profName}
+            {Props.route.params.prof}
           </Text>
         </Text>
       </View>
 
-      <View style={{ marginTop: 10, width: '70%', alignItems: 'center' }}>
-        {/*SEARCH BAR*/}
+      {currentSemester !== undefined ? (
         <View
           style={{
-            flexDirection: 'row',
             width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
-          <Icon
-            name="search"
-            style={{ opacity: 0.7 }}
-            tvParallaxProperties={null}
-          />
-          <TextInput
-            onChangeText={handleSearch}
-            onFocus={() => {
-              setSearchBG(colors.GREEN)
-              handleSearch('')
-            }}
-            onBlur={() => setSearchBG(colors.PURPLE)}
-            value={wordEntered}
-            placeholder="search by semester"
-            style={[
-              styles.inputStyles,
-              { borderColor: searchBG, paddingLeft: 30 },
-            ]}
-          />
-        </View>
+          <View style={{ width: '90%', alignItems: 'center' }}>
+            {/*SEARCH BAR*/}
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TextInput
+                onChangeText={handleSearch}
+                onFocus={() => {
+                  setSearchBG(colors.GREEN)
+                  handleSearch('')
+                }}
+                onBlur={() => setSearchBG(colors.PURPLE)}
+                value={wordEntered}
+                placeholder="search by semester"
+                style={[styles.inputStyles, { display: 'none' }]}
+              />
+            </View>
+            {/*SEMSTER LIST*/}
+            {false && filteredData.length != 0 && (
+              <ScrollView
+                style={{
+                  width: '100%',
+                  paddingHorizontal: 0,
+                  flexDirection: 'column',
+                  height: '40%',
+                  position: 'absolute',
+                  top: '16%',
+                  zIndex: 3,
+                  borderRadius: 5,
+                }}
+              >
+                {filteredData.slice(0, 15).map((value: any, key) => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.resultContainer}
+                      onPress={() => {
+                        setCurrentSemester(value)
+                        setWordEntered(value.semester)
+                        setFilteredData([])
+                        setGraphData([
+                          parseInt(currentSemester.A),
+                          parseInt(currentSemester.B),
+                          parseInt(currentSemester.C),
+                          parseInt(currentSemester.F),
+                          parseInt(currentSemester.Q),
+                        ])
+                        Keyboard.dismiss()
+                      }}
+                      key={undefined}
+                    >
+                      <Text style={styles.result}>{value.semester}</Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </ScrollView>
+            )}
 
-        {/*SEMSTER LIST*/}
-        {filteredData.length != 0 && (
-          <ScrollView
+            {/*COURSE AVERAGE*/}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                marginTop: 5,
+                padding: 10,
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor:
+                  parseFloat(courseAvg.toFixed(2)) >= 3.5
+                    ? colors.BLUE
+                    : parseFloat(courseAvg.toFixed(2)) >= 3.0
+                    ? colors.GREEN
+                    : parseFloat(courseAvg.toFixed(2)) >= 2.5
+                    ? colors.ORANGE
+                    : colors.RED,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 30,
+                  color: 'white',
+                  marginRight: 10,
+                  fontWeight: '400',
+                }}
+              >
+                Course Average
+              </Text>
+              <Text
+                style={{
+                  fontSize: 35,
+                  textAlign: 'center',
+                  color: 'white',
+                  fontWeight: '700',
+                }}
+              >
+                {courseAvg.toFixed(2)}
+              </Text>
+            </View>
+
+            {/*GRADE DISTRIBUTION*/}
+            <View
+              style={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginVertical: 30,
+                paddingHorizontal: 10,
+                width: '100%',
+                padding: 20,
+                // borderBottomWidth: 0.3,
+                // borderBottomColor: colors.GREY,
+                borderWidth: 2,
+                borderColor: 'white',
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ fontSize: 30, fontWeight: '300', color: 'white' }}>
+                Grade Distribution
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  marginTop: 15,
+                  alignItems: 'center',
+                }}
+              >
+                {currentSemester.semester !== 'none' &&
+                  ['A', 'B', 'C', 'F', 'Q'].map((letter) => {
+                    let letterPercentage = parseFloat(
+                      (currentSemester[letter] / currentSemester.CourseTotal) *
+                        (100).toFixed(0)
+                    )
+
+                    return (
+                      <Pressable
+                        style={[
+                          styles.distLetter,
+                          styles[`dist${letter}`],
+                          {
+                            flex:
+                              letterPercentage < 5
+                                ? 0.08
+                                : letterPercentage / 100,
+                          },
+                        ]}
+                        onPress={() => setTogglePercentages(!togglePercentages)}
+                        key={undefined}
+                      >
+                        <Text
+                          style={[
+                            { marginLeft: -16, fontWeight: '700' },
+                            togglePercentages && { fontWeight: '400' },
+                          ]}
+                        >
+                          {togglePercentages
+                            ? `${letterPercentage.toFixed(0)}%`
+                            : letter}
+                        </Text>
+                      </Pressable>
+                    )
+                  })}
+              </View>
+            </View>
+          </View>
+
+          {/*DISTRIBUTION GRAPH*/}
+          <LineChart
+            data={semesterGPAs}
+            style={{ height: 250, width: '95%', zIndex: 1 }}
+            svg={{
+              strokeWidth: 3,
+              stroke:
+                parseFloat(courseAvg).toFixed(2) >= 3.5
+                  ? colors.BLUE
+                  : parseFloat(courseAvg).toFixed(2) >= 3.0
+                  ? colors.GREEN
+                  : parseFloat(courseAvg).toFixed(2) >= 2.5
+                  ? colors.ORANGE
+                  : colors.RED,
+            }}
+            contentInset={{ top: 30, bottom: 20, left: 25, right: 25 }}
+            curve={shape.curveCatmullRom}
+          >
+            <Decorator />
+          </LineChart>
+          {/*GPA*/}
+          <View
             style={{
-              width: '105%',
-              paddingHorizontal: 0,
-              flexDirection: 'column',
-              height: '40%',
-              position: 'absolute',
-              top: '16%',
-              zIndex: 3,
+              width: '60%',
+              padding: 10,
               borderRadius: 10,
+              borderWidth: 2,
+              marginTop: 40,
+              borderColor:
+                parseFloat(currentSemester.semGPA).toFixed(2) >= 3.5
+                  ? colors.BLUE
+                  : parseFloat(currentSemester.semGPA).toFixed(2) >= 3.0
+                  ? colors.GREEN
+                  : parseFloat(currentSemester.semGPA).toFixed(2) >= 2.5
+                  ? colors.ORANGE
+                  : colors.RED,
             }}
           >
-            {filteredData.slice(0, 15).map((value: any, key) => {
-              return (
-                <TouchableOpacity
-                  style={styles.resultContainer}
-                  onPress={() => {
-                    setCurrentSemester(value)
-                    setWordEntered(value.semester)
-                    setFilteredData([])
-                    setGraphData([
-                      parseInt(currentSemester.A),
-                      parseInt(currentSemester.B),
-                      parseInt(currentSemester.C),
-                      parseInt(currentSemester.F),
-                      parseInt(currentSemester.Q),
-                    ])
-                    Keyboard.dismiss()
-                  }}
-                  key={undefined}
-                >
-                  <Text style={styles.result}>{value.semester}</Text>
-                </TouchableOpacity>
-              )
-            })}
-          </ScrollView>
-        )}
+            <Text
+              style={{
+                fontSize: 30,
+                textAlign: 'center',
+                color: 'white',
+                fontWeight: '700',
+              }}
+            >
+              <Text style={{ fontWeight: '400' }}>GPA </Text>
+              {parseFloat(currentSemester.semGPA).toFixed(2)}
+            </Text>
+          </View>
 
-        {/*SELECTED SEMSTER*/}
-        <Text style={{ fontSize: 25, textAlign: 'center', marginVertical: 15 }}>
+          {/*SELECTED SEMSTER*/}
           <Text
             style={{
-              textAlign: 'center',
-              fontSize: 20,
-              opacity: 0.6,
-              letterSpacing: -1,
+              textAlign: 'left',
+              fontSize: 25,
+              color: 'white',
+              marginTop: 5,
             }}
           >
             {' '}
@@ -204,213 +425,67 @@ export function Course(Props: Props) {
               ? currentSemester.semester
               : 'N/A'}
           </Text>
-        </Text>
 
-        {/*GPA*/}
-        <View
-          style={{
-            width: '60%',
-            padding: 10,
-            borderRadius: 10,
-            shadowColor: colors.GRAY,
-            shadowOpacity: 1,
-            shadowOffset: { width: 1, height: 2 },
-            shadowRadius: 1,
-            backgroundColor:
-              parseFloat(currentSemester.semGPA).toFixed(2) >= 3.5
-                ? colors.BLUE
-                : parseFloat(currentSemester.semGPA).toFixed(2) >= 3.0
-                ? colors.GREEN
-                : parseFloat(currentSemester.semGPA).toFixed(2) >= 2.5
-                ? colors.ORANGE
-                : colors.RED,
-          }}
-        >
-          <Text
+          {/*SIDE-SCROLL BUTTONS*/}
+          <TouchableOpacity
             style={{
-              fontSize: 30,
-              textAlign: 'center',
-              color: 'white',
-              fontWeight: '700',
+              zIndex: -1,
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              height: '100%',
+              width: '50%',
             }}
-          >
-            <Text style={{ fontWeight: '400', opacity: 0.8 }}>GPA </Text>
-            {parseFloat(currentSemester.semGPA).toFixed(2)}
-          </Text>
-        </View>
-
-        {/*GRADE DISTRIBUTION*/}
-        <View
-          style={{
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginTop: 15,
-            paddingHorizontal: 12,
-            width: '120%',
-            paddingBottom: 15,
-            borderBottomWidth: 0.3,
-            borderBottomColor: colors.GREY,
-          }}
-        >
-          <Text style={{ fontSize: 30, fontWeight: '300' }}>
-            Grade Distribution
-          </Text>
+            onPress={() => {
+              setSelectedNode(
+                selectedNode === semesterInfo.length - 1 ? 0 : selectedNode + 1
+              )
+              setCurrentSemester(
+                selectedNode + 1 === semesterInfo.length
+                  ? semesterInfo[0]
+                  : semesterInfo[selectedNode + 1]
+              )
+            }}
+          />
+          <TouchableOpacity
+            style={{
+              zIndex: -1,
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              height: '100%',
+              width: '50%',
+            }}
+            onPress={() => {
+              setSelectedNode(
+                selectedNode === 0 ? semesterInfo.length - 1 : selectedNode - 1
+              )
+              setCurrentSemester(
+                selectedNode - 1 === -1
+                  ? semesterInfo[semesterInfo.length - 1]
+                  : semesterInfo[selectedNode - 1]
+              )
+            }}
+          />
 
           <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              marginTop: 15,
-              alignItems: 'center',
-            }}
-          >
-            {['A', 'B', 'C', 'F', 'Q'].map((letter) => {
-              let letterPercentage = parseFloat(
-                (currentSemester[letter] / currentSemester.CourseTotal) *
-                  (100).toFixed(0)
-              )
-
-              return (
-                <TouchableOpacity
-                  style={[
-                    styles.distLetter,
-                    styles[`dist${letter}`],
-                    {
-                      flex:
-                        letterPercentage < 5 ? 0.06 : letterPercentage / 100,
-                    },
-                  ]}
-                  onPress={() => setTogglePercentages(!togglePercentages)}
-                  key={undefined}
-                >
-                  <Text
-                    style={[
-                      { marginLeft: -16, fontWeight: '700' },
-                      togglePercentages && { fontWeight: '400' },
-                    ]}
-                  >
-                    {togglePercentages
-                      ? `${letterPercentage.toFixed(0)}%`
-                      : letter}
-                  </Text>
-                </TouchableOpacity>
-              )
-            })}
-          </View>
+            style={{ width: '80%', height: 40, borderBottomWidth: 0.3 }}
+          ></View>
         </View>
-      </View>
-
-      {/*COURSE AVERAGE*/}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '60%',
-          marginTop: 15,
-          padding: 10,
-          borderRadius: 10,
-          shadowColor: colors.GRAY,
-          shadowOpacity: 1,
-          shadowOffset: { width: 1, height: 2 },
-          shadowRadius: 1,
-          backgroundColor:
-            parseFloat(courseAvg.toFixed(2)) >= 3.5
-              ? colors.BLUE
-              : parseFloat(courseAvg.toFixed(2)) >= 3.0
-              ? colors.GREEN
-              : parseFloat(courseAvg.toFixed(2)) >= 2.5
-              ? colors.ORANGE
-              : colors.RED,
-        }}
-      >
-        <Text
+      ) : (
+        <View
           style={{
-            fontSize: 20,
-            color: 'white',
-            marginRight: 10,
-            opacity: 0.8,
+            width: '100%',
+            height: '20%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          Course Average
-        </Text>
-        <Text
-          style={{
-            fontSize: 25,
-            textAlign: 'center',
-            color: 'white',
-            fontWeight: '500',
-          }}
-        >
-          {courseAvg.toFixed(2)}
-        </Text>
-      </View>
-
-      {/*DISTRIBUTION GRAPH*/}
-      <LineChart
-        data={semesterGPAs}
-        style={{ height: 200, width: '90%', zIndex: 1 }}
-        svg={{
-          strokeWidth: 3,
-          stroke:
-            parseFloat(courseAvg).toFixed(2) >= 3.5
-              ? colors.BLUE
-              : parseFloat(courseAvg).toFixed(2) >= 3.0
-              ? colors.GREEN
-              : parseFloat(courseAvg).toFixed(2) >= 2.5
-              ? colors.ORANGE
-              : colors.RED,
-        }}
-        contentInset={{ top: 30, bottom: 20, left: 25, right: 25 }}
-        curve={shape.curveCatmullRom}
-      >
-        <Decorator />
-      </LineChart>
-
-      {/*SIDE-SCROLL BUTTONS*/}
-      <TouchableOpacity
-        style={{
-          zIndex: -1,
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          height: '100%',
-          width: '50%',
-        }}
-        onPress={() => {
-          setSelectedNode(
-            selectedNode === semesterInfo.length - 1 ? 0 : selectedNode + 1
-          )
-          setCurrentSemester(
-            selectedNode + 1 === semesterInfo.length
-              ? semesterInfo[0]
-              : semesterInfo[selectedNode + 1]
-          )
-        }}
-      />
-      <TouchableOpacity
-        style={{
-          zIndex: -1,
-          // backgroundColor: 'red',
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          height: '100%',
-          width: '50%',
-        }}
-        onPress={() => {
-          setSelectedNode(
-            selectedNode === 0 ? semesterInfo.length - 1 : selectedNode - 1
-          )
-          setCurrentSemester(
-            selectedNode - 1 === -1
-              ? semesterInfo[semesterInfo.length - 1]
-              : semesterInfo[selectedNode - 1]
-          )
-        }}
-      />
-
-      <View style={{ width: '80%', height: 40, borderBottomWidth: 0.3 }}></View>
+          <Text style={{ color: colors.GREY, fontSize: 20 }}>Loading ...</Text>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -422,34 +497,26 @@ const styles: any = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: 'black',
   },
   courseTitle: {
-    backgroundColor: colors.GREEN,
-    borderRadius: 10,
-    marginTop: 10,
-    shadowColor: colors.PURPLE,
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 1,
-    shadowOpacity: 1,
+    borderRadius: 5,
+    marginTop: 5,
     width: '90%',
+    textAlign: 'left',
   },
   resultContainer: {
-    backgroundColor: colors.GRAY,
+    backgroundColor: 'black',
     padding: 8,
     width: '100%',
-    marginLeft: -4,
     borderWidth: 0.3,
     borderColor: 'white',
-    borderRadius: 10,
   },
   result: {
     color: 'white',
     fontSize: 15,
-    padding: 10,
-    paddingVertical: 5,
-    paddingLeft: 4,
-    fontWeight: '500',
-    letterSpacing: 0.5,
+    padding: 5,
+    fontWeight: '700',
   },
   inputStyles: {
     borderWidth: 2,
@@ -457,36 +524,38 @@ const styles: any = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     flex: 5,
-    marginLeft: -30,
+    backgroundColor: 'white',
   },
   distLetter: {
     paddingVertical: 8,
     paddingLeft: 16,
-    borderWidth: 2,
-    borderRadius: 15,
+    // borderWidth: 2,
+    borderRadius: 10,
     alignItems: 'center',
+    // borderColor: 'white',
   },
   distA: {
     backgroundColor: colors.BLUE,
+    // borderRightWidth: 2,
     borderBottomRightRadius: 0,
     borderTopRightRadius: 0,
   },
   distB: {
     backgroundColor: colors.GREEN,
     borderRadius: 0,
-    borderRightWidth: 2,
+    // borderRightWidth: 2,
     borderLeftWidth: 0,
   },
   distC: {
     backgroundColor: colors.ORANGE,
     borderRadius: 0,
-    borderRightWidth: 2,
+    // borderRightWidth: 2,
     borderLeftWidth: 0,
   },
   distF: {
     backgroundColor: colors.RED,
     borderRadius: 0,
-    borderRightWidth: 2,
+    // borderRightWidth: 2,
     borderLeftWidth: 0,
   },
   distQ: {

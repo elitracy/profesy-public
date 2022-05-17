@@ -26,19 +26,6 @@ type professorScreenProp = NativeStackNavigationProp<
   'Professor'
 >
 
-// Seasons object for sorting
-const seasons: {
-  SPRING: number
-  SUMMER: number
-  FALL: number
-  WINTER: number
-} = {
-  SPRING: 3,
-  SUMMER: 2,
-  FALL: 1,
-  WINTER: 0,
-}
-
 export function Professor(Props: Props) {
   // sort all of professor courses
   const allCourses = Array.from([
@@ -130,37 +117,8 @@ export function Professor(Props: Props) {
                 ]}
                 onPress={() => {
                   navigation.navigate('Course', {
-                    //filter course list by selected course and sort semesters
-                    courses: Props.route.params.courses
-                      .filter((c) => {
-                        return c.course.includes(course)
-                      })
-                      .sort((a, b) => {
-                        const aY = parseInt(
-                          a.semester.substring(
-                            a.semester.length - 4,
-                            a.semester.length
-                          )
-                        )
-                        const bY = parseInt(
-                          b.semester.substring(
-                            b.semester.length - 4,
-                            b.semester.length
-                          )
-                        )
-                        const aS = a.semester.substring(
-                          0,
-                          a.semester.length - 5
-                        )
-                        const bS = b.semester.substring(
-                          0,
-                          b.semester.length - 5
-                        )
-                        return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
-                      }),
-                    profName: Props.route.params.profName,
-                    courseName: course,
-                    allCourses: Props.route.params.courses,
+                    course: course,
+                    prof: Props.route.params.profName,
                   })
                 }}
                 key={undefined}

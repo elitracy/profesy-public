@@ -114,7 +114,7 @@ export const Home = () => {
               setWordEntered(data === undefined ? '' : data)
               // if (filterType === 'p') {
               getProfessor(data, setFilteredProfData)
-              // } else if (filterType === 'c') {
+              // } else if
               getCourses(data, setFilteredCourseData)
               // }
             }}
@@ -193,7 +193,9 @@ export const Home = () => {
       </View>
 
       {/*search results*/}
-      {filteredProfData.length != 0 && (
+      {filteredProfData.length !== 0 ||
+      filteredCourseData.length !== 0 ||
+      wordEntered.length === 0 ? (
         <ScrollView
           style={{
             width: '100%',
@@ -205,6 +207,9 @@ export const Home = () => {
           {filterType === 'p' &&
             filteredProfData
               .slice(0, 10)
+              .sort((a: any, b: any) => {
+                return b.overallGPA - a.overallGPA
+              })
               .map(
                 (value: {
                   name: string
@@ -315,6 +320,18 @@ export const Home = () => {
                 )
               })}
         </ScrollView>
+      ) : (
+        <View
+          style={{
+            width: '100%',
+            height: '5%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 15 }}>Loading ...</Text>
+        </View>
       )}
     </SafeAreaView>
   )
@@ -378,7 +395,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     padding: 5,
-    marginVertical: 8,
+    marginVertical: 6,
     shadowOffset: { width: 4, height: 3 },
     shadowOpacity: 1,
     shadowRadius: 0,

@@ -67,10 +67,17 @@ export function Account(Props: any) {
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
+        backgroundColor: 'black',
+        height: '85%',
       }}
     >
       <Text
-        style={{ fontSize: 40, marginTop: 20, marginBottom: 20, opacity: 0.75 }}
+        style={{
+          color: 'white',
+          fontSize: 40,
+          marginTop: 20,
+          marginBottom: 50,
+        }}
       >
         Account
       </Text>
@@ -95,7 +102,7 @@ export function Account(Props: any) {
               shadowColor: colors.GRAY,
               shadowOffset: { width: 2, height: 2 },
               shadowRadius: 0,
-              shadowOpacity: 1,
+              shadowOpacity: 0,
               marginBottom: 20,
             }}
           >
@@ -133,7 +140,7 @@ export function Account(Props: any) {
               shadowColor: colors.GRAY,
               shadowOffset: { width: 2, height: 2 },
               shadowRadius: 0,
-              shadowOpacity: 1,
+              shadowOpacity: 0,
               marginTop: 0,
               marginBottom: 20,
             }}
@@ -195,7 +202,7 @@ export function Account(Props: any) {
           shadowColor: colors.GRAY,
           shadowOffset: { width: 2, height: 2 },
           shadowRadius: 0,
-          shadowOpacity: 1,
+          shadowOpacity: 0,
           marginBottom: 20,
         }}
         onPress={() => {

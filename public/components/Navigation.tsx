@@ -103,7 +103,7 @@ export function Navigation() {
 // STYLES - NOTE: convert to inline
 const styles = StyleSheet.create({
   navContainer: {
-    height: '12%',
+    height: '15%',
     position: 'absolute',
     zIndex: 100,
     bottom: 0,
