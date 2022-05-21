@@ -142,7 +142,7 @@ export const Home = () => {
         >
           <Pressable
             style={{
-              backgroundColor: filterType === 'p' ? colors.GREY : null,
+              backgroundColor: filterType === 'p' ? colors.GREY : 'black',
               width: '49%',
               borderColor: colors.GREY,
               borderWidth: 2,

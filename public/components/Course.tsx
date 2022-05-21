@@ -351,6 +351,7 @@ export function Course(Props: Props) {
                               marginLeft: -16,
                               fontWeight: '400',
                               fontSize: 15,
+                              color: 'black',
                             },
                             togglePercentages && { fontWeight: '400' },
                           ]}
@@ -369,7 +370,7 @@ export function Course(Props: Props) {
           {/*DISTRIBUTION GRAPH*/}
           <LineChart
             data={semesterGPAs}
-            style={{ height: 250, width: '95%', zIndex: 1 }}
+            style={{ height: '24%', width: '95%', zIndex: 1 }}
             svg={{
               strokeWidth: 3,
               stroke:
