@@ -27,12 +27,13 @@ mongoUtil.connectToServer((err, client) => {
   // SEARCH PROFESSORS
   app.get("/professors", function (req, res) {
     let name = req.query.name;
-    const regex = new RegExp(escapeRegex(req.query.name), "gi");
+    const regex = new RegExp(escapeRegex(name), "gi");
 
     profs
       .find({ name: regex })
       .limit(SEARCH_LIMIT)
       .toArray((err, results) => {
+        if (err) console.error(err);
         res.send({ professors: results });
       });
   });
@@ -46,12 +47,10 @@ mongoUtil.connectToServer((err, client) => {
   app.get("/login", (req, res) => {
     let user = req.query.username;
     let pw = req.query.password;
-    let loggedIn = false;
     users.findOne({ username: user }, (err, results) => {
-      console.log(results);
       res.send({
         message: results,
-        loggedIn: results !== null && results.password === req.query.password,
+        loggedIn: results !== null && results.password === pw,
       });
     });
   });
@@ -109,7 +108,6 @@ mongoUtil.connectToServer((err, client) => {
             emailExists: emailExists,
             usernameExists: usernameExists,
           });
-          console.log("USER CREATED");
         }
       }
     );
@@ -156,7 +154,6 @@ mongoUtil.connectToServer((err, client) => {
         { $sort: { "_id.gpa": -1 } },
       ])
       .toArray((err, results) => {
-        console.log(results);
         if (err) console.error(err);
         else res.send({ courses: results });
       });
@@ -180,7 +177,6 @@ mongoUtil.connectToServer((err, client) => {
         { $group: { _id: null, courseList: { $addToSet: "$courses.course" } } },
       ])
       .toArray((err, results) => {
-        if (err) console.error(err);
         else if (results.length > 0)
           res.send({ message: results[0].courseList });
         else res.send({ message: [] });
