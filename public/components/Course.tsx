@@ -51,7 +51,7 @@ async function getSemesters(
   )
     .then((result) => result.json())
     .then((result) => {
-      let sortedCourses = sortFilterCourses(course, result.message.courses)
+      const sortedCourses = sortFilterCourses(course, result.message.courses)
       setSemesterInfo(sortedCourses)
       setCurrentSemester(sortedCourses[0])
       return result
@@ -310,8 +310,12 @@ export function Course(Props: Props) {
                 borderColor: 'white',
                 borderRadius: 10,
               }}
+              key={undefined}
             >
-              <Text style={{ fontSize: 30, fontWeight: '300', color: 'white' }}>
+              <Text
+                style={{ fontSize: 30, fontWeight: '300', color: 'white' }}
+                key={undefined}
+              >
                 Grade Distribution
               </Text>
 

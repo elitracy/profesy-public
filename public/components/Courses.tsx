@@ -39,9 +39,10 @@ const handleSearch = (
 ) => {
   const searchWord = text
   setProfList(searchWord)
+
   const newFilter: [{ name: string; gpa: string }] = profList.filter(
-    (value: { name: string; gpa: string }) => {
-      return value.name.toLowerCase().includes(searchWord.toLowerCase())
+    (value: { _id: { gpa: string; name: string } }) => {
+      return value._id.name.toLowerCase().includes(searchWord.toLowerCase())
     }
   )
   if (searchWord === undefined) {
@@ -62,7 +63,6 @@ async function getProfsByCourse(
   )
     .then((result) => result.json())
     .then((result) => {
-      console.log(result.courses)
       setProfList(result.courses)
       setOriginalProfList(result.courses) //save prof list for if search is empty
       return result
@@ -70,16 +70,6 @@ async function getProfsByCourse(
     .catch((err) => {
       console.error(err)
     })
-}
-// getItem - Params(key: string, setStateItem: function) => string
-const getItem = async (key: string, setStateItem: any) => {
-  try {
-    const val = await AsyncStorage.getItem(key)
-    setStateItem(val)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
 }
 
 export const Courses = (Props: Props) => {
@@ -90,7 +80,7 @@ export const Courses = (Props: Props) => {
   const navigation = useNavigation<coursesScreenProp>()
 
   useEffect(
-    (): Promise<any> =>
+    (): any =>
       getProfsByCourse(
         Props.route.params.courseName,
         setProfList,
@@ -135,6 +125,7 @@ export const Courses = (Props: Props) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
+        key={undefined}
       >
         <View
           style={{
@@ -157,6 +148,7 @@ export const Courses = (Props: Props) => {
               data.length === 0
                 ? setProfList(originalProfList)
                 : handleSearch(data, profList, setProfList, originalProfList)
+
               setWordEntered(data === undefined ? '' : data)
             }}
             value={wordEntered}
@@ -175,9 +167,9 @@ export const Courses = (Props: Props) => {
           />
         </View>
         <ScrollView style={{ width: '100%', height: '90%' }}>
-          {profList.length !== 0 ? (
+          {profList.length !== 0 && profList !== undefined ? (
             profList
-              .sort()
+              // .sort()
               .map((prof: { _id: { name: string; gpa: string } }) => {
                 return (
                   <Pressable
@@ -187,7 +179,7 @@ export const Courses = (Props: Props) => {
                       backgroundColor: 'black',
                       borderRadius: 15,
                       flexDirection: 'row',
-                      padding: 5,
+                      padding: 8,
                       marginVertical: 5,
                       justifyContent: 'space-between',
                     }}
@@ -202,7 +194,6 @@ export const Courses = (Props: Props) => {
                       style={{
                         color: 'white',
                         textAlign: 'left',
-                        padding: 5,
                         fontSize: 25,
                         fontWeight: '500',
                         width: '80%',
@@ -213,7 +204,6 @@ export const Courses = (Props: Props) => {
                     <Text
                       style={{
                         textAlign: 'right',
-                        padding: 5,
                         color:
                           parseFloat(prof._id.gpa).toFixed(2) >= 3.5
                             ? colors.BLUE
@@ -243,7 +233,7 @@ export const Courses = (Props: Props) => {
               }}
             >
               <Text style={{ textAlign: 'center', fontSize: 25, marginTop: 5 }}>
-                Loading ...
+                Loading...
               </Text>
             </View>
           )}

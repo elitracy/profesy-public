@@ -121,7 +121,10 @@ export const Home = () => {
             // onFocus={() => setSearchBG(colors.GREY)}
             // onBlur={() => setSearchBG(colors.GREY)}
             value={wordEntered}
-            placeholder="search"
+            placeholder={
+              filterType === 'c' ? 'search by course' : 'search by professor'
+            }
+            placeholderTextColor={colors.GREY}
             style={[
               styles.inputStyles,
               { borderColor: searchBG, width: '100%', marginLeft: -30 },
@@ -361,7 +364,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 0,
-    paddingBottom: 15,
+    paddingBottom: 8,
     marginTop: 8,
     color: 'white',
   },

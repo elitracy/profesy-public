@@ -68,97 +68,104 @@ export function Account(Props: any) {
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: 'black',
-        height: '85%',
+        height: '100%',
       }}
     >
-      <Text
+      <View
         style={{
-          color: 'white',
-          fontSize: 40,
-          marginTop: 20,
-          marginBottom: 50,
+          width: '100%',
+          height: '50%',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
         }}
       >
-        Account
-      </Text>
-
-      {/*user is logged in*/}
-      {loggedIn === 'true' && (
-        <View
+        <Text
           style={{
-            width: '100%',
-            flexDirection: 'column',
-            alignItems: 'center',
+            color: 'white',
+            fontSize: 40,
+            marginBottom: 8,
           }}
         >
-          {/*NAME/USERNAME*/}
+          Account
+        </Text>
+
+        {/*user is logged in*/}
+        {loggedIn === 'true' && (
           <View
             style={{
-              width: '75%',
-              padding: 10,
+              width: '100%',
+              flexDirection: 'column',
               alignItems: 'center',
-              backgroundColor: colors.GREEN,
-              borderRadius: 5,
-              shadowColor: colors.GRAY,
-              shadowOffset: { width: 2, height: 2 },
-              shadowRadius: 0,
-              shadowOpacity: 0,
-              marginBottom: 20,
             }}
           >
-            <Text
+            {/*NAME/USERNAME*/}
+            <View
               style={{
-                fontSize: 25,
-                color: 'white',
-                fontWeight: '700',
+                width: '75%',
+                padding: 10,
+                alignItems: 'center',
+                backgroundColor: colors.GREEN,
+                borderRadius: 5,
+                shadowColor: colors.GRAY,
+                shadowOffset: { width: 2, height: 2 },
+                shadowRadius: 0,
+                shadowOpacity: 0,
+                marginBottom: 20,
               }}
             >
-              {name}
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 25,
                   color: 'white',
-                  fontWeight: '400',
-                  letterSpacing: 1,
-                  opacity: 0.7,
+                  fontWeight: '700',
                 }}
               >
-                {' '}
-                {username}
+                {name}
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: 'white',
+                    fontWeight: '400',
+                    letterSpacing: 1,
+                    opacity: 0.7,
+                  }}
+                >
+                  {' '}
+                  {username}
+                </Text>
               </Text>
-            </Text>
-          </View>
+            </View>
 
-          {/*EMAIL*/}
-          <View
-            style={{
-              width: '75%',
-              padding: 10,
-              alignItems: 'center',
-              backgroundColor: colors.ORANGE,
-              borderRadius: 5,
-              shadowColor: colors.GRAY,
-              shadowOffset: { width: 2, height: 2 },
-              shadowRadius: 0,
-              shadowOpacity: 0,
-              marginTop: 0,
-              marginBottom: 20,
-            }}
-          >
-            <Text
+            {/*EMAIL*/}
+            <View
               style={{
-                fontSize: 15,
-                color: 'white',
-                fontWeight: '500',
-                letterSpacing: 1,
+                width: '75%',
+                padding: 10,
+                alignItems: 'center',
+                backgroundColor: colors.ORANGE,
+                borderRadius: 5,
+                shadowColor: colors.GRAY,
+                shadowOffset: { width: 2, height: 2 },
+                shadowRadius: 0,
+                shadowOpacity: 0,
+                marginTop: 0,
+                marginBottom: 20,
               }}
             >
-              {email}
-            </Text>
-          </View>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'white',
+                  fontWeight: '500',
+                  letterSpacing: 1,
+                }}
+              >
+                {email}
+              </Text>
+            </View>
 
-          {/*CHANGE PASS*/}
-          {/* <TouchableOpacity
+            {/*CHANGE PASS*/}
+            {/* <TouchableOpacity
             style={{
               width: '75%',
               padding: 10,
@@ -187,43 +194,74 @@ export function Account(Props: any) {
               Reset Password
             </Text>
           </TouchableOpacity> */}
-        </View>
-      )}
+          </View>
+        )}
 
-      {/*user is logged out*/}
-      {/*LOGOUT BUTTON*/}
-      <TouchableOpacity
-        style={{
-          width: '75%',
-          padding: 10,
-          alignItems: 'center',
-          backgroundColor: colors.RED,
-          borderRadius: 5,
-          shadowColor: colors.GRAY,
-          shadowOffset: { width: 2, height: 2 },
-          shadowRadius: 0,
-          shadowOpacity: 0,
-          marginBottom: 20,
-        }}
-        onPress={() => {
-          storeItem('name', 'N/A')
-          storeItem('username', 'N/A')
-          storeItem('email', 'N/A')
-          storeItem('loggedIn', 'false')
-          navigation.navigate('Login')
-        }}
-      >
-        <Text
+        {/*user is logged out*/}
+        {/*LOGOUT BUTTON*/}
+        <TouchableOpacity
           style={{
-            fontSize: 30,
-            color: 'white',
-            fontWeight: '700',
-            letterSpacing: 1,
+            width: '75%',
+            padding: 10,
+            paddingBottom: 12,
+            alignItems: 'center',
+            borderRadius: 15,
+            marginBottom: 20,
+            borderColor: 'white',
+            borderWidth: 2,
+          }}
+          onPress={() => {
+            storeItem('name', 'N/A')
+            storeItem('username', 'N/A')
+            storeItem('email', 'N/A')
+            storeItem('loggedIn', 'false')
+            navigation.navigate('Login')
           }}
         >
-          {loggedIn === 'true' ? 'Logout' : 'Login'}
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 30,
+              color: 'white',
+              fontWeight: '700',
+              letterSpacing: 1,
+            }}
+          >
+            {loggedIn === 'true' ? 'Logout' : 'Login'}
+          </Text>
+        </TouchableOpacity>
+        {loggedIn === 'false' && (
+          <TouchableOpacity
+            style={{
+              width: '75%',
+              padding: 10,
+              paddingBottom: 12,
+              alignItems: 'center',
+              borderRadius: 15,
+              marginBottom: 20,
+              borderColor: 'white',
+              borderWidth: 2,
+            }}
+            onPress={() => {
+              storeItem('name', 'N/A')
+              storeItem('username', 'N/A')
+              storeItem('email', 'N/A')
+              storeItem('loggedIn', 'false')
+              navigation.navigate('Signup')
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                color: 'white',
+                fontWeight: '700',
+                letterSpacing: 1,
+              }}
+            >
+              {'Sign Up'}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </SafeAreaView>
   )
 }
