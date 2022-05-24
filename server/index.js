@@ -177,6 +177,7 @@ mongoUtil.connectToServer((err, client) => {
         { $group: { _id: null, courseList: { $addToSet: "$courses.course" } } },
       ])
       .toArray((err, results) => {
+        if (err) console.error(err);
         else if (results.length > 0)
           res.send({ message: results[0].courseList });
         else res.send({ message: [] });
