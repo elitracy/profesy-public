@@ -125,7 +125,6 @@ export function LandingPage() {
               {
                 marginBottom: 6,
                 borderColor: 'white',
-                color: 'white',
                 backgroundColor: 'white',
               },
             ]}
@@ -228,7 +227,7 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingLeft: 5,
     fontSize: 15,
-    color: 'white',
+    color: 'black',
   },
   incorrectLoginStyles: {
     textAlign: 'center',
