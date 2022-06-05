@@ -145,6 +145,7 @@ export const Courses = (Props: Props) => {
           <TextInput
             // queries both at first time for better UX
             onChangeText={(data) => {
+              console.log(data)
               data.length === 0
                 ? setProfList(originalProfList)
                 : handleSearch(data, profList, setProfList, originalProfList)
@@ -153,6 +154,7 @@ export const Courses = (Props: Props) => {
             }}
             value={wordEntered}
             placeholder="search"
+            keyboardAppearance="dark"
             style={{
               borderWidth: 2,
               borderRightWidth: 0,
@@ -191,6 +193,7 @@ export const Courses = (Props: Props) => {
                     }}
                   >
                     <Text
+                      key={undefined}
                       style={{
                         color: 'white',
                         textAlign: 'left',
@@ -202,6 +205,7 @@ export const Courses = (Props: Props) => {
                       {prof._id.name}
                     </Text>
                     <Text
+                      key={undefined}
                       style={{
                         textAlign: 'right',
                         color:
