@@ -8,7 +8,6 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -16,6 +15,7 @@ import { RootStackParamList } from '../RootStackParams'
 import { colors } from '../assets/colors'
 import { sha256 } from 'js-sha256'
 import React from 'react'
+import { getItem, storeItem } from '../assets/localStorage'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
@@ -35,27 +35,6 @@ async function loginAPI(username: string, password: string) {
     })
 }
 
-// storeItem - Params(key:string, value:any) => val:any
-const storeItem = async (key: string, value: any) => {
-  try {
-    const val = await AsyncStorage.setItem(key, value)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
-}
-
-// getItem - Params(key:string, steItemState:any) => val:any
-const getItem = async (key: string, setItemState: any) => {
-  try {
-    const val = await AsyncStorage.getItem(key)
-    setItemState(val)
-    return val
-  } catch (e: { message: string }) {
-    console.log('error', e.message)
-  }
-}
-
 export function LandingPage() {
   // SET STATES
   const [username, setUsername] = useState('')
@@ -64,13 +43,6 @@ export function LandingPage() {
   const [loggedIn, setLoggedIn] = useState('false')
 
   const navigation = useNavigation<loginScreenProp>()
-
-  // navigate to home screen if logged in
-  getItem('loggedIn', setLoggedIn).then(() => {
-    if (loggedIn === 'true') {
-      navigation.navigate('Home')
-    }
-  })
 
   // not logged in
   return (
@@ -85,7 +57,7 @@ export function LandingPage() {
         style={{
           width: '100%',
           height: '60%',
-          diplay: 'flex',
+          display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
         }}

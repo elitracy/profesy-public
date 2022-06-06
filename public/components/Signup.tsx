@@ -8,7 +8,6 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -16,6 +15,7 @@ import { RootStackParamList } from '../RootStackParams'
 import { colors } from '../assets/colors'
 import { sha256 } from 'js-sha256'
 import React from 'react'
+import { getItem, storeItem } from '../assets/localStorage'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
@@ -44,16 +44,6 @@ async function signupAPI(
     .catch((err) => {
       console.error(err)
     })
-}
-
-// storeItem - Params(key:string, value:any) => value:any
-const storeItem = async (key: string, value: any) => {
-  try {
-    const val = await AsyncStorage.setItem(key, value)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
 }
 
 export function Signup() {

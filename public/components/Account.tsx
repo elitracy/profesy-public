@@ -4,30 +4,9 @@ import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../RootStackParams'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { colors } from '../assets/colors'
 import React from 'react'
-
-// getItem - Params(key:string, setItemState: function) => string
-const getItem = async (key: string, setItemState: any) => {
-  try {
-    const val = await AsyncStorage.getItem(key)
-    setItemState(val)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
-}
-
-// storeItem - Params(key:string, value:any) => value
-const storeItem = async (key: string, value: any) => {
-  try {
-    const val = await AsyncStorage.setItem(key, value)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
-}
+import { getItem, storeItem } from '../assets/localStorage'
 
 // getCode - Params(email:string, setPassCode: function) => Promise
 async function getCode(email: string, setPassCode: any): Promise<any> {
@@ -53,7 +32,7 @@ export function Account(Props: any) {
   const [email, setEmail] = useState('N/A')
   const [name, setName] = useState('N/A')
   const [loggedIn, setLoggedIn] = useState('false')
-  const [passCode, setPassCode] = useState('')
+  // const [passCode, setPassCode] = useState('')
   const navigation = useNavigation<accountScreenProp>()
 
   getItem('username', setUsername)

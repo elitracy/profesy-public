@@ -9,7 +9,6 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
 import { colors } from '../assets/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -17,6 +16,7 @@ import { RootStackParamList, Course } from '../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import React from 'react'
+import { getItem } from '../assets/localStorage'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -44,17 +44,6 @@ async function getCourses(course: string, setFilteredData: any): Promise<any> {
     .catch((err) => {
       console.error(err)
     })
-}
-
-// getItem - Params(key: string, setStateItem: function) => string
-const getItem = async (key: string, setStateItem: any) => {
-  try {
-    const val = await AsyncStorage.getItem(key)
-    setStateItem(val)
-    return val
-  } catch (e: any) {
-    console.log('error', e.message)
-  }
 }
 
 export const Home = () => {

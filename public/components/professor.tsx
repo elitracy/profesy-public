@@ -9,7 +9,6 @@ import {
   Text,
 } from 'react-native'
 import { colors, randomColor } from '../assets/colors'
-import { Icon } from 'react-native-elements'
 import { RootStackParamList, Course } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
