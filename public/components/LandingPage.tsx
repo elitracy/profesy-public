@@ -79,6 +79,7 @@ export function LandingPage() {
             value={username}
             clearTextOnFocus={true}
             placeholder="Username"
+            keyboardAppearance="dark"
             style={[
               styles.inputStyles,
               {
@@ -92,6 +93,7 @@ export function LandingPage() {
             onChangeText={setPassword}
             autoCapitalize="none"
             clearTextOnFocus={true}
+            keyboardAppearance="dark"
             style={[
               styles.inputStyles,
               {

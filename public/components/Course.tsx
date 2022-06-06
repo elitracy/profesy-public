@@ -209,6 +209,7 @@ export function Course(Props: Props) {
                 onBlur={() => setSearchBG(colors.PURPLE)}
                 value={wordEntered}
                 placeholder="search by semester"
+                keyboardAppearance="dark"
                 style={[styles.inputStyles, { display: 'none' }]}
               />
             </View>

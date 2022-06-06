@@ -35,7 +35,9 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
 
 async function getCourses(course: string, setFilteredData: any): Promise<any> {
   // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
-  return await fetch(`https://profesy.herokuapp.com/courses?course=${course}`)
+  return await fetch(
+    `https://profesy.herokuapp.com/courses?course=${course.replace(/\s+/g, '')}`
+  )
     .then((result) => result.json())
     .then((result) => {
       setFilteredData(result.message)
@@ -101,19 +103,15 @@ export const Home = () => {
             // queries both at first time for better UX
             onChangeText={(data) => {
               setWordEntered(data === undefined ? '' : data)
-              // if (filterType === 'p') {
               getProfessor(data, setFilteredProfData)
-              // } else if
               getCourses(data, setFilteredCourseData)
-              // }
             }}
-            // onFocus={() => setSearchBG(colors.GREY)}
-            // onBlur={() => setSearchBG(colors.GREY)}
             value={wordEntered}
             placeholder={
               filterType === 'c' ? 'search by course' : 'search by professor'
             }
             placeholderTextColor={colors.GREY}
+            keyboardAppearance="dark"
             style={[
               styles.inputStyles,
               { borderColor: searchBG, width: '100%', marginLeft: -30 },

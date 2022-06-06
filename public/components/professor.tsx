@@ -44,6 +44,7 @@ export function Professor(Props: Props) {
   // FZF String match
   // handleSearch - Params(search:string, course:string[], setCourses:function)
   function handleSearch(search: string, courses: string[], setCourses: any) {
+    search = search.replace(/\s+/g, '')
     setCourses(
       search.length === 0
         ? allCourses
