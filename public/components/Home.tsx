@@ -8,15 +8,17 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  Image,
 } from 'react-native'
-import { useState } from 'react'
 import { colors } from '../assets/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList, Course } from '../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
-import { Icon } from 'react-native-elements'
+import { Icon as RNIcon } from 'react-native-elements'
+import { useState, useEffect } from 'react'
 import React from 'react'
-import { getItem } from '../assets/localStorage'
+import { getItem, storeItem } from '../assets/localStorage'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -50,16 +52,21 @@ async function getCourses(course: string, setFilteredData: any): Promise<any> {
 
 export const Home = () => {
   // set states
-  const [searchBG, setSearchBG] = useState('black')
   const [filteredProfData, setFilteredProfData] = useState([])
   const [filteredCourseData, setFilteredCourseData] = useState([])
   const [wordEntered, setWordEntered] = useState('')
   const [nameTitle, setNameTitle] = useState('')
   const [loggedIn, setLoggedIn] = useState('false')
   const [filterType, setFilterType] = useState('p')
+  const [profHistory, setProfHistory] = useState([])
+  const [courseHistory, setCourseHistory] = useState([])
 
-  getItem('name', setNameTitle)
-  getItem('loggedIn', setLoggedIn)
+  useEffect(() => {
+    getItem('name', setNameTitle)
+    getItem('loggedIn', setLoggedIn)
+    // !getItem('profHistory', setProfHistory) && setProfHistory([])
+    // getItem('courseHistory', setCourseHistory)
+  }, [])
 
   const navigation = useNavigation<homeScreenProp>()
 
@@ -94,7 +101,7 @@ export const Home = () => {
             width: '100%',
           }}
         >
-          <Icon
+          <RNIcon
             name="search"
             style={{ opacity: 0.7, marginLeft: 5 }}
             tvParallaxProperties={null}
@@ -112,10 +119,7 @@ export const Home = () => {
             }
             placeholderTextColor={colors.GREY}
             keyboardAppearance="dark"
-            style={[
-              styles.inputStyles,
-              { borderColor: searchBG, width: '100%', marginLeft: -30 },
-            ]}
+            style={[styles.inputStyles, { width: '100%', marginLeft: -30 }]}
           />
         </View>
 
@@ -159,7 +163,6 @@ export const Home = () => {
               backgroundColor: filterType === 'c' ? colors.GREY : null,
               width: '49%',
               borderColor: colors.GREY,
-              borderColor: colors.GREY,
               borderWidth: 2,
               borderRadius: 5,
             }}
@@ -183,9 +186,7 @@ export const Home = () => {
       </View>
 
       {/*search results*/}
-      {filteredProfData.length !== 0 ||
-      filteredCourseData.length !== 0 ||
-      wordEntered.length === 0 ? (
+      {wordEntered.replace(/\s+/g, '').length > 0 ? (
         <ScrollView
           style={{
             width: '100%',
@@ -223,12 +224,15 @@ export const Home = () => {
                               : colors.RED,
                         },
                       ]}
-                      onPress={() =>
+                      onPress={() => {
                         navigation.navigate('Professor', {
                           profName: value.name,
                           courses: value.courses,
                         })
-                      }
+                        !profHistory
+                          ? setProfHistory([value])
+                          : profHistory.push(value)
+                      }}
                       key={undefined}
                     >
                       <Text
@@ -261,18 +265,6 @@ export const Home = () => {
                       >
                         {parseFloat(value.overallGPA).toFixed(2)}
                       </Text>
-                      {/*<Text
-                        style={{
-                          marginTop: -6,
-                          paddingBottom: 3,
-                          color: 'white',
-                          textAlign: 'center',
-                          fontSize: 18,
-                          opacity: 0.85,
-                        }}
-                      >
-                        {value.university}{' '}
-                      </Text>*/}
                     </TouchableOpacity>
                   )
                 }
@@ -283,15 +275,16 @@ export const Home = () => {
             filteredCourseData
               .sort()
               .slice(0, 10)
-              .map((value: string) => {
+              .map((value: never) => {
                 return (
                   <TouchableOpacity
                     style={[styles.courseResultContainer]}
-                    onPress={() =>
+                    onPress={() => {
                       navigation.navigate('Courses', {
                         courseName: value,
                       })
-                    }
+                      courseHistory.push(value)
+                    }}
                     key={undefined}
                   >
                     <Text
@@ -314,13 +307,121 @@ export const Home = () => {
         <View
           style={{
             width: '100%',
-            height: '5%',
+            height: 'auto',
             display: 'flex',
-            justifyContent: 'center',
             alignItems: 'center',
           }}
         >
-          <Text style={{ color: 'white', fontSize: 15 }}>Loading ...</Text>
+          {filterType === 'p'
+            ? profHistory &&
+              profHistory.length > 0 &&
+              profHistory.slice(0, 10).map((prof) => {
+                return (
+                  <View
+                    key={undefined}
+                    style={{
+                      width: '92%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      padding: 8,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate('Professor', {
+                          profName: prof.name,
+                          courses: prof.courses,
+                        })
+                      }
+                      style={{ width: '100%' }}
+                    >
+                      <Text
+                        key={undefined}
+                        style={{
+                          color: 'rgba(255,255,255,.8)',
+                          width: '100%',
+                          fontSize: 28,
+                        }}
+                      >
+                        {prof.name}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() =>
+                        setProfHistory(
+                          profHistory.filter((elem) => {
+                            return elem.name !== prof.name
+                          })
+                        )
+                      }
+                    >
+                      <Icon
+                        name="close"
+                        size={20}
+                        style={{
+                          color: 'rgba(255,255,255,.8)',
+                        }}
+                      />
+                    </Pressable>
+                  </View>
+                )
+              })
+            : courseHistory &&
+              courseHistory.length > 0 &&
+              courseHistory.slice(0, 10).map((course) => {
+                return (
+                  <View
+                    key={undefined}
+                    style={{
+                      width: '92%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      padding: 8,
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate('Courses', {
+                          courseName: course,
+                        })
+                      }
+                      style={{ width: '100%' }}
+                    >
+                      <Text
+                        key={undefined}
+                        style={{
+                          color: 'rgba(255,255,255,.8)',
+                          width: '100%',
+                          fontSize: 28,
+                        }}
+                      >
+                        {course}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() =>
+                        setCourseHistory(
+                          courseHistory.filter((elem) => {
+                            return elem !== course
+                          })
+                        )
+                      }
+                    >
+                      <Icon
+                        name="close"
+                        size={20}
+                        style={{
+                          color: 'rgba(255,255,255,.8)',
+                        }}
+                      />
+                    </Pressable>
+                  </View>
+                )
+              })}
         </View>
       )}
     </SafeAreaView>

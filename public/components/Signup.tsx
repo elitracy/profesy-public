@@ -201,6 +201,10 @@ export function Signup() {
                     storeItem('name', res.name)
                     storeItem('username', res.username)
                     storeItem('email', res.email)
+                    storeItem('loggedIn', 'true')
+                    //intialize search history
+                    storeItem('profHistory', [])
+                    storeItem('courseHistory', [])
                   }
                   res.userInsert === 1 ? navigation.navigate('Home') : null
                 })
