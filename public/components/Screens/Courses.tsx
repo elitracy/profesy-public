@@ -4,17 +4,16 @@ import {
   SafeAreaView,
   View,
   TextInput,
-  TouchableOpacity,
   Pressable,
   ScrollView,
 } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { colors } from '../assets/colors'
+import { colors } from '../../assets/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../RootStackParams'
+import { RootStackParamList } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
-import { React, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import React from 'react'
 
 type coursesScreenProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -77,6 +76,7 @@ export const Courses = (Props: Props) => {
   const [originalProfList, setOriginalProfList] = useState([])
   const [searchBG, setSearchBG] = useState('black')
   const [wordEntered, setWordEntered] = useState('')
+
   const navigation = useNavigation<coursesScreenProp>()
 
   useEffect(
@@ -170,62 +170,60 @@ export const Courses = (Props: Props) => {
         </View>
         <ScrollView style={{ width: '100%', height: '90%' }}>
           {profList.length !== 0 && profList !== undefined ? (
-            profList
-              // .sort()
-              .map((prof: { _id: { name: string; gpa: string } }) => {
-                return (
-                  <Pressable
+            profList.map((prof: { _id: { name: string; gpa: string } }) => {
+              return (
+                <Pressable
+                  key={undefined}
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'black',
+                    borderRadius: 15,
+                    flexDirection: 'row',
+                    padding: 8,
+                    marginVertical: 5,
+                    justifyContent: 'space-between',
+                  }}
+                  onPress={() => {
+                    navigation.navigate('Course', {
+                      course: Props.route.params.courseName,
+                      prof: prof._id.name,
+                    })
+                  }}
+                >
+                  <Text
                     key={undefined}
                     style={{
-                      width: '100%',
-                      backgroundColor: 'black',
-                      borderRadius: 15,
-                      flexDirection: 'row',
-                      padding: 8,
-                      marginVertical: 5,
-                      justifyContent: 'space-between',
-                    }}
-                    onPress={() => {
-                      navigation.navigate('Course', {
-                        course: Props.route.params.courseName,
-                        prof: prof._id.name,
-                      })
+                      color: 'white',
+                      textAlign: 'left',
+                      fontSize: 25,
+                      fontWeight: '500',
+                      width: '80%',
                     }}
                   >
-                    <Text
-                      key={undefined}
-                      style={{
-                        color: 'white',
-                        textAlign: 'left',
-                        fontSize: 25,
-                        fontWeight: '500',
-                        width: '80%',
-                      }}
-                    >
-                      {prof._id.name}
-                    </Text>
-                    <Text
-                      key={undefined}
-                      style={{
-                        textAlign: 'right',
-                        color:
-                          parseFloat(prof._id.gpa).toFixed(2) >= 3.5
-                            ? colors.BLUE
-                            : parseFloat(prof._id.gpa).toFixed(2) >= 3.0
-                            ? colors.GREEN
-                            : parseFloat(prof._id.gpa).toFixed(2) >= 2.5
-                            ? colors.ORANGE
-                            : colors.RED,
-                        fontSize: 25,
-                        fontWeight: '800',
-                        width: '20%',
-                      }}
-                    >
-                      {parseFloat(prof._id.gpa).toFixed(2)}
-                    </Text>
-                  </Pressable>
-                )
-              })
+                    {prof._id.name}
+                  </Text>
+                  <Text
+                    key={undefined}
+                    style={{
+                      textAlign: 'right',
+                      color:
+                        parseFloat(prof._id.gpa).toFixed(2) >= 3.5
+                          ? colors.BLUE
+                          : parseFloat(prof._id.gpa).toFixed(2) >= 3.0
+                          ? colors.GREEN
+                          : parseFloat(prof._id.gpa).toFixed(2) >= 2.5
+                          ? colors.ORANGE
+                          : colors.RED,
+                      fontSize: 25,
+                      fontWeight: '800',
+                      width: '20%',
+                    }}
+                  >
+                    {parseFloat(prof._id.gpa).toFixed(2)}
+                  </Text>
+                </Pressable>
+              )
+            })
           ) : (
             <View
               style={{

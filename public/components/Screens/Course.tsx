@@ -11,8 +11,8 @@ import {
   ScrollView,
 } from 'react-native'
 import React from 'react'
-import { colors } from '../assets/colors'
-import { RootStackParamList, Course as CourseType } from '../RootStackParams'
+import { colors } from '../../assets/colors'
+import { RootStackParamList, Course as CourseType } from '../../RootStackParams'
 import { useState, useEffect } from 'react'
 import { LineChart } from 'react-native-svg-charts'
 import { G, Text as SVGText, Circle } from 'react-native-svg'

@@ -3,10 +3,10 @@ import { Text, SafeAreaView, View, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../RootStackParams'
-import { colors } from '../assets/colors'
+import { RootStackParamList } from '../../RootStackParams'
+import { colors } from '../../assets/colors'
 import React from 'react'
-import { getItem, storeItem } from '../assets/localStorage'
+import { getItem, storeItem } from '../../assets/localStorage'
 
 // getCode - Params(email:string, setPassCode: function) => Promise
 async function getCode(email: string, setPassCode: any): Promise<any> {

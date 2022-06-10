@@ -8,8 +8,8 @@ import {
   SafeAreaView,
   Text,
 } from 'react-native'
-import { colors, randomColor } from '../assets/colors'
-import { RootStackParamList, Course } from '../RootStackParams'
+import { colors, randomColor } from '../../assets/colors'
+import { RootStackParamList, Course } from '../../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'

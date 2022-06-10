@@ -11,11 +11,11 @@ import {
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../RootStackParams'
-import { colors } from '../assets/colors'
+import { RootStackParamList } from '../../RootStackParams'
+import { colors } from '../../assets/colors'
 import { sha256 } from 'js-sha256'
 import React from 'react'
-import { getItem, storeItem } from '../assets/localStorage'
+import { getItem, storeItem } from '../../assets/localStorage'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 

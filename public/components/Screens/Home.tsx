@@ -6,19 +6,18 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Pressable,
   ScrollView,
-  Image,
 } from 'react-native'
-import { colors } from '../assets/colors'
+import { colors } from '../../assets/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList, Course } from '../RootStackParams'
+import { RootStackParamList, Course } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
 import { Icon as RNIcon } from 'react-native-elements'
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { getItem, storeItem } from '../assets/localStorage'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { getItem, storeItem } from '../../assets/localStorage'
+import { SearchFilter } from '../SearchFilter'
+import { HistoryResult } from '../HistoryResult'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -64,8 +63,6 @@ export const Home = () => {
   useEffect(() => {
     getItem('name', setNameTitle)
     getItem('loggedIn', setLoggedIn)
-    // !getItem('profHistory', setProfHistory) && setProfHistory([])
-    // getItem('courseHistory', setCourseHistory)
   }, [])
 
   const navigation = useNavigation<homeScreenProp>()
@@ -134,54 +131,18 @@ export const Home = () => {
             paddingTop: 5,
           }}
         >
-          <Pressable
-            style={{
-              backgroundColor: filterType === 'p' ? colors.GREY : 'black',
-              width: '49%',
-              borderColor: colors.GREY,
-              borderWidth: 2,
-              borderRadius: 5,
-            }}
-            onPress={() => {
-              setFilterType('p')
-            }}
-          >
-            <Text
-              style={{
-                color: 'white',
-                fontWeight: '800',
-                textAlign: 'center',
-                padding: 5,
-                paddingVertical: 7,
-              }}
-            >
-              Professor
-            </Text>
-          </Pressable>
-          <Pressable
-            style={{
-              backgroundColor: filterType === 'c' ? colors.GREY : null,
-              width: '49%',
-              borderColor: colors.GREY,
-              borderWidth: 2,
-              borderRadius: 5,
-            }}
-            onPress={() => {
-              setFilterType('c')
-            }}
-          >
-            <Text
-              style={{
-                color: 'white',
-                textAlign: 'center',
-                padding: 5,
-                paddingVertical: 7,
-                fontWeight: '800',
-              }}
-            >
-              Course
-            </Text>
-          </Pressable>
+          <SearchFilter
+            filterType={filterType}
+            setFilterType={setFilterType}
+            filterValue={'p'}
+            filterTitle={'Professor'}
+          />
+          <SearchFilter
+            filterType={filterType}
+            setFilterType={setFilterType}
+            filterValue={'c'}
+            filterTitle={'Course'}
+          />
         </View>
       </View>
 
@@ -304,6 +265,7 @@ export const Home = () => {
               })}
         </ScrollView>
       ) : (
+        /*Search History*/
         <View
           style={{
             width: '100%',
@@ -317,109 +279,35 @@ export const Home = () => {
               profHistory.length > 0 &&
               profHistory.slice(0, 10).map((prof) => {
                 return (
-                  <View
-                    key={undefined}
-                    style={{
-                      width: '92%',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-around',
-                      padding: 8,
+                  <HistoryResult
+                    navigation={navigation}
+                    nextScreen={'Professor'}
+                    nextScreenParams={{
+                      profName: prof['name'],
+                      courses: prof['courses'],
                     }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate('Professor', {
-                          profName: prof.name,
-                          courses: prof.courses,
-                        })
-                      }
-                      style={{ width: '100%' }}
-                    >
-                      <Text
-                        key={undefined}
-                        style={{
-                          color: 'rgba(255,255,255,.8)',
-                          width: '100%',
-                          fontSize: 28,
-                        }}
-                      >
-                        {prof.name}
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() =>
-                        setProfHistory(
-                          profHistory.filter((elem) => {
-                            return elem.name !== prof.name
-                          })
-                        )
-                      }
-                    >
-                      <Icon
-                        name="close"
-                        size={20}
-                        style={{
-                          color: 'rgba(255,255,255,.8)',
-                        }}
-                      />
-                    </Pressable>
-                  </View>
+                    displayText={prof['name']}
+                    filterItem={prof}
+                    history={profHistory}
+                    setHistory={setProfHistory}
+                    key={undefined}
+                  />
                 )
               })
             : courseHistory &&
               courseHistory.length > 0 &&
               courseHistory.slice(0, 10).map((course) => {
                 return (
-                  <View
+                  <HistoryResult
+                    navigation={navigation}
+                    nextScreen={'Courses'}
+                    nextScreenParams={{ courseName: course }}
+                    displayText={course}
+                    filterItem={course}
+                    history={courseHistory}
+                    setHistory={setCourseHistory}
                     key={undefined}
-                    style={{
-                      width: '92%',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-around',
-                      padding: 8,
-                    }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate('Courses', {
-                          courseName: course,
-                        })
-                      }
-                      style={{ width: '100%' }}
-                    >
-                      <Text
-                        key={undefined}
-                        style={{
-                          color: 'rgba(255,255,255,.8)',
-                          width: '100%',
-                          fontSize: 28,
-                        }}
-                      >
-                        {course}
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() =>
-                        setCourseHistory(
-                          courseHistory.filter((elem) => {
-                            return elem !== course
-                          })
-                        )
-                      }
-                    >
-                      <Icon
-                        name="close"
-                        size={20}
-                        style={{
-                          color: 'rgba(255,255,255,.8)',
-                        }}
-                      />
-                    </Pressable>
-                  </View>
+                  />
                 )
               })}
         </View>
