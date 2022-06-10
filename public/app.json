@@ -2,13 +2,13 @@
   "expo": {
     "name": "Profesy",
     "slug": "Profesy",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon_dark.png",
     "splash": {
-      "image": "./assets/icon.png",
+      "image": "./assets/icon_dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#41B3A3"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
