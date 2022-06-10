@@ -1,13 +1,13 @@
 export type RootStackParamList = {
   Login: undefined
   Home: undefined
+  Signup: undefined
+  Account: undefined
   Professor: { profName: string; courses: Course[] }
   Course: {
     course: string
     prof: string
   }
-  Signup: undefined
-  Account: undefined
   Courses: { courseName: string }
 }
 

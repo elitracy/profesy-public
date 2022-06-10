@@ -9,6 +9,16 @@ export const colors = {
 }
 
 export function randomColor() {
-  let color = Object.values(colors).slice(0, 4)[Math.floor(Math.random() * 4)]
+  const color = Object.values(colors).slice(0, 4)[Math.floor(Math.random() * 4)]
   return color
+}
+
+export function gpaColorizer(gpa: string) {
+  return parseFloat(gpa) > 3.6
+    ? colors.BLUE
+    : parseFloat(gpa) > 3.0
+    ? colors.GREEN
+    : parseFloat(gpa) > 2.4
+    ? colors.ORANGE
+    : colors.RED
 }

@@ -1,6 +1,5 @@
 //IMPORTS
 import {
-  StyleSheet,
   Text,
   SafeAreaView,
   View,
@@ -8,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import { colors } from '../../assets/colors'
+import { colors, gpaColorizer } from '../../assets/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList, Course } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
@@ -18,12 +17,16 @@ import React from 'react'
 import { getItem, storeItem } from '../../assets/localStorage'
 import { SearchFilter } from '../SearchFilter'
 import { HistoryResult } from '../HistoryResult'
+import { styles } from '../../styles/homeStyles'
+import { removeWS } from '../../assets/stringHelpers'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
 // getProfessor - Params(name: string, setFilteredData: function) => Promise
 async function getProfessor(name: string, setFilteredData: any): Promise<any> {
-  return await fetch(`https://profesy.herokuapp.com/professors?name=${name}`)
+  return await fetch(
+    `https://profesy.herokuapp.com/professors?name=${name.toUpperCase()}`
+  )
     .then((result) => result.json())
     .then((result) => {
       setFilteredData(result.professors)
@@ -37,7 +40,7 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
 async function getCourses(course: string, setFilteredData: any): Promise<any> {
   // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
   return await fetch(
-    `https://profesy.herokuapp.com/courses?course=${course.replace(/\s+/g, '')}`
+    `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
   )
     .then((result) => result.json())
     .then((result) => {
@@ -70,7 +73,7 @@ export const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/*header titles*/}
-      <View style={styles.nav}>
+      <View style={styles.header}>
         <Text style={styles.title}>Profesy</Text>
         <Text
           style={[styles.username, { opacity: loggedIn === 'true' ? 1 : 0 }]}
@@ -80,24 +83,8 @@ export const Home = () => {
       </View>
 
       {/*search bar*/}
-      <View
-        style={{
-          width: '95%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'white',
-            borderRadius: 5,
-            width: '100%',
-          }}
-        >
+      <View style={styles.searchContainer}>
+        <View style={styles.searchBarContainer}>
           <RNIcon
             name="search"
             style={{ opacity: 0.7, marginLeft: 5 }}
@@ -121,16 +108,7 @@ export const Home = () => {
         </View>
 
         {/*filter buttons*/}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: 5,
-          }}
-        >
+        <View style={styles.filtersContainer}>
           <SearchFilter
             filterType={filterType}
             setFilterType={setFilterType}
@@ -158,31 +136,25 @@ export const Home = () => {
           {/**Professor Result Container**/}
           {filterType === 'p' &&
             filteredProfData
-              .slice(0, 10)
-              .sort((a: any, b: any) => {
-                return b.overallGPA - a.overallGPA
-              })
+              // .sort((a: any, b: any) => {
+              //   const parsedWord = wordEntered.toUpperCase()
+              //   if (a.name === parsedWord) return a
+              //   if (b.name === parsedWord) return b
+              //   return parsedWord - a.name < parsedWord - b.name
+              // })
+              .slice(0, 20)
               .map(
                 (value: {
                   name: string
-                  university: string
                   overallGPA: string
                   courses: Course[]
-                  department: string
                 }) => {
                   return (
                     <TouchableOpacity
                       style={[
                         styles.profResultContainer,
                         {
-                          shadowColor:
-                            parseFloat(value.overallGPA) > 3.6
-                              ? colors.BLUE
-                              : parseFloat(value.overallGPA) > 3.0
-                              ? colors.GREEN
-                              : parseFloat(value.overallGPA) > 2.4
-                              ? colors.ORANGE
-                              : colors.RED,
+                          shadowColor: gpaColorizer(value.overallGPA),
                         },
                       ]}
                       onPress={() => {
@@ -192,37 +164,18 @@ export const Home = () => {
                         })
                         !profHistory
                           ? setProfHistory([value])
-                          : profHistory.push(value)
+                          : profHistory.unshift(value)
                       }}
                       key={undefined}
                     >
-                      <Text
-                        style={{
-                          padding: 5,
-                          paddingLeft: 15,
-                          color: 'white',
-                          fontSize: 25,
-                          textAlign: 'left',
-                          fontWeight: '500',
-                        }}
-                      >
+                      <Text style={styles.profResultTextName}>
                         {value.name}{' '}
                       </Text>
                       <Text
-                        style={{
-                          paddingRight: 15,
-                          textAlign: 'right',
-                          fontWeight: '800',
-                          fontSize: 25,
-                          color:
-                            parseFloat(value.overallGPA) > 3.6
-                              ? colors.BLUE
-                              : parseFloat(value.overallGPA) > 3.0
-                              ? colors.GREEN
-                              : parseFloat(value.overallGPA) > 2.4
-                              ? colors.ORANGE
-                              : colors.RED,
-                        }}
+                        style={[
+                          styles.profResultTextGPA,
+                          { color: gpaColorizer(value.overallGPA) },
+                        ]}
                       >
                         {parseFloat(value.overallGPA).toFixed(2)}
                       </Text>
@@ -234,150 +187,71 @@ export const Home = () => {
           {/**Courses Result Container**/}
           {filterType === 'c' &&
             filteredCourseData
-              .sort()
-              .slice(0, 10)
+              .sort((a: string, b: string) => {
+                const parsedWord = removeWS(wordEntered).toUpperCase()
+
+                if (a === parsedWord) return a
+                if (b === parsedWord) return b
+                return a - parsedWord > b - parsedWord
+              })
+              .slice(0, 20)
               .map((value: never) => {
                 return (
                   <TouchableOpacity
-                    style={[styles.courseResultContainer]}
+                    style={styles.courseResultContainer}
                     onPress={() => {
                       navigation.navigate('Courses', {
                         courseName: value,
                       })
-                      courseHistory.push(value)
+                      courseHistory.unshift(value)
                     }}
                     key={undefined}
                   >
-                    <Text
-                      style={{
-                        padding: 5,
-                        paddingLeft: 15,
-                        color: 'white',
-                        fontSize: 25,
-                        textAlign: 'left',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {value}
-                    </Text>
+                    <Text style={styles.courseResultText}>{value}</Text>
                   </TouchableOpacity>
                 )
               })}
         </ScrollView>
       ) : (
         /*Search History*/
-        <View
-          style={{
-            width: '100%',
-            height: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {filterType === 'p'
-            ? profHistory &&
-              profHistory.length > 0 &&
-              profHistory.slice(0, 10).map((prof) => {
-                return (
-                  <HistoryResult
-                    navigation={navigation}
-                    nextScreen={'Professor'}
-                    nextScreenParams={{
-                      profName: prof['name'],
-                      courses: prof['courses'],
-                    }}
-                    displayText={prof['name']}
-                    filterItem={prof}
-                    history={profHistory}
-                    setHistory={setProfHistory}
-                    key={undefined}
-                  />
-                )
-              })
-            : courseHistory &&
-              courseHistory.length > 0 &&
-              courseHistory.slice(0, 10).map((course) => {
-                return (
-                  <HistoryResult
-                    navigation={navigation}
-                    nextScreen={'Courses'}
-                    nextScreenParams={{ courseName: course }}
-                    displayText={course}
-                    filterItem={course}
-                    history={courseHistory}
-                    setHistory={setCourseHistory}
-                    key={undefined}
-                  />
-                )
-              })}
-        </View>
+        <ScrollView style={styles.searchHistoryContainer}>
+          {!wordEntered &&
+            (filterType === 'p'
+              ? profHistory &&
+                profHistory.map((prof) => {
+                  return (
+                    <HistoryResult
+                      navigation={navigation}
+                      nextScreen={'Professor'}
+                      nextScreenParams={{
+                        profName: prof['name'],
+                        courses: prof['courses'],
+                      }}
+                      displayText={prof['name']}
+                      filterItem={prof}
+                      history={profHistory}
+                      setHistory={setProfHistory}
+                      key={undefined}
+                    />
+                  )
+                })
+              : courseHistory &&
+                courseHistory.map((course) => {
+                  return (
+                    <HistoryResult
+                      navigation={navigation}
+                      nextScreen={'Courses'}
+                      nextScreenParams={{ courseName: course }}
+                      displayText={course}
+                      filterItem={course}
+                      history={courseHistory}
+                      setHistory={setCourseHistory}
+                      key={undefined}
+                    />
+                  )
+                }))}
+        </ScrollView>
       )}
     </SafeAreaView>
   )
 }
-
-//Styles - NOTE(Need to be converted into inline)
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flexDirection: 'column',
-    height: '88%',
-    backgroundColor: 'black',
-    width: '100%',
-  },
-  title: {
-    fontSize: 35,
-    textAlign: 'left',
-    flex: 3,
-    fontWeight: '700',
-    color: 'white',
-    width: '100%',
-  },
-  nav: {
-    width: '95%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingHorizontal: 0,
-    paddingBottom: 8,
-    marginTop: 8,
-    color: 'white',
-  },
-  username: {
-    flex: 3,
-    textAlign: 'right',
-    paddingRight: 0,
-    fontSize: 25,
-    color: 'white',
-  },
-  inputStyles: {
-    borderWidth: 2,
-    borderRightWidth: 0,
-    borderLeftWidth: 0,
-    padding: 10,
-    paddingLeft: 30,
-    fontSize: 15,
-  },
-  profResultContainer: {
-    backgroundColor: 'black',
-    width: '100%',
-    flexDirection: 'row',
-    padding: 5,
-    paddingVertical: 8,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  courseResultContainer: {
-    borderRadius: 15,
-    backgroundColor: 'black',
-    width: '100%',
-    flexDirection: 'column',
-    padding: 5,
-    marginVertical: 6,
-    shadowOffset: { width: 4, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-  },
-})

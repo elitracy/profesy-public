@@ -177,6 +177,7 @@ export function Account(Props: any) {
         )}
 
         {/*user is logged out*/}
+
         {/*LOGOUT BUTTON*/}
         <TouchableOpacity
           style={{
