@@ -40,7 +40,7 @@ export function LandingPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [badLogin, setBadLogin] = useState(false)
-  const [loggedIn, setLoggedIn] = useState('false')
+  // const [loggedIn, setLoggedIn] = useState('false')
 
   const navigation = useNavigation<loginScreenProp>()
 
@@ -79,6 +79,7 @@ export function LandingPage() {
             value={username}
             clearTextOnFocus={true}
             placeholder="Username"
+            placeholderTextColor={colors.GREY}
             keyboardAppearance="dark"
             style={[
               styles.inputStyles,
@@ -104,6 +105,7 @@ export function LandingPage() {
             ]}
             value={password}
             placeholder="Password"
+            placeholderTextColor={colors.GREY}
             secureTextEntry={true}
           />
           <View
@@ -217,6 +219,7 @@ const styles = StyleSheet.create({
   signupPasswordStyles: {
     textAlign: 'center',
     color: 'white',
+    paddingTop: 2,
   },
   loginStyles: {
     color: 'white',
