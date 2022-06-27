@@ -199,6 +199,11 @@ mongoUtil.connectToServer((err, client) => {
     );
   });
 
+  app.get("/terms", (req, res) => {
+    res.sendFile(__dirname + "/termsOfService.html");
+    console.log(__dirname);
+  });
+
   app.listen(PORT, () => {
     console.log(`Profesy server: 🦧 started on http://localhost:${PORT}`);
   });
