@@ -1,9 +1,9 @@
 // IMPORTS
 import { Image, StyleSheet, Pressable, View } from 'react-native'
 import { useState } from 'react'
-import { colors } from '../assets/colors'
-import accountIcon from '../assets/accountIcon.png'
-import searchIcon from '../assets/searchIcon.png'
+import { colors } from '../utils/colors'
+import accountIcon from '../utils/accountIcon.png'
+import searchIcon from '../utils/searchIcon.png'
 import { RootStackParamList } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'

@@ -7,7 +7,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native'
-import { colors } from '../../assets/colors'
+import { colors } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'

@@ -1,6 +1,6 @@
 import { Pressable, Text } from 'react-native'
 import React, { Dispatch, SetStateAction } from 'react'
-import { colors } from '../assets/colors'
+import { colors } from '../utils/colors'
 
 type Props = {
   route: {

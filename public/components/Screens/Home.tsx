@@ -7,18 +7,18 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native'
-import { colors, gpaColorizer } from '../../assets/colors'
+import { colors, gpaColorizer } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList, Course } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
 import { Icon as RNIcon } from 'react-native-elements'
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { getItem, storeItem } from '../../assets/localStorage'
+import { getItem, storeItem } from '../../utils/localStorage'
 import { SearchFilter } from '../SearchFilter'
 import { HistoryResult } from '../HistoryResult'
 import { styles } from '../../styles/homeStyles'
-import { removeWS } from '../../assets/stringHelpers'
+import { removeWS } from '../../utils/stringHelpers'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -40,7 +40,8 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
 async function getCourses(course: string, setFilteredData: any): Promise<any> {
   // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
   return await fetch(
-    `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
+    // `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
+    `http://localhost:8080/courses?course=${removeWS(course)}`
   )
     .then((result) => result.json())
     .then((result) => {
@@ -136,12 +137,6 @@ export const Home = () => {
           {/**Professor Result Container**/}
           {filterType === 'p' &&
             filteredProfData
-              // .sort((a: any, b: any) => {
-              //   const parsedWord = wordEntered.toUpperCase()
-              //   if (a.name === parsedWord) return a
-              //   if (b.name === parsedWord) return b
-              //   return parsedWord - a.name < parsedWord - b.name
-              // })
               .slice(0, 20)
               .map(
                 (value: {
@@ -186,31 +181,22 @@ export const Home = () => {
 
           {/**Courses Result Container**/}
           {filterType === 'c' &&
-            filteredCourseData
-              .sort((a: string, b: string) => {
-                const parsedWord = removeWS(wordEntered).toUpperCase()
-
-                if (a === parsedWord) return a
-                if (b === parsedWord) return b
-                return a - parsedWord > b - parsedWord
-              })
-              .slice(0, 20)
-              .map((value: never) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.courseResultContainer}
-                    onPress={() => {
-                      navigation.navigate('Courses', {
-                        courseName: value,
-                      })
-                      courseHistory.unshift(value)
-                    }}
-                    key={undefined}
-                  >
-                    <Text style={styles.courseResultText}>{value}</Text>
-                  </TouchableOpacity>
-                )
-              })}
+            filteredCourseData.slice(0, 20).map((value: never) => {
+              return (
+                <TouchableOpacity
+                  style={styles.courseResultContainer}
+                  onPress={() => {
+                    navigation.navigate('Courses', {
+                      courseName: value,
+                    })
+                    courseHistory.unshift(value)
+                  }}
+                  key={undefined}
+                >
+                  <Text style={styles.courseResultText}>{value}</Text>
+                </TouchableOpacity>
+              )
+            })}
         </ScrollView>
       ) : (
         /*Search History*/
