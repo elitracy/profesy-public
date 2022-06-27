@@ -203,8 +203,8 @@ export function Signup() {
                     storeItem('email', res.email)
                     storeItem('loggedIn', 'true')
                     //intialize search history
-                    storeItem('profHistory', [])
-                    storeItem('courseHistory', [])
+                    // storeItem('profHistory', "")
+                    // storeItem('courseHistory', "")
                   }
                   res.userInsert === 1 ? navigation.navigate('Home') : null
                 })

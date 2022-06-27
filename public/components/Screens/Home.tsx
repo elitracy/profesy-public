@@ -40,8 +40,7 @@ async function getProfessor(name: string, setFilteredData: any): Promise<any> {
 async function getCourses(course: string, setFilteredData: any): Promise<any> {
   // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
   return await fetch(
-    // `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
-    `http://localhost:8080/courses?course=${removeWS(course)}`
+    `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
   )
     .then((result) => result.json())
     .then((result) => {
