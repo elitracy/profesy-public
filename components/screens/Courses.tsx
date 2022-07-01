@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Icon } from 'react-native-elements'
 import { useEffect, useState } from 'react'
 import React from 'react'
+import getProfsByCourse from '../../api/getProfsByCourse'
 
 type coursesScreenProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -51,30 +52,9 @@ const handleSearch = (
   }
 }
 
-async function getProfsByCourse(
-  course: string,
-  setProfList: any,
-  setOriginalProfList: any
-): Promise<any> {
-  // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
-  return await fetch(
-    `https://profesy.herokuapp.com/profsByCourse?course=${course}`
-  )
-    .then((result) => result.json())
-    .then((result) => {
-      setProfList(result.courses)
-      setOriginalProfList(result.courses) //save prof list for if search is empty
-      return result
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
-
 export const Courses = (Props: Props) => {
   const [profList, setProfList] = useState([])
   const [originalProfList, setOriginalProfList] = useState([])
-  const [searchBG, setSearchBG] = useState('black')
   const [wordEntered, setWordEntered] = useState('')
 
   const navigation = useNavigation<coursesScreenProp>()
@@ -145,7 +125,6 @@ export const Courses = (Props: Props) => {
           <TextInput
             // queries both at first time for better UX
             onChangeText={(data) => {
-              console.log(data)
               data.length === 0
                 ? setProfList(originalProfList)
                 : handleSearch(data, profList, setProfList, originalProfList)
@@ -162,7 +141,6 @@ export const Courses = (Props: Props) => {
               padding: 10,
               paddingLeft: 30,
               fontSize: 15,
-              borderColor: searchBG,
               width: '100%',
               marginLeft: -30,
             }}
