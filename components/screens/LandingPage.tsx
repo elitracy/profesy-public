@@ -16,31 +16,15 @@ import { colors } from '../../utils/colors'
 import { sha256 } from 'js-sha256'
 import React from 'react'
 import { getItem, storeItem } from '../../utils/localStorage'
+import loginAPI from '../../api/loginAPI'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
-
-// loginAPI - Params(username:string, password:string) => {message:{}, loggedIn:bool}
-async function loginAPI(username: string, password: string) {
-  return fetch(
-    `https://profesy.herokuapp.com/login?username=${username}&password=${password}`
-  )
-    .then((res) => {
-      return res.json()
-    })
-    .then((data) => {
-      return data
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
 
 export function LandingPage() {
   // SET STATES
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [badLogin, setBadLogin] = useState(false)
-  // const [loggedIn, setLoggedIn] = useState('false')
 
   const navigation = useNavigation<loginScreenProp>()
 
