@@ -18,39 +18,10 @@ import { getItem, storeItem } from '../../utils/localStorage'
 import { SearchFilter } from '../SearchFilter'
 import { HistoryResult } from '../HistoryResult'
 import { styles } from '../../styles/homeStyles'
-import { removeWS } from '../../utils/stringHelpers'
+import getProfessor from '../../api/getProfessor'
+import getCourses from '../../api/getCourses'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
-
-// getProfessor - Params(name: string, setFilteredData: function) => Promise
-async function getProfessor(name: string, setFilteredData: any): Promise<any> {
-  return await fetch(
-    `https://profesy.herokuapp.com/professors?name=${name.toUpperCase()}`
-  )
-    .then((result) => result.json())
-    .then((result) => {
-      setFilteredData(result.professors)
-      return result
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
-
-async function getCourses(course: string, setFilteredData: any): Promise<any> {
-  // return await fetch(`https://profesy.herokuapp.com/?name=${name}`)
-  return await fetch(
-    `https://profesy.herokuapp.com/courses?course=${removeWS(course)}`
-  )
-    .then((result) => result.json())
-    .then((result) => {
-      setFilteredData(result.message)
-      return result
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
 
 export const Home = () => {
   // set states
