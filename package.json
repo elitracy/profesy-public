@@ -43,6 +43,7 @@
     "@types/react-native-svg-charts": "^5.0.12",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -50,5 +51,10 @@
     "prettier": "^2.5.1",
     "typescript": "~4.3.5"
   },
-  "private": true
+  "private": true,
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }

@@ -8,25 +8,12 @@ import { colors } from '../../utils/colors'
 import React from 'react'
 import { getItem, storeItem } from '../../utils/localStorage'
 
-// getCode - Params(email:string, setPassCode: function) => Promise
-async function getCode(email: string, setPassCode: any): Promise<any> {
-  return await fetch(`https://profesy.herokuapp.com/resetPass?email=${email}`)
-    .then((result) => result.json())
-    .then((result) => {
-      setPassCode(result.code)
-      return result
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
-
 type accountScreenProp = NativeStackNavigationProp<
   RootStackParamList,
   'Account'
 >
 
-export function Account(Props: any) {
+export function Account() {
   // SET STATES
   const [username, setUsername] = useState('N/A')
   const [email, setEmail] = useState('N/A')
