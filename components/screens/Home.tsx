@@ -127,6 +127,7 @@ export const Home = () => {
       {/*search results*/}
       {wordEntered.replace(/\s+/g, '').length > 0 ? (
         <ScrollView
+          key={undefined}
           style={{
             width: '100%',
             height: 'auto',
@@ -145,6 +146,7 @@ export const Home = () => {
                 }) => {
                   return (
                     <TouchableOpacity
+                      key={value.name}
                       style={[
                         styles.profResultContainer,
                         {
@@ -160,7 +162,6 @@ export const Home = () => {
                           ? setProfHistory([value])
                           : profHistory.unshift(value)
                       }}
-                      key={undefined}
                     >
                       <Text style={styles.profResultTextName}>
                         {value.name}{' '}
@@ -199,7 +200,12 @@ export const Home = () => {
         </ScrollView>
       ) : (
         /*Search History*/
-        <ScrollView style={styles.searchHistoryContainer}>
+        <ScrollView
+          style={styles.searchHistoryContainer}
+          contentContainerStyle={{
+            alignItems: 'center',
+          }}
+        >
           {!wordEntered &&
             (filterType === 'p'
               ? profHistory &&
@@ -216,7 +222,7 @@ export const Home = () => {
                       filterItem={prof}
                       history={profHistory}
                       setHistory={setProfHistory}
-                      key={undefined}
+                      key={prof['name']}
                     />
                   )
                 })
@@ -231,7 +237,7 @@ export const Home = () => {
                       filterItem={course}
                       history={courseHistory}
                       setHistory={setCourseHistory}
-                      key={undefined}
+                      key={course['name']}
                     />
                   )
                 }))}

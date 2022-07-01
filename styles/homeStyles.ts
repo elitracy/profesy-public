@@ -106,7 +106,6 @@ export const styles: any = {
   },
   searchHistoryContainer: {
     width: '100%',
-    height: 'auto',
     display: 'flex',
   },
 }
