@@ -12,11 +12,12 @@ import {
 } from 'react-native'
 import React from 'react'
 import { colors } from '../../utils/colors'
-import { RootStackParamList, Course as CourseType } from '../../RootStackParams'
+import { Course as CourseType } from '../../RootStackParams'
 import { useState, useEffect } from 'react'
 import { LineChart } from 'react-native-svg-charts'
-import { G, Text as SVGText, Circle } from 'react-native-svg'
+import { Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
+import getSemesters from '../../api/getSemesters'
 
 interface Props {
   route: {
@@ -27,86 +28,20 @@ interface Props {
   }
 }
 
-// Seasons object for sorting
-const seasons: {
-  SPRING: number
-  SUMMER: number
-  FALL: number
-  WINTER: number
-} = {
-  SPRING: 3,
-  SUMMER: 2,
-  FALL: 1,
-  WINTER: 0,
-}
-
-async function getSemesters(
-  course: string,
-  prof: string,
-  setSemesterInfo: Function,
-  setCurrentSemester: Function
-): Promise<any> {
-  return await fetch(
-    `https://profesy.herokuapp.com/courseAndProf?course=${course}&prof=${prof}`
-  )
-    .then((result) => result.json())
-    .then((result) => {
-      const sortedCourses = sortFilterCourses(course, result.message.courses)
-      setSemesterInfo(sortedCourses)
-      setCurrentSemester(sortedCourses[0])
-      return result
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-function sortFilterCourses(courseName: string, courses: CourseType[]) {
-  return courses
-    .sort((a, b) => {
-      const aY = parseInt(
-        a.semester.substring(a.semester.length - 4, a.semester.length)
-      )
-      const bY = parseInt(
-        b.semester.substring(b.semester.length - 4, b.semester.length)
-      )
-      const aS = a.semester.substring(0, a.semester.length - 5)
-      const bS = b.semester.substring(0, b.semester.length - 5)
-      return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
-    })
-    .filter((c: CourseType) => {
-      return c.course === courseName
-    })
-}
-
 export function Course(Props: Props) {
-  // const semesterInfo = Props.route.params.courses
   const [semesterInfo, setSemesterInfo] = useState([])
   const semesterGPAs = semesterInfo.map((s) => {
-    return parseFloat(s.semGPA)
+    return parseFloat(s['semGPA'])
   })
   const courseAvg =
     semesterGPAs.reduce((total, next) => total + next, 0) / semesterGPAs.length
 
   // SET STATES
-  const [filteredData, setFilteredData] = useState<string[]>([])
-  const [wordEntered, setWordEntered] = useState<any>('')
-  const [searchBG, setSearchBG] = useState(colors.PURPLE)
   const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])
-  const [graphData, setGraphData] = useState<number[]>(
-    currentSemester !== undefined
-      ? [
-          parseInt(currentSemester.A),
-          parseInt(currentSemester.B),
-          parseInt(currentSemester.C),
-          parseInt(currentSemester.F),
-          parseInt(currentSemester.Q),
-        ]
-      : []
-  )
   const [togglePercentages, setTogglePercentages] = useState(false)
   const [selectedNode, setSelectedNode] = useState(0)
-  useEffect((): Promise<any> => {
+
+  useEffect(() => {
     getSemesters(
       Props.route.params.course,
       Props.route.params.prof,
@@ -114,21 +49,6 @@ export function Course(Props: Props) {
       setCurrentSemester
     )
   }, [])
-
-  // FZF STRING MATCH
-  // handleSearch - Params(text:string)
-  const handleSearch = (text: string) => {
-    const searchWord = text
-    setWordEntered(searchWord)
-    const newFilter: any = semesterInfo.filter((value: CourseType) => {
-      return value.semester.toLowerCase().includes(searchWord.toLowerCase())
-    })
-    if (searchWord === undefined) {
-      setFilteredData(semesterInfo.map((info: CourseType) => info.semester))
-    } else {
-      setFilteredData(newFilter)
-    }
-  }
 
   // CHART POINTS
   function Decorator({
@@ -191,68 +111,6 @@ export function Course(Props: Props) {
           }}
         >
           <View style={{ width: '90%', alignItems: 'center' }}>
-            {/*SEARCH BAR*/}
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <TextInput
-                onChangeText={handleSearch}
-                onFocus={() => {
-                  setSearchBG(colors.GREEN)
-                  handleSearch('')
-                }}
-                onBlur={() => setSearchBG(colors.PURPLE)}
-                value={wordEntered}
-                placeholder="search by semester"
-                keyboardAppearance="dark"
-                style={[styles.inputStyles, { display: 'none' }]}
-              />
-            </View>
-            {/*SEMSTER LIST*/}
-            {false && filteredData.length != 0 && (
-              <ScrollView
-                style={{
-                  width: '100%',
-                  paddingHorizontal: 0,
-                  flexDirection: 'column',
-                  height: '40%',
-                  position: 'absolute',
-                  top: '16%',
-                  zIndex: 3,
-                  borderRadius: 5,
-                }}
-              >
-                {filteredData.slice(0, 15).map((value: any, key) => {
-                  return (
-                    <TouchableOpacity
-                      style={styles.resultContainer}
-                      onPress={() => {
-                        setCurrentSemester(value)
-                        setWordEntered(value.semester)
-                        setFilteredData([])
-                        setGraphData([
-                          parseInt(currentSemester.A),
-                          parseInt(currentSemester.B),
-                          parseInt(currentSemester.C),
-                          parseInt(currentSemester.F),
-                          parseInt(currentSemester.Q),
-                        ])
-                        Keyboard.dismiss()
-                      }}
-                      key={undefined}
-                    >
-                      <Text style={styles.result}>{value.semester}</Text>
-                    </TouchableOpacity>
-                  )
-                })}
-              </ScrollView>
-            )}
-
             {/*COURSE AVERAGE*/}
             <View
               style={{
