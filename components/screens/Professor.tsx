@@ -4,17 +4,17 @@ import {
   TextInput,
   View,
   ScrollView,
-  StyleSheet,
   SafeAreaView,
   Text,
 } from 'react-native'
-import { colors, randomColor } from '../../utils/colors'
+import { randomColor } from '../../utils/colors'
 import { RootStackParamList, Course } from '../../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import fuzzysort from 'fuzzysort'
 import React from 'react'
+import styles from '../../styles/professorStyles'
 
 interface Props {
   route: { params: { profName: string; courses: Course[] } }
@@ -128,10 +128,6 @@ export function Professor(Props: Props) {
                       color: 'white',
                       opacity: 0.8,
                       fontWeight: '300',
-                      /*(parseFloat(value.overallGPA) > 3.4) ? colors.BLUE
-                : (parseFloat(value.overallGPA) > 2.8) ? colors.GREEN 
-                : (parseFloat(value.overallGPA)> 2.0) ? colors.ORANGE 
-                : colors.RED*/
                     }}
                   >
                     {course.substring(4, course.length)}
@@ -145,53 +141,3 @@ export function Professor(Props: Props) {
     </SafeAreaView>
   )
 }
-
-// STYLES
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 'auto',
-    height: '85%',
-    backgroundColor: 'black',
-  },
-  title: {
-    textAlign: 'left',
-    fontSize: 40,
-    color: 'white',
-  },
-  departmentTitle: {
-    fontSize: 30,
-    textAlign: 'center',
-    color: 'white',
-  },
-  departmentContainer: {
-    // marginHorizontal: 30,
-    // marginVertical: 10,
-    // shadowOffset: { width: 3, height: 2 },
-    // shadowOpacity: 1,
-    // shadowRadius: 0,
-  },
-  department: {
-    fontSize: 30,
-    textAlign: 'left',
-    color: 'white',
-    fontWeight: '500',
-    letterSpacing: 3,
-    paddingVertical: 8,
-  },
-  departments: {
-    // flex: 6,
-    // justifyContent: 'flex-start',
-    // paddingBottom: 100,
-    // height: '80%',
-  },
-  inputStyles: {
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 15,
-    width: '95%',
-    backgroundColor: 'white',
-  },
-})
