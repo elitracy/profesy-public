@@ -31,6 +31,7 @@ export default function sortFilterCourses(
       return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
     })
     .filter((c: Course) => {
-      return c.course === courseName
+      console.log(c)
+      return c.course === courseName && c.semester.length > 0
     })
 }

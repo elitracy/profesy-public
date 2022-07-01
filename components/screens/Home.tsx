@@ -180,7 +180,7 @@ export const Home = () => {
           {!wordEntered &&
             (filterType === 'p'
               ? profHistory &&
-                profHistory.map((prof) => {
+                profHistory.map((prof, index) => {
                   return (
                     <HistoryResult
                       navigation={navigation}
@@ -193,12 +193,12 @@ export const Home = () => {
                       filterItem={prof}
                       history={profHistory}
                       setHistory={setProfHistory}
-                      key={prof['name']}
+                      key={index}
                     />
                   )
                 })
               : courseHistory &&
-                courseHistory.map((course) => {
+                courseHistory.map((course, index) => {
                   return (
                     <HistoryResult
                       navigation={navigation}
@@ -208,7 +208,7 @@ export const Home = () => {
                       filterItem={course}
                       history={courseHistory}
                       setHistory={setCourseHistory}
-                      key={course['name']}
+                      key={index}
                     />
                   )
                 }))}

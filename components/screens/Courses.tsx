@@ -40,9 +40,9 @@ const handleSearch = (
   const searchWord = text
   setProfList(searchWord)
 
-  const newFilter: [{ name: string; gpa: string }] = profList.filter(
-    (value: { _id: { gpa: string; name: string } }) => {
-      return value._id.name.toLowerCase().includes(searchWord.toLowerCase())
+  const newFilter: [{ name: string; courseAverage: string }] = profList.filter(
+    (value: { name: string; courseAverage: string }) => {
+      return value.name.toLowerCase().includes(searchWord.toLowerCase())
     }
   )
   if (searchWord === undefined) {
@@ -148,60 +148,63 @@ export const Courses = (Props: Props) => {
         </View>
         <ScrollView style={{ width: '100%', height: '90%' }}>
           {profList.length !== 0 && profList !== undefined ? (
-            profList.map((prof: { _id: { name: string; gpa: string } }) => {
-              return (
-                <Pressable
-                  key={undefined}
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'black',
-                    borderRadius: 15,
-                    flexDirection: 'row',
-                    padding: 8,
-                    marginVertical: 5,
-                    justifyContent: 'space-between',
-                  }}
-                  onPress={() => {
-                    navigation.navigate('Course', {
-                      course: Props.route.params.courseName,
-                      prof: prof._id.name,
-                    })
-                  }}
-                >
-                  <Text
+            profList
+              .sort((a, b) => (a.courseAverage > b.courseAverage ? -1 : 1))
+              .map((prof: { name: string; courseAverage: string }) => {
+                return (
+                  <Pressable
                     key={undefined}
                     style={{
-                      color: 'white',
-                      textAlign: 'left',
-                      fontSize: 25,
-                      fontWeight: '500',
-                      width: '80%',
+                      width: '100%',
+                      backgroundColor: 'black',
+                      borderRadius: 15,
+                      flexDirection: 'row',
+                      padding: 8,
+                      marginVertical: 5,
+                      justifyContent: 'space-between',
+                    }}
+                    onPress={() => {
+                      navigation.navigate('Course', {
+                        course: Props.route.params.courseName,
+                        prof: prof.name,
+                        courseAverage: prof.courseAverage,
+                      })
                     }}
                   >
-                    {prof._id.name}
-                  </Text>
-                  <Text
-                    key={undefined}
-                    style={{
-                      textAlign: 'right',
-                      color:
-                        parseFloat(prof._id.gpa).toFixed(2) >= 3.5
-                          ? colors.BLUE
-                          : parseFloat(prof._id.gpa).toFixed(2) >= 3.0
-                          ? colors.GREEN
-                          : parseFloat(prof._id.gpa).toFixed(2) >= 2.5
-                          ? colors.ORANGE
-                          : colors.RED,
-                      fontSize: 25,
-                      fontWeight: '800',
-                      width: '20%',
-                    }}
-                  >
-                    {parseFloat(prof._id.gpa).toFixed(2)}
-                  </Text>
-                </Pressable>
-              )
-            })
+                    <Text
+                      key={undefined}
+                      style={{
+                        color: 'white',
+                        textAlign: 'left',
+                        fontSize: 25,
+                        fontWeight: '500',
+                        width: '80%',
+                      }}
+                    >
+                      {prof.name}
+                    </Text>
+                    <Text
+                      key={undefined}
+                      style={{
+                        textAlign: 'right',
+                        color:
+                          parseFloat(prof.courseAverage).toFixed(2) >= 3.5
+                            ? colors.BLUE
+                            : parseFloat(prof.courseAverage).toFixed(2) >= 3.0
+                            ? colors.GREEN
+                            : parseFloat(prof.courseAverage).toFixed(2) >= 2.5
+                            ? colors.ORANGE
+                            : colors.RED,
+                        fontSize: 25,
+                        fontWeight: '800',
+                        width: '20%',
+                      }}
+                    >
+                      {parseFloat(prof.courseAverage).toFixed(2)}
+                    </Text>
+                  </Pressable>
+                )
+              })
           ) : (
             <View
               style={{

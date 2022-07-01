@@ -24,6 +24,7 @@ interface Props {
     params: {
       course: string
       prof: string
+      courseAverage?: string
     }
   }
 }
@@ -33,8 +34,10 @@ export function Course(Props: Props) {
   const semesterGPAs = semesterInfo.map((s) => {
     return parseFloat(s['semGPA'])
   })
-  const courseAvg =
-    semesterGPAs.reduce((total, next) => total + next, 0) / semesterGPAs.length
+  const courseAvg = Props.route.params.courseAverage
+    ? Props.route.params.courseAverage
+    : semesterGPAs.reduce((total, next) => total + next, 0) /
+      semesterGPAs.length
 
   // SET STATES
   const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])

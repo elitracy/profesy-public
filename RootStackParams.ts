@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Course: {
     course: string
     prof: string
+    courseAverage?: string
   }
   Courses: { courseName: string }
 }
