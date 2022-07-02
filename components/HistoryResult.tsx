@@ -50,6 +50,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
         onPress={() =>
           Props.setHistory(
             Props.history.filter((elem) => {
+              console.log(elem)
               return elem !== Props.filterItem
             })
           )

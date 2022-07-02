@@ -1,13 +1,13 @@
 import sortFilterCourses from '../utils/sortFilterCourses'
+import API_URL from '../config/env'
+
 export default async function getSemesters(
   course: string,
   prof: string,
   setSemesterInfo: any,
   setCurrentSemester: any
 ): Promise<any> {
-  return await fetch(
-    `https://profesy.herokuapp.com/courseAndProf?course=${course}&prof=${prof}`
-  )
+  return await fetch(`${API_URL}/courseAndProf?course=${course}&prof=${prof}`)
     .then((result) => result.json())
     .then((result) => {
       const sortedCourses = sortFilterCourses(course, result.message.courses)

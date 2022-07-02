@@ -1,3 +1,5 @@
+import API_URL from '../config/env'
+
 // signupAPI - Params(username:string,password:string,email:string,name:string,setUsernameExists:function,setEmailExists:function)
 export default async function signupAPI(
   username: string,
@@ -8,7 +10,7 @@ export default async function signupAPI(
   setEmailExists: any
 ) {
   return fetch(
-    `https://profesy.herokuapp.com/signup?username=${username}&password=${password}&email=${email}&name=${name}`
+    `${API_URL}/signup?username=${username}&password=${password}&email=${email}&name=${name}`
   )
     .then((res) => {
       return res.json()

@@ -1,8 +1,8 @@
+import API_URL from '../config/env'
+
 // loginAPI - Params(username:string, password:string) => {message:{}, loggedIn:bool}
 export default async function loginAPI(username: string, password: string) {
-  return fetch(
-    `https://profesy.herokuapp.com/login?username=${username}&password=${password}`
-  )
+  return fetch(`${API_URL}/login?username=${username}&password=${password}`)
     .then((res) => {
       return res.json()
     })

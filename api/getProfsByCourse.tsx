@@ -1,10 +1,12 @@
+import API_URL from '../config/env'
+
 export default async function getProfsByCourse(
   course: string,
   setProfList: any,
   setOriginalProfList: any
 ): Promise<any> {
   return await fetch(
-    `https://profesy.herokuapp.com/profsByCourse?course=${course}`
+    `${API_URL}/profsByCourse?course=${course}`
     // `http://localhost:8080/profsByCourse?course=${course}`
   )
     .then((result) => result.json())
