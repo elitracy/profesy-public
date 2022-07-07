@@ -20,7 +20,7 @@ import loginAPI from '../../api/loginAPI'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
-export function LandingPage() {
+export function Login() {
   // SET STATES
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -145,8 +145,8 @@ export function LandingPage() {
                   storeItem('email', res.message.email)
                   storeItem('loggedIn', 'true')
                   setBadLogin(false)
+                  navigation.navigate('Home')
                 } else setBadLogin(true)
-                res.loggedIn ? navigation.navigate('Home') : null
               })
             }}
           >
@@ -155,7 +155,11 @@ export function LandingPage() {
 
           {/*SKIP LOGIN*/}
           <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
+            onPress={() =>
+              navigation.navigate('Home', {
+                loggedIn: 'false',
+              })
+            }
             style={{ width: '100%', marginTop: 5 }}
           >
             <Text

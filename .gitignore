@@ -2,3 +2,4 @@ node_modules
 .expo*
 start
 yarn-error.log
+.DS_STORE

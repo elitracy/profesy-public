@@ -1,5 +1,5 @@
 import { LogBox } from 'react-native'
-import { LandingPage } from './components/screens/LandingPage'
+import { Login } from './components/screens/Login'
 import { Signup } from './components/screens/Signup'
 import { Home } from './components/screens/Home'
 import { Professor } from './components/screens/Professor'
@@ -25,9 +25,9 @@ export default function App() {
         }}
       >
         {/*SCREENS*/}
-        <Stack.Screen name="Login" component={LandingPage} />
-        <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Professor" component={Professor} />
         <Stack.Screen name="Course" component={Course} />
         <Stack.Screen name="Account" component={Account} />

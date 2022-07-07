@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Pressable, Text } from 'react-native'
-import { Icon } from 'react-native-elements'
+import { MaterialIcons } from '@expo/vector-icons'
 
 interface Props {
   route: {
@@ -50,14 +50,12 @@ export const HistoryResult = (Props: Props['route']['params']) => {
         onPress={() =>
           Props.setHistory(
             Props.history.filter((elem) => {
-              console.log(elem)
               return elem !== Props.filterItem
             })
           )
         }
       >
-        <Icon
-          tvParallaxProperties={undefined}
+        <MaterialIcons
           name="close"
           size={20}
           style={{

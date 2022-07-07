@@ -40,7 +40,7 @@ export function Account() {
       <View
         style={{
           width: '100%',
-          height: '50%',
+          height: '60%',
           justifyContent: 'flex-end',
           alignItems: 'center',
         }}
@@ -48,8 +48,8 @@ export function Account() {
         <Text
           style={{
             color: 'white',
-            fontSize: 40,
-            marginBottom: 8,
+            fontSize: 60,
+            marginBottom: 40,
           }}
         >
           Account
@@ -173,7 +173,7 @@ export function Account() {
             paddingBottom: 12,
             alignItems: 'center',
             borderRadius: 15,
-            marginBottom: 20,
+            marginBottom: 40,
             borderColor: 'white',
             borderWidth: 2,
           }}
@@ -182,7 +182,8 @@ export function Account() {
             storeItem('username', 'N/A')
             storeItem('email', 'N/A')
             storeItem('loggedIn', 'false')
-            navigation.navigate('Login')
+            setLoggedIn('false')
+            loggedIn === 'false' && navigation.navigate('Login')
           }}
         >
           <Text
@@ -196,6 +197,8 @@ export function Account() {
             {loggedIn === 'true' ? 'Logout' : 'Login'}
           </Text>
         </TouchableOpacity>
+
+        {/*SIGNUP*/}
         {loggedIn === 'false' && (
           <TouchableOpacity
             style={{

@@ -11,7 +11,7 @@ import { colors } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
-import { Icon } from 'react-native-elements'
+import { MaterialIcons } from '@expo/vector-icons'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import getProfsByCourse from '../../api/getProfsByCourse'
@@ -81,9 +81,11 @@ export const Courses = (Props: Props) => {
     >
       <View
         style={{
-          width: '90%',
+          width: '95%',
           marginBottom: 5,
-          paddingLeft: 15,
+          marginLeft: 15,
+          display: 'flex',
+          flexDirection: 'row',
         }}
       >
         <Text
@@ -96,8 +98,21 @@ export const Courses = (Props: Props) => {
         >
           {Props.route.params.courseName}
         </Text>
+        <Text
+          style={{
+            textAlign: 'left',
+            color: 'white',
+            fontSize: 30,
+            opacity: 0.85,
+            marginLeft: 5,
+          }}
+        >
+          Professors
+        </Text>
       </View>
+
       {/*search bar*/}
+
       <View
         style={{
           width: '95%',
@@ -105,7 +120,6 @@ export const Courses = (Props: Props) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        key={undefined}
       >
         <View
           style={{
@@ -117,10 +131,10 @@ export const Courses = (Props: Props) => {
             width: '100%',
           }}
         >
-          <Icon
+          <MaterialIcons
             name="search"
-            style={{ opacity: 0.7, marginLeft: 5 }}
-            tvParallaxProperties={null}
+            style={{ opacity: 0.5, marginLeft: 10, marginRight: 3 }}
+            size={20}
           />
           <TextInput
             // queries both at first time for better UX
@@ -136,7 +150,7 @@ export const Courses = (Props: Props) => {
             keyboardAppearance="dark"
             style={{
               borderWidth: 2,
-              borderRightWidth: 0,
+              borderRighjWidth: 0,
               borderLeftWidth: 0,
               padding: 10,
               paddingLeft: 30,

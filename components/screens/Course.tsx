@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native'
 import React from 'react'
 import { colors } from '../../utils/colors'
@@ -18,6 +19,7 @@ import { LineChart } from 'react-native-svg-charts'
 import { Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
 import getSemesters from '../../api/getSemesters'
+// import CircularProgress from '@mui/material/CircularProgress'
 
 interface Props {
   route: {
@@ -31,6 +33,7 @@ interface Props {
 
 export function Course(Props: Props) {
   const [semesterInfo, setSemesterInfo] = useState([])
+  const [loading, setLoading] = useState(false)
   const semesterGPAs = semesterInfo.map((s) => {
     return parseFloat(s['semGPA'])
   })
@@ -45,12 +48,15 @@ export function Course(Props: Props) {
   const [selectedNode, setSelectedNode] = useState(0)
 
   useEffect(() => {
+    setLoading(true)
     getSemesters(
       Props.route.params.course,
       Props.route.params.prof,
       setSemesterInfo,
       setCurrentSemester
-    )
+    ).then(() => {
+      setLoading(false)
+    })
   }, [])
 
   // CHART POINTS
@@ -103,8 +109,7 @@ export function Course(Props: Props) {
           </Text>
         </Text>
       </View>
-
-      {currentSemester !== undefined ? (
+      {!loading && currentSemester !== undefined ? (
         <View
           style={{
             width: '100%',
@@ -356,7 +361,7 @@ export function Course(Props: Props) {
             alignItems: 'center',
           }}
         >
-          <Text style={{ color: colors.GREY, fontSize: 20 }}>Loading ...</Text>
+          <ActivityIndicator size="small" />
         </View>
       )}
     </SafeAreaView>

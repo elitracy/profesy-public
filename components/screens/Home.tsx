@@ -6,12 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native'
 import { colors, gpaColorizer } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useIsFocused } from '@react-navigation/native'
 import { RootStackParamList, Course } from '../../RootStackParams'
 import { useNavigation } from '@react-navigation/native'
-import { Icon as RNIcon } from 'react-native-elements'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useState, useEffect } from 'react'
 import React from 'react'
 import { getItem, storeItem } from '../../utils/localStorage'
@@ -20,10 +23,11 @@ import { HistoryResult } from '../HistoryResult'
 import { styles } from '../../styles/homeStyles'
 import getProfessor from '../../api/getProfessor'
 import getCourses from '../../api/getCourses'
+import debounce from 'lodash.debounce'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
-export const Home = () => {
+export const Home = (Props: Props) => {
   // set states
   const [filteredProfData, setFilteredProfData] = useState([])
   const [filteredCourseData, setFilteredCourseData] = useState([])
@@ -33,11 +37,13 @@ export const Home = () => {
   const [filterType, setFilterType] = useState('p')
   const [profHistory, setProfHistory] = useState([])
   const [courseHistory, setCourseHistory] = useState([])
+  const [loading, setLoading] = useState(false)
 
+  const isFocused = useIsFocused()
   useEffect(() => {
     getItem('name', setNameTitle)
     getItem('loggedIn', setLoggedIn)
-  }, [])
+  }, [isFocused])
 
   const navigation = useNavigation<homeScreenProp>()
 
@@ -46,31 +52,39 @@ export const Home = () => {
       {/*header titles*/}
       <View style={styles.header}>
         <Text style={styles.title}>Profesy</Text>
-        <Text
-          style={[styles.username, { opacity: loggedIn === 'true' ? 1 : 0 }]}
-        >
-          {nameTitle}
-        </Text>
+        {loggedIn === 'true' ? (
+          <Text style={styles.username}>{nameTitle}</Text>
+        ) : (
+          <MaterialCommunityIcons name="account" color="white" size={40} />
+        )}
       </View>
 
       {/*search bar*/}
       <View style={styles.searchContainer}>
         <View style={styles.searchBarContainer}>
-          <RNIcon
+          <Ionicons
             name="search"
-            style={{ opacity: 0.7, marginLeft: 5 }}
-            tvParallaxProperties={null}
+            style={{ opacity: 0.7, marginLeft: 3, marginRight: 3 }}
+            size={20}
           />
           <TextInput
             // queries both at first time for better UX
             onChangeText={(data) => {
+              setLoading(true)
               setWordEntered(data === undefined ? '' : data)
-              getProfessor(data, setFilteredProfData)
-              getCourses(data, setFilteredCourseData)
+              filterType === 'p'
+                ? getProfessor(data, setFilteredProfData).then(() =>
+                    setLoading(false)
+                  )
+                : getCourses(data, setFilteredCourseData).then(() =>
+                    setLoading(false)
+                  )
             }}
             value={wordEntered}
             placeholder={
-              filterType === 'c' ? 'search by course' : 'search by professor'
+              filterType === 'c'
+                ? 'search courses'
+                : 'search professors by last name'
             }
             placeholderTextColor={colors.GREY}
             keyboardAppearance="dark"
@@ -98,7 +112,6 @@ export const Home = () => {
       {/*search results*/}
       {wordEntered.replace(/\s+/g, '').length > 0 ? (
         <ScrollView
-          key={undefined}
           style={{
             width: '100%',
             height: 'auto',
@@ -134,7 +147,7 @@ export const Home = () => {
                           : profHistory.unshift(value)
                       }}
                     >
-                      <Text style={styles.profResultTextName}>
+                      <Text style={styles.profResultTextName} key={value.name}>
                         {value.name}{' '}
                       </Text>
                       <Text
@@ -168,6 +181,7 @@ export const Home = () => {
                 </TouchableOpacity>
               )
             })}
+          {loading && <ActivityIndicator style={{ marginTop: 20 }} />}
         </ScrollView>
       ) : (
         /*Search History*/

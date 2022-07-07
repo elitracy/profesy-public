@@ -15,7 +15,7 @@ import { RootStackParamList } from '../../RootStackParams'
 import { colors } from '../../utils/colors'
 import { sha256 } from 'js-sha256'
 import React from 'react'
-import { getItem, storeItem } from '../../utils/localStorage'
+import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
@@ -30,12 +30,12 @@ export function Signup() {
   const [usernameExists, setUsernameExists] = useState(false)
   const [passwordMatch, setPasswordMatch] = useState(true)
   const [emailExists, setEmailExists] = useState(false)
+  const [passShort, setPassShort] = useState(false)
 
   const navigation = useNavigation<signupScreenProp>()
 
   return (
     <SafeAreaView
-      // style={tailwind('w-full h-full justify-start items-center mt-20')}
       style={{
         width: '100%',
         height: '100%',
@@ -104,6 +104,7 @@ export function Signup() {
               secureTextEntry={true}
             />
           </View>
+
           {/*Email*/}
           <TextInput
             onChangeText={setEmail}
@@ -113,6 +114,7 @@ export function Signup() {
             value={email}
             placeholder="Email"
           />
+
           {/*Name*/}
           <TextInput
             onChangeText={setName}
@@ -126,28 +128,27 @@ export function Signup() {
           {/*Error checking for inputs*/}
           <View style={{ flexDirection: 'column' }}>
             {/*passwords don't match*/}
-            {!passwordMatch ? (
+            {!passwordMatch && (
               <Text style={styles.incorrectSignupStyles}>
                 Passwords do not match
               </Text>
-            ) : null}
+            )}
 
             {/*username already exists*/}
-            {usernameExists ? (
+            {usernameExists && (
               <Text style={styles.incorrectSignupStyles}>
                 Username already exists
               </Text>
-            ) : null}
+            )}
 
             {/*email already exists*/}
-            {emailExists ? (
+            {emailExists && (
               <Text style={styles.incorrectSignupStyles}>
                 Email already exists
               </Text>
-            ) : null}
-
-            {/*user has account => go to login screen*/}
+            )}
           </View>
+
           {/*Signup Button*/}
           <TouchableOpacity
             style={{
@@ -176,11 +177,14 @@ export function Signup() {
                     storeItem('username', res.username)
                     storeItem('email', res.email)
                     storeItem('loggedIn', 'true')
+                    navigation.navigate('Home')
+
                     //intialize search history
                     // storeItem('profHistory', "")
                     // storeItem('courseHistory', "")
+                  } else {
+                    storeItem('loggedIn', 'false')
                   }
-                  res.userInsert === 1 ? navigation.navigate('Home') : null
                 })
               }
             }}

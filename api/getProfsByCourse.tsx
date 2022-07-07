@@ -5,10 +5,7 @@ export default async function getProfsByCourse(
   setProfList: any,
   setOriginalProfList: any
 ): Promise<any> {
-  return await fetch(
-    `${API_URL}/profsByCourse?course=${course}`
-    // `http://localhost:8080/profsByCourse?course=${course}`
-  )
+  return await fetch(`${API_URL}/profsByCourse?course=${course}`)
     .then((result) => result.json())
     .then((result) => {
       setProfList(result.courses)
