@@ -214,7 +214,7 @@ export function Course(Props: Props) {
                           },
                         ]}
                         onPress={() => setTogglePercentages(!togglePercentages)}
-                        key={undefined}
+                        key={letter}
                       >
                         <Text
                           style={[

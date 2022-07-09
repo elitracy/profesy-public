@@ -1,4 +1,4 @@
-import { LogBox } from 'react-native'
+import { StatusBar, LogBox } from 'react-native'
 import { Login } from './components/screens/Login'
 import { Signup } from './components/screens/Signup'
 import { Home } from './components/screens/Home'
@@ -18,6 +18,11 @@ LogBox.ignoreAllLogs()
 export default function App() {
   return (
     <NavigationContainer>
+      <StatusBar
+        animated={true}
+        barStyle={'light-content'}
+        showHideTransition={'fade'}
+      />
       <Navigation />
       <Stack.Navigator
         screenOptions={{

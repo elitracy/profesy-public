@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Pressable,
 } from 'react-native'
 import { colors, gpaColorizer } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -23,7 +24,6 @@ import { HistoryResult } from '../HistoryResult'
 import { styles } from '../../styles/homeStyles'
 import getProfessor from '../../api/getProfessor'
 import getCourses from '../../api/getCourses'
-import debounce from 'lodash.debounce'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -52,11 +52,13 @@ export const Home = (Props: Props) => {
       {/*header titles*/}
       <View style={styles.header}>
         <Text style={styles.title}>Profesy</Text>
-        {loggedIn === 'true' ? (
-          <Text style={styles.username}>{nameTitle}</Text>
-        ) : (
-          <MaterialCommunityIcons name="account" color="white" size={40} />
-        )}
+        <Pressable onPress={() => navigation.navigate('Account')}>
+          {loggedIn === 'true' ? (
+            <Text style={styles.username}>{nameTitle}</Text>
+          ) : (
+            <MaterialCommunityIcons name="account" color="white" size={40} />
+          )}
+        </Pressable>
       </View>
 
       {/*search bar*/}
@@ -175,7 +177,7 @@ export const Home = (Props: Props) => {
                     })
                     courseHistory.unshift(value)
                   }}
-                  key={undefined}
+                  key={value}
                 >
                   <Text style={styles.courseResultText}>{value}</Text>
                 </TouchableOpacity>

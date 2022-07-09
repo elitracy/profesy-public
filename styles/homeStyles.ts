@@ -28,9 +28,9 @@ export const styles: any = {
   username: {
     flex: 3,
     textAlign: 'right',
-    paddingRight: 0,
     fontSize: 25,
     color: 'white',
+    paddingTop: 8,
   },
   inputStyles: {
     borderWidth: 2,

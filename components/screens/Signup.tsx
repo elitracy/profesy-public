@@ -7,6 +7,7 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
+  Pressable,
 } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -17,6 +18,7 @@ import { sha256 } from 'js-sha256'
 import React from 'react'
 import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
+import { Feather } from '@expo/vector-icons'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
@@ -31,6 +33,8 @@ export function Signup() {
   const [passwordMatch, setPasswordMatch] = useState(true)
   const [emailExists, setEmailExists] = useState(false)
   const [passShort, setPassShort] = useState(false)
+  const [showPass, setShowPass] = useState(false)
+  const [showConfPass, setShowConfPass] = useState(false)
 
   const navigation = useNavigation<signupScreenProp>()
 
@@ -38,9 +42,9 @@ export function Signup() {
     <SafeAreaView
       style={{
         width: '100%',
-        height: '100%',
+        height: '85%',
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'black',
       }}
@@ -54,17 +58,29 @@ export function Signup() {
           alignItems: 'center',
         }}
       >
-        <StatusBar
-          animated={true}
-          barStyle={'dark-content'}
-          showHideTransition={'slide'}
-        />
         <View style={styles.titleBorderStyles}>
           <Text style={styles.titleStyles}>Profesy</Text>
         </View>
 
         {/*INPUTS*/}
-        <View style={{ width: '70%' }}>
+        <View
+          style={{
+            width: '70%',
+            display: 'flex',
+            height: '70%',
+            justifyContent: 'space-around',
+          }}
+        >
+          {/*Name*/}
+          <TextInput
+            onChangeText={setName}
+            autoCapitalize="none"
+            clearTextOnFocus={true}
+            style={[styles.inputStyles]}
+            value={name}
+            placeholder="Name"
+            placeholderTextColor={colors.GREY}
+          />
           {/*Username*/}
           <TextInput
             onChangeText={setUsername}
@@ -72,15 +88,16 @@ export function Signup() {
             value={username}
             clearTextOnFocus={true}
             placeholder="Username"
+            placeholderTextColor={colors.GREY}
             style={[styles.inputStyles]}
           />
           <View
             style={{
-              width: '100%',
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              width: '100%',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
             {/*Password*/}
@@ -88,21 +105,49 @@ export function Signup() {
               onChangeText={setPassword}
               autoCapitalize="none"
               clearTextOnFocus={true}
-              style={[styles.inputStyles, { width: '49%' }]}
+              style={[styles.inputStyles, { flex: 1 }]}
               value={password}
               placeholder="Password"
-              secureTextEntry={true}
+              placeholderTextColor={colors.GREY}
+              secureTextEntry={!showPass}
             />
+            <Pressable onPress={() => setShowPass(!showPass)}>
+              <Feather
+                name={showPass ? 'eye' : 'eye-off'}
+                color="white"
+                size={25}
+                style={{ paddingLeft: 9, paddingRight: 4, paddingBottom: 5 }}
+              />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             {/*Confirm Password*/}
             <TextInput
               onChangeText={setPasswordConf}
               autoCapitalize="none"
               clearTextOnFocus={true}
-              style={[styles.inputStyles, { width: '49%' }]}
+              style={[styles.inputStyles, { flex: 1 }]}
               value={passwordConf}
               placeholder="Confirm Password"
-              secureTextEntry={true}
+              placeholderTextColor={colors.GREY}
+              secureTextEntry={!showConfPass}
             />
+            <Pressable onPress={() => setShowConfPass(!showConfPass)}>
+              <Feather
+                name={showConfPass ? 'eye' : 'eye-off'}
+                color="white"
+                size={25}
+                style={{ paddingLeft: 9, paddingRight: 4, paddingBottom: 5 }}
+              />
+            </Pressable>
           </View>
 
           {/*Email*/}
@@ -113,16 +158,7 @@ export function Signup() {
             style={[styles.inputStyles]}
             value={email}
             placeholder="Email"
-          />
-
-          {/*Name*/}
-          <TextInput
-            onChangeText={setName}
-            autoCapitalize="none"
-            clearTextOnFocus={true}
-            style={[styles.inputStyles]}
-            value={name}
-            placeholder="Name"
+            placeholderTextColor={colors.GREY}
           />
 
           {/*Error checking for inputs*/}

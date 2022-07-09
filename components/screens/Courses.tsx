@@ -186,7 +186,6 @@ export const Courses = (Props: Props) => {
                     }}
                   >
                     <Text
-                      key={undefined}
                       style={{
                         color: 'white',
                         textAlign: 'left',
@@ -198,7 +197,6 @@ export const Courses = (Props: Props) => {
                       {prof.name}
                     </Text>
                     <Text
-                      key={undefined}
                       style={{
                         textAlign: 'right',
                         color:

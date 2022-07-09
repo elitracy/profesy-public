@@ -152,27 +152,6 @@ export function Login() {
           >
             <Text style={styles.loginStyles}>Login</Text>
           </TouchableOpacity>
-
-          {/*SKIP LOGIN*/}
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('Home', {
-                loggedIn: 'false',
-              })
-            }
-            style={{ width: '100%', marginTop: 5 }}
-          >
-            <Text
-              style={{
-                textAlign: 'center',
-                paddingVertical: 5,
-                color: 'white',
-                fontSize: 15,
-              }}
-            >
-              Skip
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
