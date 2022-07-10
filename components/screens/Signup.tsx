@@ -5,7 +5,6 @@ import {
   Text,
   TextInput,
   View,
-  StatusBar,
   TouchableOpacity,
   Pressable,
 } from 'react-native'
@@ -19,6 +18,7 @@ import React from 'react'
 import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
 import { Feather, AntDesign } from '@expo/vector-icons'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
@@ -66,30 +66,21 @@ export function Signup() {
         width: '100%',
         height: '85%',
         display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: 'black',
       }}
     >
+      <Text style={styles.titleStyles}>Profesy</Text>
       <View
         style={{
+          paddingHorizontal: '13%',
           width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
         }}
       >
-        <Text style={styles.titleStyles}>Profesy</Text>
-
-        {/*INPUTS*/}
-        <View
-          style={{
-            width: '70%',
-            display: 'flex',
-            justifyContent: 'space-around',
-          }}
-        >
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+          {/*INPUTS*/}
           {/*Name*/}
           <TextInput
             onChangeText={setName}
@@ -370,7 +361,7 @@ export function Signup() {
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.haveAccount}>Have an account?</Text>
           </TouchableOpacity>
-        </View>
+        </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   )
@@ -381,7 +372,9 @@ const styles = StyleSheet.create({
   titleStyles: {
     color: 'white',
     fontSize: 80,
-    marginBottom: 6,
+    // marginVertical: 60,
+    textAlign: 'center',
+    width: '100%',
   },
   inputStyles: {
     borderRadius: 8,
