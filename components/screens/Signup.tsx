@@ -18,9 +18,19 @@ import { sha256 } from 'js-sha256'
 import React from 'react'
 import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
-import { Feather } from '@expo/vector-icons'
+import { Feather, AntDesign } from '@expo/vector-icons'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
+
+function validPass(
+  validUpper: boolean,
+  validLower: boolean,
+  validNum: boolean,
+  validSpecial: boolean,
+  validLen: boolean
+) {
+  return validUpper && validLower && validNum && validSpecial && validLen
+}
 
 export function Signup() {
   // SET STATES
@@ -32,11 +42,23 @@ export function Signup() {
   const [usernameExists, setUsernameExists] = useState(false)
   const [passwordMatch, setPasswordMatch] = useState(true)
   const [emailExists, setEmailExists] = useState(false)
-  const [passShort, setPassShort] = useState(false)
   const [showPass, setShowPass] = useState(false)
   const [showConfPass, setShowConfPass] = useState(false)
+  const [showPassReqs, setShowPassReqs] = useState(false)
+
+  const [validUpper, setValidUpper] = useState(false)
+  const [validLower, setValidLower] = useState(false)
+  const [validNum, setValidNum] = useState(false)
+  const [validSpecial, setValidSpecial] = useState(false)
+  const [validLen, setValidLen] = useState(false)
 
   const navigation = useNavigation<signupScreenProp>()
+
+  const upperReg = new RegExp('.*[A-Z].*')
+  const lowerReg = new RegExp('.*[a-z].*')
+  const numReg = new RegExp('.*[0-9].*')
+  const specialReg = new RegExp('.*[!@#$&*()].*')
+  const lenReg = new RegExp('.{8,}')
 
   return (
     <SafeAreaView
@@ -44,30 +66,27 @@ export function Signup() {
         width: '100%',
         height: '85%',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
         backgroundColor: 'black',
       }}
     >
       <View
         style={{
           width: '100%',
-          height: '75%',
+          height: '100%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
-        <View style={styles.titleBorderStyles}>
-          <Text style={styles.titleStyles}>Profesy</Text>
-        </View>
+        <Text style={styles.titleStyles}>Profesy</Text>
 
         {/*INPUTS*/}
         <View
           style={{
             width: '70%',
             display: 'flex',
-            height: '70%',
             justifyContent: 'space-around',
           }}
         >
@@ -91,6 +110,14 @@ export function Signup() {
             placeholderTextColor={colors.GREY}
             style={[styles.inputStyles]}
           />
+          {/*username already exists*/}
+          {usernameExists && (
+            <Text style={styles.incorrectSignupStyles}>
+              Username already exists
+            </Text>
+          )}
+
+          {/*Password*/}
           <View
             style={{
               display: 'flex',
@@ -100,12 +127,43 @@ export function Signup() {
               justifyContent: 'space-between',
             }}
           >
-            {/*Password*/}
             <TextInput
-              onChangeText={setPassword}
+              onChangeText={(text) => {
+                setValidUpper(upperReg.test(text))
+                setValidLower(lowerReg.test(text))
+                setValidNum(numReg.test(text))
+                setValidSpecial(specialReg.test(text))
+                setValidLen(lenReg.test(text))
+                setPasswordMatch(text === passwordConf)
+                setPassword(text)
+              }}
+              onFocus={() => {
+                setPassword('')
+                setValidUpper(false)
+                setValidLower(false)
+                setValidNum(false)
+                setValidSpecial(false)
+                setValidLen(false)
+                setPasswordMatch(false)
+              }}
               autoCapitalize="none"
               clearTextOnFocus={true}
-              style={[styles.inputStyles, { flex: 1 }]}
+              style={[
+                styles.inputStyles,
+                {
+                  flex: 1,
+                  borderWidth: 2,
+                  borderColor: validPass(
+                    validUpper,
+                    validLower,
+                    validNum,
+                    validSpecial,
+                    validLen
+                  )
+                    ? colors.GREEN
+                    : colors.PURPLE,
+                },
+              ]}
               value={password}
               placeholder="Password"
               placeholderTextColor={colors.GREY}
@@ -116,10 +174,83 @@ export function Signup() {
                 name={showPass ? 'eye' : 'eye-off'}
                 color="white"
                 size={25}
-                style={{ paddingLeft: 9, paddingRight: 4, paddingBottom: 5 }}
+                style={{ paddingLeft: 9, paddingRight: 4 }}
+              />
+            </Pressable>
+            <Pressable onPress={() => setShowPassReqs(!showPassReqs)}>
+              <AntDesign
+                name="questioncircleo"
+                color="white"
+                size={25}
+                style={{ paddingLeft: 9, paddingRight: 4 }}
               />
             </Pressable>
           </View>
+
+          {/*Checking Password Requirements*/}
+          {showPassReqs && (
+            <View
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+              }}
+            >
+              {
+                <Text
+                  style={[
+                    styles.incorrectSignupStyles,
+                    { color: validUpper ? colors.BLUE : colors.PURPLE },
+                  ]}
+                >
+                  - One uppercase character
+                </Text>
+              }
+              {
+                <Text
+                  style={[
+                    styles.incorrectSignupStyles,
+                    { color: validLower ? colors.BLUE : colors.PURPLE },
+                  ]}
+                >
+                  - One lowercase character
+                </Text>
+              }
+              {
+                <Text
+                  style={[
+                    styles.incorrectSignupStyles,
+                    { color: validNum ? colors.BLUE : colors.PURPLE },
+                  ]}
+                >
+                  - One number
+                </Text>
+              }
+              {
+                <Text
+                  style={[
+                    styles.incorrectSignupStyles,
+                    { color: validSpecial ? colors.BLUE : colors.PURPLE },
+                  ]}
+                >
+                  - One special character (!@#$&*)
+                </Text>
+              }
+              {
+                <Text
+                  style={[
+                    styles.incorrectSignupStyles,
+                    { color: validLen ? colors.BLUE : colors.PURPLE },
+                  ]}
+                >
+                  - At least 8 characters long
+                </Text>
+              }
+            </View>
+          )}
+
+          {/*Confirm Password*/}
           <View
             style={{
               display: 'flex',
@@ -129,12 +260,25 @@ export function Signup() {
               justifyContent: 'space-between',
             }}
           >
-            {/*Confirm Password*/}
             <TextInput
-              onChangeText={setPasswordConf}
+              onChangeText={(text) => {
+                setPasswordMatch(password === text)
+                setPasswordConf(text)
+              }}
+              onFocus={() => {
+                setPasswordConf('')
+                setPasswordMatch(false)
+              }}
               autoCapitalize="none"
               clearTextOnFocus={true}
-              style={[styles.inputStyles, { flex: 1 }]}
+              style={[
+                styles.inputStyles,
+                {
+                  flex: 1,
+                  borderWidth: 2,
+                  borderColor: passwordMatch ? colors.GREEN : colors.PURPLE,
+                },
+              ]}
               value={passwordConf}
               placeholder="Confirm Password"
               placeholderTextColor={colors.GREY}
@@ -145,10 +289,16 @@ export function Signup() {
                 name={showConfPass ? 'eye' : 'eye-off'}
                 color="white"
                 size={25}
-                style={{ paddingLeft: 9, paddingRight: 4, paddingBottom: 5 }}
+                style={{ paddingLeft: 9, paddingRight: 4 }}
               />
             </Pressable>
           </View>
+          {/*passwords don't match*/}
+          {!passwordMatch && (
+            <Text style={[styles.incorrectSignupStyles, { textAlign: 'left' }]}>
+              - Passwords do not match
+            </Text>
+          )}
 
           {/*Email*/}
           <TextInput
@@ -160,44 +310,34 @@ export function Signup() {
             placeholder="Email"
             placeholderTextColor={colors.GREY}
           />
+          {/*email already exists*/}
+          {emailExists && (
+            <Text style={styles.incorrectSignupStyles}>
+              Email already exists
+            </Text>
+          )}
 
-          {/*Error checking for inputs*/}
-          <View style={{ flexDirection: 'column' }}>
-            {/*passwords don't match*/}
-            {!passwordMatch && (
-              <Text style={styles.incorrectSignupStyles}>
-                Passwords do not match
-              </Text>
-            )}
-
-            {/*username already exists*/}
-            {usernameExists && (
-              <Text style={styles.incorrectSignupStyles}>
-                Username already exists
-              </Text>
-            )}
-
-            {/*email already exists*/}
-            {emailExists && (
-              <Text style={styles.incorrectSignupStyles}>
-                Email already exists
-              </Text>
-            )}
-          </View>
-
-          {/*Signup Button*/}
+          {/*Signup Button and Final Checks*/}
           <TouchableOpacity
             style={{
               width: '100%',
               paddingBottom: 4,
               borderWidth: 2,
               borderRadius: 20,
-              marginTop: 15,
+              marginTop: 12,
               borderColor: colors.BLUE,
             }}
             onPress={() => {
-              setPasswordMatch(password === passwordConf)
-              if (passwordMatch) {
+              if (
+                validPass(
+                  validUpper,
+                  validLower,
+                  validNum,
+                  validSpecial,
+                  validLen
+                ) &&
+                passwordMatch
+              ) {
                 //check database
                 signupAPI(
                   username,
@@ -222,13 +362,13 @@ export function Signup() {
                     storeItem('loggedIn', 'false')
                   }
                 })
-              }
+              } else setShowPassReqs(true)
             }}
           >
-            <Text style={styles.signupStyles}>Sign Up</Text>
+            <Text style={styles.signupButtonStyles}>Sign Up</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.signupPasswordStyles}>Have an account?</Text>
+            <Text style={styles.haveAccount}>Have an account?</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -241,40 +381,27 @@ const styles = StyleSheet.create({
   titleStyles: {
     color: 'white',
     fontSize: 80,
-  },
-  titleBorderStyles: {
-    marginBottom: '3%',
-    paddingRight: '8%',
-    paddingLeft: '8%',
-    paddingBottom: '-0%',
+    marginBottom: 6,
   },
   inputStyles: {
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 8,
     paddingLeft: 10,
     fontSize: 15,
     backgroundColor: 'white',
-    marginBottom: 8,
+    marginVertical: 6,
   },
   incorrectSignupStyles: {
-    textAlign: 'center',
     padding: 4,
-    paddingTop: 4,
     color: colors.PURPLE,
-    fontWeight: '500',
-    fontStyle: 'italic',
+    fontWeight: '600',
   },
-  forgotPasswordStyles: {
-    textAlign: 'center',
-    padding: 4,
-    paddingTop: 8,
-  },
-  signupPasswordStyles: {
+  haveAccount: {
     textAlign: 'center',
     margin: 10,
     color: 'white',
   },
-  signupStyles: {
+  signupButtonStyles: {
     color: colors.BLUE,
     fontSize: 40,
     textAlign: 'center',
