@@ -162,6 +162,8 @@ export const Home = (Props: Props) => {
             height: 'auto',
             flexDirection: 'column',
           }}
+          showsVerticalScrollIndicator={false}
+          onScroll={() => Keyboard.dismiss()}
         >
           {/**Professor Result Container**/}
           {filterType === 'p' &&
