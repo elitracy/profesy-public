@@ -17,6 +17,7 @@ import { sha256 } from 'js-sha256'
 import React from 'react'
 import { getItem, storeItem } from '../../utils/localStorage'
 import loginAPI from '../../api/loginAPI'
+import NavContext from '../../utils/NavContext'
 
 type loginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
@@ -27,6 +28,7 @@ export function Login() {
   const [badLogin, setBadLogin] = useState(false)
 
   const navigation = useNavigation<loginScreenProp>()
+  const { currentNav, setCurrentNav } = React.useContext(NavContext)
 
   // not logged in
   return (
@@ -40,9 +42,9 @@ export function Login() {
       <View
         style={{
           width: '100%',
-          height: '60%',
+          height: '75%',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'center',
           alignItems: 'center',
         }}
       >
@@ -92,18 +94,12 @@ export function Login() {
             placeholderTextColor={colors.GREY}
             secureTextEntry={true}
           />
-          <View
-            style={{
-              flexDirection: 'column',
-              height: badLogin ? '16%' : '10%',
-            }}
-          >
-            {badLogin ? (
-              <Text style={styles.incorrectLoginStyles}>Incorrect login</Text>
-            ) : null}
+          {badLogin && (
+            <Text style={styles.incorrectLoginStyles}>Incorrect login</Text>
+          )}
 
-            {/*NOTE - Implement forgot password functionality*/}
-            {/* <TouchableOpacity
+          {/*NOTE - Implement forgot password functionality*/}
+          {/* <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => console.log('USER FORGOT PASSWORD')}
           >
@@ -117,16 +113,7 @@ export function Login() {
             </Text>
           </TouchableOpacity> */}
 
-            {/*SIGN UP*/}
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              onPress={() => navigation.navigate('Signup')}
-            >
-              <Text style={styles.signupPasswordStyles}>
-                {"Don't have an account?"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {/*SIGN UP*/}
           {/*LOGIN BUTTON*/}
           <TouchableOpacity
             style={{
@@ -134,7 +121,7 @@ export function Login() {
               width: '100%',
               borderWidth: 2,
               borderRadius: 20,
-              marginTop: 5,
+              marginTop: 4,
             }}
             onPress={() => {
               loginAPI(username, sha256(password)).then((res) => {
@@ -146,11 +133,17 @@ export function Login() {
                   storeItem('loggedIn', 'true')
                   setBadLogin(false)
                   navigation.navigate('Home')
+                  setCurrentNav('home')
                 } else setBadLogin(true)
               })
             }}
           >
             <Text style={styles.loginStyles}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <Text style={styles.signupPasswordStyles}>
+              {"Don't have an account?"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -174,10 +167,7 @@ const styles = StyleSheet.create({
   },
   incorrectLoginStyles: {
     textAlign: 'center',
-    padding: 4,
-    paddingTop: 4,
     color: 'red',
-    fontStyle: 'italic',
   },
   forgotPasswordStyles: {
     textAlign: 'center',
@@ -186,7 +176,7 @@ const styles = StyleSheet.create({
   signupPasswordStyles: {
     textAlign: 'center',
     color: 'white',
-    paddingTop: 2,
+    marginTop: 6,
   },
   loginStyles: {
     color: 'white',

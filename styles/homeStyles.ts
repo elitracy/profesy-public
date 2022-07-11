@@ -33,12 +33,10 @@ export const styles: any = {
     paddingTop: 8,
   },
   inputStyles: {
-    borderWidth: 2,
-    borderRightWidth: 0,
-    borderLeftWidth: 0,
     padding: 10,
     paddingLeft: 30,
     fontSize: 15,
+    color: 'white',
   },
   searchContainer: {
     width: '95%',
@@ -50,9 +48,8 @@ export const styles: any = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 5,
-    width: '100%',
+    backgroundColor: 'rgba(255,255,255,.1)',
+    borderRadius: 8,
   },
   filtersContainer: {
     display: 'flex',

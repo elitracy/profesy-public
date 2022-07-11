@@ -19,6 +19,7 @@ import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
 import { Feather, AntDesign } from '@expo/vector-icons'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import NavContext from '../../utils/NavContext'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
 
@@ -53,6 +54,7 @@ export function Signup() {
   const [validLen, setValidLen] = useState(false)
 
   const navigation = useNavigation<signupScreenProp>()
+  const { currentNav, setCurrentNav } = React.useContext(NavContext)
 
   const upperReg = new RegExp('.*[A-Z].*')
   const lowerReg = new RegExp('.*[a-z].*')
@@ -345,6 +347,7 @@ export function Signup() {
                     storeItem('email', res.email)
                     storeItem('loggedIn', 'true')
                     navigation.navigate('Home')
+                    setCurrentNav('home')
 
                     //intialize search history
                     // storeItem('profHistory', "")

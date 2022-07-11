@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Pressable,
+  Keyboard,
 } from 'react-native'
 import { colors, gpaColorizer } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -38,6 +39,7 @@ export const Home = (Props: Props) => {
   const [profHistory, setProfHistory] = useState([])
   const [courseHistory, setCourseHistory] = useState([])
   const [loading, setLoading] = useState(false)
+  const [activeSearch, setActiveSearch] = useState(false)
 
   const isFocused = useIsFocused()
   useEffect(() => {
@@ -63,35 +65,76 @@ export const Home = (Props: Props) => {
 
       {/*search bar*/}
       <View style={styles.searchContainer}>
-        <View style={styles.searchBarContainer}>
-          <Ionicons
-            name="search"
-            style={{ opacity: 0.7, marginLeft: 3, marginRight: 3 }}
-            size={20}
-          />
-          <TextInput
-            // queries both at first time for better UX
-            onChangeText={(data) => {
-              setLoading(true)
-              setWordEntered(data === undefined ? '' : data)
-              filterType === 'p'
-                ? getProfessor(data, setFilteredProfData).then(() =>
-                    setLoading(false)
-                  )
-                : getCourses(data, setFilteredCourseData).then(() =>
-                    setLoading(false)
-                  )
-            }}
-            value={wordEntered}
-            placeholder={
-              filterType === 'c'
-                ? 'search courses'
-                : 'search professors by last name'
-            }
-            placeholderTextColor={colors.GREY}
-            keyboardAppearance="dark"
-            style={[styles.inputStyles, { width: '100%', marginLeft: -30 }]}
-          />
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={[
+              styles.searchBarContainer,
+              {
+                width: wordEntered.length > 0 || activeSearch ? '80%' : '100%',
+              },
+            ]}
+          >
+            <Ionicons
+              name="search"
+              style={{ opacity: 0.3, marginLeft: 8, marginRight: 4 }}
+              size={20}
+              color={'white'}
+            />
+            <TextInput
+              // queries both at first time for better UX
+              onChangeText={(data) => {
+                setLoading(true)
+                setWordEntered(data === undefined ? '' : data)
+                filterType === 'p'
+                  ? getProfessor(data, setFilteredProfData).then(() =>
+                      setLoading(false)
+                    )
+                  : getCourses(data, setFilteredCourseData).then(() =>
+                      setLoading(false)
+                    )
+              }}
+              value={wordEntered}
+              placeholder={
+                filterType === 'c'
+                  ? 'search courses'
+                  : 'search professors by last name'
+              }
+              placeholderTextColor={colors.GREY}
+              keyboardAppearance="dark"
+              style={[styles.inputStyles, { width: '100%', marginLeft: -30 }]}
+              onFocus={() => setActiveSearch(true)}
+              onBlur={() => setActiveSearch(false)}
+            />
+          </View>
+          {(wordEntered.length > 0 || activeSearch) && (
+            <Pressable
+              style={{ width: '20%' }}
+              onPress={() => {
+                setActiveSearch(false)
+                Keyboard.dismiss()
+                setWordEntered('')
+              }}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontSize: 15,
+                  paddingHorizontal: 5,
+                  fontWeight: '600',
+                }}
+              >
+                Cancel
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         {/*filter buttons*/}
@@ -196,38 +239,49 @@ export const Home = (Props: Props) => {
           {!wordEntered &&
             (filterType === 'p'
               ? profHistory &&
-                profHistory.map((prof, index) => {
-                  return (
-                    <HistoryResult
-                      navigation={navigation}
-                      nextScreen={'Professor'}
-                      nextScreenParams={{
-                        profName: prof['name'],
-                        courses: prof['courses'],
-                      }}
-                      displayText={prof['name']}
-                      filterItem={prof}
-                      history={profHistory}
-                      setHistory={setProfHistory}
-                      key={index}
-                    />
+                profHistory
+                  .filter(
+                    (prof, index) =>
+                      profHistory.findIndex((p) => p.name === prof.name) ===
+                      index
                   )
-                })
+                  .map((prof, index) => {
+                    return (
+                      <HistoryResult
+                        navigation={navigation}
+                        nextScreen={'Professor'}
+                        nextScreenParams={{
+                          profName: prof['name'],
+                          courses: prof['courses'],
+                        }}
+                        displayText={prof['name']}
+                        filterItem={prof}
+                        history={profHistory}
+                        setHistory={setProfHistory}
+                        key={index}
+                      />
+                    )
+                  })
               : courseHistory &&
-                courseHistory.map((course, index) => {
-                  return (
-                    <HistoryResult
-                      navigation={navigation}
-                      nextScreen={'Courses'}
-                      nextScreenParams={{ courseName: course }}
-                      displayText={course}
-                      filterItem={course}
-                      history={courseHistory}
-                      setHistory={setCourseHistory}
-                      key={index}
-                    />
+                courseHistory
+                  .filter(
+                    (course, index) => courseHistory.indexOf(course) === index
                   )
-                }))}
+                  .map((course, index) => {
+                    console.log(course + ' ' + index)
+                    return (
+                      <HistoryResult
+                        navigation={navigation}
+                        nextScreen={'Courses'}
+                        nextScreenParams={{ courseName: course }}
+                        displayText={course}
+                        filterItem={course}
+                        history={courseHistory}
+                        setHistory={setCourseHistory}
+                        key={index}
+                      />
+                    )
+                  }))}
         </ScrollView>
       )}
     </SafeAreaView>

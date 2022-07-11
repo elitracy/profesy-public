@@ -8,13 +8,14 @@ import { RootStackParamList } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
+import NavContext from '../utils/NavContext'
 
 type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 
 export function Navigation() {
   // SET STATES
   const navigation = useNavigation<navScreenProp>()
-  const [navSelected, setNavSelected] = useState('home')
+  const { currentNav, setCurrentNav } = React.useContext(NavContext)
 
   return (
     <View style={styles.navContainer}>
@@ -22,10 +23,10 @@ export function Navigation() {
       <Pressable
         onPress={() => {
           navigation.navigate('Home')
-          setNavSelected('home')
+          setCurrentNav('home')
         }}
         style={[
-          navSelected === 'home' && styles.pressed,
+          currentNav === 'home' && styles.pressed,
           {
             backgroundColor: 'white',
             borderRadius: 50,
@@ -75,11 +76,11 @@ export function Navigation() {
       {/*ACCOUNT BUTTON*/}
       <Pressable
         onPress={() => {
-          setNavSelected('account')
+          setCurrentNav('account')
           navigation.navigate('Account')
         }}
         style={[
-          navSelected === 'account' && styles.pressed,
+          currentNav === 'account' && styles.pressed,
           {
             backgroundColor: 'white',
             borderRadius: 50,

@@ -19,7 +19,6 @@ interface Props {
 export const HistoryResult = (Props: Props['route']['params']) => {
   return (
     <View
-      key={undefined}
       style={{
         width: '95%',
         display: 'flex',
@@ -36,7 +35,6 @@ export const HistoryResult = (Props: Props['route']['params']) => {
         style={{ width: '100%' }}
       >
         <Text
-          key={undefined}
           style={{
             color: 'rgba(255,255,255,.8)',
             width: '100%',
@@ -50,7 +48,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
         onPress={() =>
           Props.setHistory(
             Props.history.filter((elem) => {
-              return elem !== Props.filterItem
+              return elem != Props.filterItem
             })
           )
         }
