@@ -19,7 +19,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useState, useEffect } from 'react'
 import React from 'react'
-import { getItem, storeItem } from '../../utils/localStorage'
+import { getItem } from '../../utils/localStorage'
 import { SearchFilter } from '../SearchFilter'
 import { HistoryResult } from '../HistoryResult'
 import { styles } from '../../styles/homeStyles'
@@ -28,7 +28,7 @@ import getCourses from '../../api/getCourses'
 
 type homeScreenProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
-export const Home = (Props: Props) => {
+export const Home = () => {
   // set states
   const [filteredProfData, setFilteredProfData] = useState([])
   const [filteredCourseData, setFilteredCourseData] = useState([])

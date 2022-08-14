@@ -12,6 +12,7 @@ import { Account } from './components/screens/Account'
 import { Courses } from './components/screens/Courses'
 import React from 'react'
 import NavContext from './utils/NavContext'
+import SplashScreen from 'expo-splash-screen'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 LogBox.ignoreAllLogs()
