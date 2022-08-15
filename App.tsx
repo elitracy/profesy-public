@@ -1,4 +1,4 @@
-import { StatusBar, LogBox } from 'react-native'
+import { StatusBar, LogBox, SafeAreaView } from 'react-native'
 import { Login } from './components/screens/Login'
 import { Signup } from './components/screens/Signup'
 import { Home } from './components/screens/Home'
@@ -12,7 +12,6 @@ import { Account } from './components/screens/Account'
 import { Courses } from './components/screens/Courses'
 import React from 'react'
 import NavContext from './utils/NavContext'
-import SplashScreen from 'expo-splash-screen'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 LogBox.ignoreAllLogs()
@@ -25,29 +24,33 @@ export default function App() {
   }
 
   return (
-    <NavContext.Provider value={navSettings}>
-      <NavigationContainer>
-        <StatusBar
-          animated={true}
-          barStyle={'light-content'}
-          showHideTransition={'fade'}
-        />
-        <Navigation />
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {/*SCREENS*/}
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Professor" component={Professor} />
-          <Stack.Screen name="Course" component={Course} />
-          <Stack.Screen name="Account" component={Account} />
-          <Stack.Screen name="Courses" component={Courses} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </NavContext.Provider>
+    <SafeAreaView
+      style={{ height: '100%', width: '100%', backgroundColor: 'black' }}
+    >
+      <NavContext.Provider value={navSettings}>
+        <NavigationContainer>
+          <StatusBar
+            animated={true}
+            barStyle={'light-content'}
+            showHideTransition={'fade'}
+          />
+          <Navigation />
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            {/*SCREENS*/}
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Professor" component={Professor} />
+            <Stack.Screen name="Course" component={Course} />
+            <Stack.Screen name="Account" component={Account} />
+            <Stack.Screen name="Courses" component={Courses} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </NavContext.Provider>
+    </SafeAreaView>
   )
 }

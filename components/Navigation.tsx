@@ -1,9 +1,6 @@
 // IMPORTS
 import { Image, StyleSheet, Pressable, View } from 'react-native'
-import { useState } from 'react'
 import { colors } from '../utils/colors'
-import accountIcon from '../utils/accountIcon.png'
-import searchIcon from '../utils/searchIcon.png'
 import { RootStackParamList } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
@@ -38,7 +35,7 @@ export function Navigation() {
         ]}
       >
         <Image
-          source={searchIcon}
+          source={require('../utils/searchIcon.png')}
           style={{
             width: 34,
             height: 34,
@@ -48,30 +45,6 @@ export function Navigation() {
           }}
         />
       </Pressable>
-
-      {/*FAVORITES BUTTON*/}
-      {/* <Pressable
-        onPress={() => {
-          console.log('favorites pressed!')
-          setNavSelected('favorites')
-        }}
-        style={[
-          navSelected === 'favorites' && styles.pressed,
-          {
-            backgroundColor: 'white',
-            borderRadius: 50,
-            width: 60,
-            height: 60,
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-        ]}
-      >
-        <Image
-          source={favoriteIcon}
-          style={{ width: 40, height: 40, padding: 5 }}
-        />
-      </Pressable> */}
 
       {/*ACCOUNT BUTTON*/}
       <Pressable
@@ -93,7 +66,7 @@ export function Navigation() {
         ]}
       >
         <Image
-          source={accountIcon}
+          source={require('../utils/accountIcon.png')}
           style={{ width: 45, height: 45, marginBottom: -5 }}
         />
       </Pressable>
@@ -104,20 +77,18 @@ export function Navigation() {
 // STYLES - NOTE: convert to inline
 const styles = StyleSheet.create({
   navContainer: {
-    height: '15%',
+    height: '20%',
     position: 'absolute',
     zIndex: 100,
     bottom: 0,
-    paddingBottom: 15,
     backgroundColor: 'black',
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    borderTopWidth: 6,
   },
   pressed: {
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: colors.RED,
   },
 })
