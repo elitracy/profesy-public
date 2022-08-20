@@ -20,7 +20,7 @@ export default function App() {
   const [currentNav, setCurrentNav] = React.useState('home')
   const navSettings = {
     currentNav: currentNav,
-    setCurrentNav: setCurrentNav,
+    setCurrentNav: setCurrentNav
   }
 
   return (
@@ -37,7 +37,7 @@ export default function App() {
           <Navigation />
           <Stack.Navigator
             screenOptions={{
-              headerShown: false,
+              headerShown: false
             }}
           >
             {/*SCREENS*/}

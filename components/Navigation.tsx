@@ -30,8 +30,8 @@ export function Navigation() {
             width: 60,
             height: 60,
             alignItems: 'center',
-            justifyContent: 'center',
-          },
+            justifyContent: 'center'
+          }
         ]}
       >
         <Image
@@ -41,7 +41,7 @@ export function Navigation() {
             height: 34,
             padding: 6,
             marginBottom: 3,
-            transform: [{ rotate: '75deg' }],
+            transform: [{ rotate: '75deg' }]
           }}
         />
       </Pressable>
@@ -61,8 +61,8 @@ export function Navigation() {
             height: 60,
             alignItems: 'center',
             justifyContent: 'center',
-            overflow: 'hidden',
-          },
+            overflow: 'hidden'
+          }
         ]}
       >
         <Image
@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly'
   },
   pressed: {
     borderWidth: 2,
-    borderColor: colors.RED,
-  },
+    borderColor: colors.RED
+  }
 })

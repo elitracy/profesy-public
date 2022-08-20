@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Pressable,
+  Pressable
 } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -41,7 +41,7 @@ export function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [usernameExists, setUsernameExists] = useState(false)
-  const [passwordMatch, setPasswordMatch] = useState(true)
+  const [passwordMatch, setPasswordMatch] = useState(false)
   const [emailExists, setEmailExists] = useState(false)
   const [showPass, setShowPass] = useState(false)
   const [showConfPass, setShowConfPass] = useState(false)
@@ -71,14 +71,14 @@ export function Signup() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'black',
+        backgroundColor: 'black'
       }}
     >
       <Text style={styles.titleStyles}>Profesy</Text>
       <View
         style={{
           paddingHorizontal: '13%',
-          width: '100%',
+          width: '100%'
         }}
       >
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
@@ -117,11 +117,11 @@ export function Signup() {
               flexDirection: 'row',
               width: '100%',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <TextInput
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setValidUpper(upperReg.test(text))
                 setValidLower(lowerReg.test(text))
                 setValidNum(numReg.test(text))
@@ -154,8 +154,8 @@ export function Signup() {
                     validLen
                   )
                     ? colors.GREEN
-                    : colors.PURPLE,
-                },
+                    : colors.PURPLE
+                }
               ]}
               value={password}
               placeholder="Password"
@@ -187,14 +187,14 @@ export function Signup() {
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'flex-start',
+                alignItems: 'flex-start'
               }}
             >
               {
                 <Text
                   style={[
                     styles.incorrectSignupStyles,
-                    { color: validUpper ? colors.BLUE : colors.PURPLE },
+                    { color: validUpper ? colors.BLUE : colors.PURPLE }
                   ]}
                 >
                   - One uppercase character
@@ -204,7 +204,7 @@ export function Signup() {
                 <Text
                   style={[
                     styles.incorrectSignupStyles,
-                    { color: validLower ? colors.BLUE : colors.PURPLE },
+                    { color: validLower ? colors.BLUE : colors.PURPLE }
                   ]}
                 >
                   - One lowercase character
@@ -214,7 +214,7 @@ export function Signup() {
                 <Text
                   style={[
                     styles.incorrectSignupStyles,
-                    { color: validNum ? colors.BLUE : colors.PURPLE },
+                    { color: validNum ? colors.BLUE : colors.PURPLE }
                   ]}
                 >
                   - One number
@@ -224,7 +224,7 @@ export function Signup() {
                 <Text
                   style={[
                     styles.incorrectSignupStyles,
-                    { color: validSpecial ? colors.BLUE : colors.PURPLE },
+                    { color: validSpecial ? colors.BLUE : colors.PURPLE }
                   ]}
                 >
                   - One special character (!@#$&*)
@@ -234,7 +234,7 @@ export function Signup() {
                 <Text
                   style={[
                     styles.incorrectSignupStyles,
-                    { color: validLen ? colors.BLUE : colors.PURPLE },
+                    { color: validLen ? colors.BLUE : colors.PURPLE }
                   ]}
                 >
                   - At least 8 characters long
@@ -250,12 +250,12 @@ export function Signup() {
               flexDirection: 'row',
               width: '100%',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
             <TextInput
-              onChangeText={(text) => {
-                setPasswordMatch(password === text)
+              onChangeText={text => {
+                setPasswordMatch(password === text && text.length > 0)
                 setPasswordConf(text)
               }}
               onFocus={() => {
@@ -269,8 +269,8 @@ export function Signup() {
                 {
                   flex: 1,
                   borderWidth: 2,
-                  borderColor: passwordMatch ? colors.GREEN : colors.PURPLE,
-                },
+                  borderColor: passwordMatch ? colors.GREEN : colors.PURPLE
+                }
               ]}
               value={passwordConf}
               placeholder="Confirm Password"
@@ -287,7 +287,7 @@ export function Signup() {
             </Pressable>
           </View>
           {/*passwords don't match*/}
-          {!passwordMatch && (
+          {!passwordMatch && passwordConf.length > 0 && (
             <Text style={[styles.incorrectSignupStyles, { textAlign: 'left' }]}>
               - Passwords do not match
             </Text>
@@ -318,7 +318,7 @@ export function Signup() {
               borderWidth: 2,
               borderRadius: 20,
               marginTop: 12,
-              borderColor: colors.BLUE,
+              borderColor: colors.BLUE
             }}
             onPress={() => {
               if (
@@ -339,7 +339,7 @@ export function Signup() {
                   name,
                   setUsernameExists,
                   setEmailExists
-                ).then((res) => {
+                ).then(res => {
                   if (res.userInsert === 1) {
                     //store user info in cache
                     storeItem('name', res.name)
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     fontSize: 80,
     // marginVertical: 60,
     textAlign: 'center',
-    width: '100%',
+    width: '100%'
   },
   inputStyles: {
     borderRadius: 8,
@@ -385,17 +385,17 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 15,
     backgroundColor: 'white',
-    marginVertical: 6,
+    marginVertical: 6
   },
   incorrectSignupStyles: {
     padding: 4,
     color: colors.PURPLE,
-    fontWeight: '600',
+    fontWeight: '600'
   },
   haveAccount: {
     textAlign: 'center',
     margin: 10,
-    color: 'white',
+    color: 'white'
   },
   signupButtonStyles: {
     color: colors.BLUE,
@@ -403,6 +403,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 8,
     fontWeight: '300',
-    letterSpacing: 5,
-  },
+    letterSpacing: 5
+  }
 })

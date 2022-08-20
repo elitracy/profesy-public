@@ -10,7 +10,7 @@ const seasons: {
   SPRING: 3,
   SUMMER: 2,
   FALL: 1,
-  WINTER: 0,
+  WINTER: 0
 }
 
 export default function sortFilterCourses(
@@ -31,7 +31,6 @@ export default function sortFilterCourses(
       return aY !== bY ? aY - bY : seasons[bS] - seasons[aS]
     })
     .filter((c: Course) => {
-      console.log(c)
       return c.course === courseName && c.semester.length > 0
     })
 }

@@ -8,7 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Pressable,
-  Keyboard,
+  Keyboard
 } from 'react-native'
 import { colors, gpaColorizer } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -70,15 +70,15 @@ export const Home = () => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <View
             style={[
               styles.searchBarContainer,
               {
-                width: wordEntered.length > 0 || activeSearch ? '80%' : '100%',
-              },
+                width: wordEntered.length > 0 || activeSearch ? '80%' : '100%'
+              }
             ]}
           >
             <Ionicons
@@ -89,7 +89,7 @@ export const Home = () => {
             />
             <TextInput
               // queries both at first time for better UX
-              onChangeText={(data) => {
+              onChangeText={data => {
                 setLoading(true)
                 setWordEntered(data === undefined ? '' : data)
                 filterType === 'p'
@@ -128,7 +128,7 @@ export const Home = () => {
                   textAlign: 'center',
                   fontSize: 15,
                   paddingHorizontal: 5,
-                  fontWeight: '600',
+                  fontWeight: '600'
                 }}
               >
                 Cancel
@@ -160,7 +160,7 @@ export const Home = () => {
           style={{
             width: '100%',
             height: 'auto',
-            flexDirection: 'column',
+            flexDirection: 'column'
           }}
           showsVerticalScrollIndicator={false}
           onScroll={() => Keyboard.dismiss()}
@@ -181,13 +181,13 @@ export const Home = () => {
                       style={[
                         styles.profResultContainer,
                         {
-                          shadowColor: gpaColorizer(value.overallGPA),
-                        },
+                          shadowColor: gpaColorizer(value.overallGPA)
+                        }
                       ]}
                       onPress={() => {
                         navigation.navigate('Professor', {
                           profName: value.name,
-                          courses: value.courses,
+                          courses: value.courses
                         })
                         !profHistory
                           ? setProfHistory([value])
@@ -200,7 +200,7 @@ export const Home = () => {
                       <Text
                         style={[
                           styles.profResultTextGPA,
-                          { color: gpaColorizer(value.overallGPA) },
+                          { color: gpaColorizer(value.overallGPA) }
                         ]}
                       >
                         {parseFloat(value.overallGPA).toFixed(2)}
@@ -218,7 +218,7 @@ export const Home = () => {
                   style={styles.courseResultContainer}
                   onPress={() => {
                     navigation.navigate('Courses', {
-                      courseName: value,
+                      courseName: value
                     })
                     courseHistory.unshift(value)
                   }}
@@ -235,7 +235,7 @@ export const Home = () => {
         <ScrollView
           style={styles.searchHistoryContainer}
           contentContainerStyle={{
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           {!wordEntered &&
@@ -244,8 +244,7 @@ export const Home = () => {
                 profHistory
                   .filter(
                     (prof, index) =>
-                      profHistory.findIndex((p) => p.name === prof.name) ===
-                      index
+                      profHistory.findIndex(p => p.name === prof.name) === index
                   )
                   .map((prof, index) => {
                     return (
@@ -254,7 +253,7 @@ export const Home = () => {
                         nextScreen={'Professor'}
                         nextScreenParams={{
                           profName: prof['name'],
-                          courses: prof['courses'],
+                          courses: prof['courses']
                         }}
                         displayText={prof['name']}
                         filterItem={prof}
