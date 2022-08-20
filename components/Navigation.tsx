@@ -6,6 +6,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import NavContext from '../utils/NavContext'
+import { MaterialIcons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 
 type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 
@@ -16,6 +19,7 @@ export function Navigation() {
 
   return (
     <View style={styles.navContainer}>
+
       {/*HOME BUTTON*/}
       <Pressable
         onPress={() => {
@@ -25,8 +29,10 @@ export function Navigation() {
         style={[
           currentNav === 'home' && styles.pressed,
           {
-            backgroundColor: 'white',
+            backgroundColor: currentNav === 'home' ? "black" : "white",
             borderRadius: 50,
+            borderWidth: 3,
+            borderColor: "white",
             width: 60,
             height: 60,
             alignItems: 'center',
@@ -34,41 +40,51 @@ export function Navigation() {
           }
         ]}
       >
-        <Image
-          source={require('../utils/searchIcon.png')}
-          style={{
-            width: 34,
-            height: 34,
-            padding: 6,
-            marginBottom: 3,
-            transform: [{ rotate: '75deg' }]
-          }}
-        />
+        <Ionicons name="search" size={38} color={`${currentNav === 'home' ? "white" : "black"}`} />
+      </Pressable>
+
+      {/*FAVORITES BUTTON*/}
+      <Pressable
+        onPress={() => {
+          navigation.navigate('Favorites')
+          setCurrentNav('favorites')
+        }}
+        style={[
+          {
+            backgroundColor: currentNav === 'favorites' ? "black" : "white",
+            borderRadius: 50,
+            borderWidth: 3,
+            borderColor: "white",
+            width: 60,
+            height: 60,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }
+        ]}
+      >
+        <MaterialIcons name="favorite-outline" size={38} color={`${currentNav === 'favorites' ? "white" : "black"}`} style={{marginTop: 4}}/>
       </Pressable>
 
       {/*ACCOUNT BUTTON*/}
       <Pressable
         onPress={() => {
-          setCurrentNav('account')
           navigation.navigate('Account')
+          setCurrentNav('account')
         }}
         style={[
-          currentNav === 'account' && styles.pressed,
           {
-            backgroundColor: 'white',
+            backgroundColor: currentNav === 'account' ? "black" : "white",
             borderRadius: 50,
+            borderWidth: 3,
+            borderColor: "white",
             width: 60,
             height: 60,
             alignItems: 'center',
-            justifyContent: 'center',
-            overflow: 'hidden'
+            justifyContent: 'center'
           }
         ]}
       >
-        <Image
-          source={require('../utils/accountIcon.png')}
-          style={{ width: 45, height: 45, marginBottom: -5 }}
-        />
+        <AntDesign name="user" size={38} color={`${currentNav === 'account' ? "white" : "black"}`}/>
       </Pressable>
     </View>
   )
@@ -87,8 +103,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly'
   },
-  pressed: {
-    borderWidth: 2,
-    borderColor: colors.RED
-  }
 })

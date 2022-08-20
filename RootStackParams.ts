@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Login: undefined
   Home: undefined
+  Favorites: undefined
   Signup: undefined
   Account: undefined
   Professor: { profName: string; courses: Course[] }
