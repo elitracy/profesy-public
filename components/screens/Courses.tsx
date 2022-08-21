@@ -33,14 +33,14 @@ interface Props {
 // handleSearch - Params(text:string)
 const handleSearch = (
   text: string,
-  profList: string[],
+  profList: {name:string, courseAverage:string}[],
   setProfList: any,
   originalProfList: string[]
 ) => {
   const searchWord = text
   setProfList(searchWord)
 
-  const newFilter: [{ name: string; courseAverage: string }] = profList.filter(
+  const newFilter: { name: string; courseAverage: string }[] = profList.filter(
     (value: { name: string; courseAverage: string }) => {
       return value.name.toLowerCase().includes(searchWord.toLowerCase())
     }
@@ -150,7 +150,7 @@ export const Courses = (Props: Props) => {
             keyboardAppearance="dark"
             style={{
               borderWidth: 2,
-              borderRighjWidth: 0,
+              borderRightWidth: 0,
               borderLeftWidth: 0,
               padding: 10,
               paddingLeft: 30,
@@ -163,7 +163,7 @@ export const Courses = (Props: Props) => {
         <ScrollView style={{ width: '100%', height: '90%' }}>
           {profList.length !== 0 && profList !== undefined ? (
             profList
-              .sort((a, b) => (a.courseAverage > b.courseAverage ? -1 : 1))
+              .sort((a, b) => (a["courseAverage"] > b["courseAverage"] ? -1 : 1))
               .map((prof: { name: string; courseAverage: string }) => {
                 return (
                   <Pressable

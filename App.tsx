@@ -2,6 +2,7 @@ import { StatusBar, LogBox, SafeAreaView } from 'react-native'
 import { Login } from './components/screens/Login'
 import { Signup } from './components/screens/Signup'
 import { Home } from './components/screens/Home'
+import { Favorites } from './components/screens/Favorites'
 import { Professor } from './components/screens/Professor'
 import { Course } from './components/screens/Course'
 import { Navigation } from './components/Navigation'
@@ -17,7 +18,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 LogBox.ignoreAllLogs()
 
 export default function App() {
-  const [currentNav, setCurrentNav] = React.useState('home')
+  const [currentNav, setCurrentNav] = React.useState('favorites')
   const navSettings = {
     currentNav: currentNav,
     setCurrentNav: setCurrentNav
@@ -41,6 +42,7 @@ export default function App() {
             }}
           >
             {/*SCREENS*/}
+            <Stack.Screen name="Favorites" component={Favorites} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />

@@ -27,7 +27,6 @@ export function Navigation() {
           setCurrentNav('home')
         }}
         style={[
-          currentNav === 'home' && styles.pressed,
           {
             backgroundColor: currentNav === 'home' ? "black" : "white",
             borderRadius: 50,
