@@ -11,7 +11,7 @@ import React from 'react'
 import { colors, gpaColorizer } from '../utils/colors'
 import { Course as CourseType } from '../RootStackParams'
 import { useState, useEffect } from 'react'
-import { LineChart } from 'react-native-svg-charts'
+import { LineChart, YAxis } from 'react-native-svg-charts'
 import { Circle } from 'react-native-svg'
 import * as shape from 'd3-shape'
 import getSemesters from '../api/getSemesters'
@@ -21,7 +21,7 @@ interface props {
     params: {
       course: string
       prof: string
-      courseAverage?: string
+      courseAverage: string
     }
   }
 }
@@ -35,15 +35,21 @@ const SemesterDistribution = (Props: props) => {
   })
 
   // SET STATES
-  const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])
+  const [currentSemester, setCurrentSemester] = useState<any>(
+    semesterInfo[semesterInfo.length - 1]
+  )
   const [togglePercentages, setTogglePercentages] = useState(false)
   const [selectedNode, setSelectedNode] = useState(0)
 
   useEffect(() => {
     setLoading(true)
-    getSemesters(course, prof, setSemesterInfo, setCurrentSemester).then(() => {
-      setLoading(false)
-    })
+    getSemesters(course, prof, setSemesterInfo, setCurrentSemester).then(
+      result => {
+        setLoading(false)
+        setCurrentSemester(result[result.length - 1])
+        setSelectedNode(result.length - 1)
+      }
+    )
   }, [])
 
   // CHART POINTS
@@ -57,7 +63,7 @@ const SemesterDistribution = (Props: props) => {
         key={index}
         cx={x(index)}
         cy={y(value)}
-        r={8.5}
+        r={6}
         // stroke={'rgb(134, 65, 244)'}
         stroke={colors.GREEN}
         strokeWidth={3}
@@ -83,6 +89,7 @@ const SemesterDistribution = (Props: props) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            height: '80%'
           }}
         >
           <View style={{ width: '100%', alignItems: 'center' }}>
@@ -132,7 +139,7 @@ const SemesterDistribution = (Props: props) => {
                 width: '100%',
                 padding: 20,
                 borderWidth: 2,
-                borderColor: 'white',
+                borderColor: 'rgba(255,255,255,.8)',
                 borderRadius: 10
               }}
               key={undefined}
@@ -143,11 +150,12 @@ const SemesterDistribution = (Props: props) => {
                   width: '100%',
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                <Text style={{ color: 'white', fontSize: 28, opacity: .8 }}>
-                  {currentSemester.semester}{"  "}
+                <Text style={{ color: 'white', fontSize: 28, opacity: 0.8 }}>
+                  {currentSemester.semester}
+                  {'  '}
                 </Text>
                 <Text
                   style={{
@@ -213,22 +221,49 @@ const SemesterDistribution = (Props: props) => {
           </View>
 
           {/*DISTRIBUTION GRAPH*/}
-          <LineChart
-            data={semesterGPAs}
+          <View
             style={{
-              height: '55%',
+              display: 'flex',
+              flexDirection: 'row',
+              height: '40%',
               width: '100%',
-              zIndex: 1
+              marginTop: '6%',
+              paddingVertical: 10,
+              alignItems: "center",
+              borderRadius: 10,
+              borderWidth: 2,
+              borderColor: "rgba(255,255,255,.4)"
             }}
-            svg={{
-              strokeWidth: 3,
-              stroke: gpaColorizer(courseAverage)
-            }}
-            contentInset={{ top: 40, bottom: 40, left: 30, right: 30 }}
-            curve={shape.curveCatmullRom}
           >
-            <Decorator />
-          </LineChart>
+            <YAxis
+              style={{ flex: 0.2, height: '100%', borderRightWidth: 2, borderColor: "rgba(255,255,255,.1)" }}
+              data={[
+                Math.floor(Math.min(...semesterGPAs)),
+                Math.ceil(Math.max(...semesterGPAs))
+              ]}
+              svg={{ fontSize: 20, fill: 'grey' }}
+              contentInset={{top:15,bottom: 15}}
+              numberOfTicks={5}
+            />
+            <LineChart
+              data={semesterGPAs}
+              yMin={Math.floor(Math.min(...semesterGPAs))}
+              yMax={Math.ceil(Math.max(...semesterGPAs))}
+              style={{
+                flex: 1,
+                height: '100%'
+              }}
+              svg={{
+                strokeWidth: 3,
+                stroke: gpaColorizer(courseAverage)
+              }}
+              contentInset={{ top: 15, bottom: 15, left: 20, right: 25 }}
+              curve={shape.curveCatmullRom}
+              numberOfTicks={5}
+            >
+              <Decorator />
+            </LineChart>
+          </View>
 
           {/*SIDE-SCROLL BUTTONS*/}
           <Pressable

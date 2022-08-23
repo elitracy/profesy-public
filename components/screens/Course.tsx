@@ -13,11 +13,6 @@ import SemesterDistribution from '../SemesterDistribution'
 import Reviews from '../Reviews'
 import { colors } from '../../utils/colors'
 import { getFavorites } from '../../api/getFavorites'
-import {
-  MaterialCommunityIcons,
-  SimpleLineIcons,
-  MaterialIcons
-} from '@expo/vector-icons'
 
 interface props {
   route: {
@@ -64,16 +59,60 @@ export function Course(Props: props) {
         }}
       >
         <View style={styles.courseTitle}>
-          <Text
+          <View
             style={{
-              fontSize: 40,
-              color: 'white',
-              fontWeight: '500'
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center'
             }}
           >
-            {course.substring(0, 4)}
-            <Text style={{ fontWeight: '300' }}>{course.substring(4, 7)}</Text>
-          </Text>
+            <Text
+              style={{
+                fontSize: 40,
+                color: 'white',
+                fontWeight: '500'
+              }}
+            >
+              {course.substring(0, 4)}
+              <Text style={{ fontWeight: '300' }}>
+                {course.substring(4, 7)}
+              </Text>
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (isFavorite) {
+                  console.log('API HIT: REMOVE FROM FAVORITES')
+                  setIsFavorite(false)
+                } else {
+                  console.log('API HIT: ADD TO FAVORITES')
+                  setIsFavorite(true)
+                }
+              }}
+              style={{
+                height: '60%',
+                margin: 8,
+                padding: 5,
+                paddingVertical: 0,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderColor: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
+                borderWidth: 2,
+                borderRadius: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
+                  fontSize: 18,
+                  fontWeight: '500'
+                }}
+              >
+                {isFavorite ? 'Favorited' : 'Add to Favorites'}
+              </Text>
+            </Pressable>
+          </View>
           <Text
             style={{
               fontSize: 25,
@@ -85,39 +124,6 @@ export function Course(Props: props) {
             {prof}
           </Text>
         </View>
-        <Pressable
-          onPress={() => {
-            if (isFavorite) {
-              console.log('API HIT: REMOVE FROM FAVORITES')
-              setIsFavorite(false)
-            } else {
-              console.log('API HIT: ADD TO FAVORITES')
-              setIsFavorite(true)
-            }
-          }}
-          style={{
-            height: '50%',
-            margin: 8,
-            padding: 5,
-            paddingVertical: 0,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderColor: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
-            borderWidth: 2,
-            borderRadius: 10
-          }}
-        >
-          <Text
-            style={{
-              color: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
-              fontSize: 18,
-              fontWeight: "500"
-            }}
-          >
-            {isFavorite ? 'Favorite' : 'Add to Favorites'}
-          </Text>
-        </Pressable>
       </View>
       <ScrollView
         snapToAlignment="start"

@@ -8,14 +8,14 @@ export default async function getSemesters(
   setCurrentSemester: any
 ): Promise<any> {
   return await fetch(`${API_URL}/courseAndProf?course=${course}&prof=${prof}`)
-    .then((result) => result.json())
-    .then((result) => {
+    .then(result => result.json())
+    .then(result => {
       const sortedCourses = sortFilterCourses(course, result.message.courses)
       setSemesterInfo(sortedCourses)
       setCurrentSemester(sortedCourses[0])
       return sortedCourses
     })
-    .catch((err) => {
+    .catch(err => {
       console.error(err)
     })
 }
