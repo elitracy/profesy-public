@@ -36,7 +36,7 @@ export const Home = () => {
   const [nameTitle, setNameTitle] = useState('')
   const [loggedIn, setLoggedIn] = useState('false')
   const [filterType, setFilterType] = useState('p')
-  const [profHistory, setProfHistory] = useState([])
+  const [profHistory, setProfHistory] = useState<{name:string, overallGPA:string, courses:Course[],courseAverages: string[]}[]>([])
   const [courseHistory, setCourseHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [activeSearch, setActiveSearch] = useState(false)
@@ -93,9 +93,9 @@ export const Home = () => {
                 setLoading(true)
                 setWordEntered(data === undefined ? '' : data)
                 filterType === 'p'
-                  ? getProfessor(data, setFilteredProfData).then(() =>
+                  ? getProfessor(data, setFilteredProfData).then(result => {
                       setLoading(false)
-                    )
+                    })
                   : getCourses(data, setFilteredCourseData).then(() =>
                       setLoading(false)
                     )
@@ -174,6 +174,7 @@ export const Home = () => {
                   name: string
                   overallGPA: string
                   courses: Course[]
+                  courseAverages: string[]
                 }) => {
                   return (
                     <TouchableOpacity
@@ -187,7 +188,8 @@ export const Home = () => {
                       onPress={() => {
                         navigation.navigate('Professor', {
                           profName: value.name,
-                          courses: value.courses
+                          courses: value.courses,
+                          courseAverages: value.courseAverages
                         })
                         !profHistory
                           ? setProfHistory([value])
@@ -269,7 +271,6 @@ export const Home = () => {
                     (course, index) => courseHistory.indexOf(course) === index
                   )
                   .map((course, index) => {
-                    console.log(course + ' ' + index)
                     return (
                       <HistoryResult
                         navigation={navigation}

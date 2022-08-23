@@ -5,7 +5,7 @@ import {
   View,
   ScrollView,
   SafeAreaView,
-  Text,
+  Text
 } from 'react-native'
 import { randomColor } from '../../utils/colors'
 import { RootStackParamList, Course } from '../../RootStackParams'
@@ -17,7 +17,9 @@ import React from 'react'
 import styles from '../../styles/professorStyles'
 
 interface Props {
-  route: { params: { profName: string; courses: Course[] } }
+  route: {
+    params: { profName: string; courses: Course[]; courseAverages: {course:string, courseAverage:string}[] }
+  }
 }
 
 type professorScreenProp = NativeStackNavigationProp<
@@ -26,13 +28,14 @@ type professorScreenProp = NativeStackNavigationProp<
 >
 
 export function Professor(Props: Props) {
+  const { profName, courseAverages } = Props.route.params
   // sort all of professor courses
   const allCourses = Array.from([
     ...new Set(
-      Props.route.params.courses.map((obj) => {
+      Props.route.params.courses.map(obj => {
         return obj.course
       })
-    ),
+    )
   ]).sort()
 
   // SET STATES
@@ -48,7 +51,7 @@ export function Professor(Props: Props) {
     setCourses(
       search.length === 0
         ? allCourses
-        : fuzzysort.go(search, courses).map((item) => {
+        : fuzzysort.go(search, courses).map(item => {
             return item.target
           })
     )
@@ -64,17 +67,17 @@ export function Professor(Props: Props) {
             flexDirection: 'row',
             alignItems: 'flex-end',
             width: '90%',
-            marginBottom: 5,
+            marginBottom: 5
           }}
         >
           <Text style={[styles.title, { width: '100%' }]}>
-            {Props.route.params.profName}{' '}
+            {profName}{' '}
             <Text
               style={{
                 color: 'white',
                 fontSize: 25,
                 fontWeight: '300',
-                textAlign: 'right',
+                textAlign: 'right'
               }}
             >
               Courses
@@ -88,11 +91,11 @@ export function Professor(Props: Props) {
             style={{
               flexDirection: 'row',
               width: '100%',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
             <TextInput
-              onChangeText={(word) => {
+              onChangeText={word => {
                 setWordEntered(word)
                 handleSearch(word, courses, setCourses)
               }}
@@ -105,21 +108,23 @@ export function Professor(Props: Props) {
         </View>
 
         {/*COURSE LIST*/}
-        <ScrollView style={styles.departments}>
-          {courses.map((course) => {
+        <ScrollView style={styles.departments} scrollEventThrottle={1}>
+          {courses.map(course => {
             return (
               <TouchableOpacity
                 style={[
                   styles.departmentContainer,
-                  { shadowColor: randomColor() },
+                  { shadowColor: randomColor() }
                 ]}
                 onPress={() => {
                   navigation.navigate('Course', {
                     course: course,
-                    prof: Props.route.params.profName,
+                    prof: profName,
+                    courseAverage: courseAverages.find(c => c.course === course)
+                      .courseAverage
                   })
                 }}
-                key={undefined}
+                key={course}
               >
                 <Text style={styles.department}>
                   {course.substring(0, 4)}
@@ -127,7 +132,7 @@ export function Professor(Props: Props) {
                     style={{
                       color: 'white',
                       opacity: 0.8,
-                      fontWeight: '300',
+                      fontWeight: '300'
                     }}
                   >
                     {course.substring(4, course.length)}

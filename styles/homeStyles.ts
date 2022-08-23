@@ -3,17 +3,17 @@ export const styles: any = {
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'column',
-    height: '88%',
+    height: '95%',
     backgroundColor: 'black',
-    width: '100%',
+    width: '100%'
   },
   title: {
     fontSize: 35,
     textAlign: 'left',
-    flex: 3,
     fontWeight: '700',
     color: 'white',
-    width: '100%',
+    width: '70%',
+    marginLeft: 3
   },
   header: {
     width: '95%',
@@ -23,33 +23,32 @@ export const styles: any = {
     paddingHorizontal: 0,
     paddingBottom: 8,
     marginTop: 8,
-    color: 'white',
+    color: 'white'
   },
   username: {
-    flex: 3,
     textAlign: 'right',
     fontSize: 25,
     color: 'white',
-    paddingTop: 8,
+    paddingTop: 8
   },
   inputStyles: {
     padding: 10,
     paddingLeft: 30,
     fontSize: 15,
-    color: 'white',
+    color: 'white'
   },
   searchContainer: {
     width: '95%',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,.1)',
-    borderRadius: 8,
+    borderRadius: 8
   },
   filtersContainer: {
     display: 'flex',
@@ -57,7 +56,7 @@ export const styles: any = {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 5,
+    paddingTop: 5
   },
   profResultContainer: {
     backgroundColor: 'black',
@@ -67,20 +66,20 @@ export const styles: any = {
     paddingVertical: 8,
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   profResultTextName: {
     padding: 5,
     paddingLeft: 15,
     color: 'white',
     fontSize: 25,
-    textAlign: 'left',
+    textAlign: 'left'
   },
   profResultTextGPA: {
     paddingRight: 15,
     textAlign: 'right',
     fontWeight: '800',
-    fontSize: 25,
+    fontSize: 25
   },
   courseResultContainer: {
     borderRadius: 15,
@@ -91,7 +90,7 @@ export const styles: any = {
     marginVertical: 6,
     shadowOffset: { width: 4, height: 3 },
     shadowOpacity: 1,
-    shadowRadius: 0,
+    shadowRadius: 0
   },
   courseResultText: {
     padding: 5,
@@ -99,10 +98,10 @@ export const styles: any = {
     color: 'white',
     fontSize: 25,
     textAlign: 'left',
-    fontWeight: '500',
+    fontWeight: '500'
   },
   searchHistoryContainer: {
     width: '100%',
-    display: 'flex',
-  },
+    display: 'flex'
+  }
 }

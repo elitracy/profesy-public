@@ -66,7 +66,7 @@ export function Signup() {
     <SafeAreaView
       style={{
         width: '100%',
-        height: '85%',
+        height: '95%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -74,7 +74,7 @@ export function Signup() {
         backgroundColor: 'black'
       }}
     >
-      <Text style={styles.titleStyles}>Profesy</Text>
+      <Text style={styles.titleStyles}>Create Account</Text>
       <View
         style={{
           paddingHorizontal: '13%',
@@ -145,7 +145,7 @@ export function Signup() {
                 styles.inputStyles,
                 {
                   flex: 1,
-                  borderWidth: 2,
+                  borderWidth: 3,
                   borderColor: validPass(
                     validUpper,
                     validLower,
@@ -268,7 +268,7 @@ export function Signup() {
                 styles.inputStyles,
                 {
                   flex: 1,
-                  borderWidth: 2,
+                  borderWidth: 3,
                   borderColor: passwordMatch ? colors.GREEN : colors.PURPLE
                 }
               ]}
@@ -316,7 +316,7 @@ export function Signup() {
               width: '100%',
               paddingBottom: 4,
               borderWidth: 2,
-              borderRadius: 20,
+              borderRadius: 15,
               marginTop: 12,
               borderColor: colors.BLUE
             }}
@@ -374,10 +374,9 @@ export function Signup() {
 const styles = StyleSheet.create({
   titleStyles: {
     color: 'white',
-    fontSize: 80,
-    // marginVertical: 60,
-    textAlign: 'center',
-    width: '100%'
+    fontSize: 45,
+    textAlign: 'left',
+    width: '70%'
   },
   inputStyles: {
     borderRadius: 8,
@@ -398,11 +397,10 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   signupButtonStyles: {
-    color: colors.BLUE,
-    fontSize: 40,
+    color: "white",
+    fontSize: 32,
     textAlign: 'center',
     paddingVertical: 8,
-    fontWeight: '300',
-    letterSpacing: 5
+    fontWeight: '600',
   }
 })

@@ -8,7 +8,7 @@ import {
   Dimensions
 } from 'react-native'
 import React from 'react'
-import { colors } from '../utils/colors'
+import { colors, gpaColorizer } from '../utils/colors'
 import { Course as CourseType } from '../RootStackParams'
 import { useState, useEffect } from 'react'
 import { LineChart } from 'react-native-svg-charts'
@@ -33,10 +33,6 @@ const SemesterDistribution = (Props: props) => {
   const semesterGPAs = semesterInfo.map(s => {
     return parseFloat(s['semGPA'])
   })
-  const courseAvg = courseAverage
-    ? courseAverage
-    : semesterGPAs.reduce((total, next) => total + next, 0) /
-      semesterGPAs.length
 
   // SET STATES
   const [currentSemester, setCurrentSemester] = useState<any>(semesterInfo[0])
@@ -86,7 +82,7 @@ const SemesterDistribution = (Props: props) => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <View style={{ width: '100%', alignItems: 'center' }}>
@@ -101,14 +97,7 @@ const SemesterDistribution = (Props: props) => {
                 padding: 10,
                 borderRadius: 10,
                 borderWidth: 2,
-                borderColor:
-                  parseFloat(courseAvg.toFixed(2)) >= 3.5
-                    ? colors.BLUE
-                    : parseFloat(courseAvg.toFixed(2)) >= 3.0
-                    ? colors.GREEN
-                    : parseFloat(courseAvg.toFixed(2)) >= 2.5
-                    ? colors.ORANGE
-                    : colors.RED
+                borderColor: gpaColorizer(courseAverage)
               }}
             >
               <Text
@@ -129,7 +118,7 @@ const SemesterDistribution = (Props: props) => {
                   fontWeight: '700'
                 }}
               >
-                {courseAvg.toFixed(2)}
+                {courseAverage}
               </Text>
             </View>
 
@@ -138,7 +127,7 @@ const SemesterDistribution = (Props: props) => {
               style={{
                 flexDirection: 'column',
                 alignItems: 'center',
-                marginVertical: 20,
+                marginTop: 20,
                 paddingHorizontal: 10,
                 width: '100%',
                 padding: 20,
@@ -148,13 +137,29 @@ const SemesterDistribution = (Props: props) => {
               }}
               key={undefined}
             >
-              <Text
-                style={{ fontSize: 30, fontWeight: '300', color: 'white' }}
-                key={undefined}
+              {/*GPA*/}
+              <View
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}
               >
-                Grade Distribution
-              </Text>
-
+                <Text style={{ color: 'white', fontSize: 28, opacity: .8 }}>
+                  {currentSemester.semester}{"  "}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    color: 'white',
+                    textAlign: 'right',
+                    fontWeight: '700'
+                  }}
+                >
+                  {parseFloat(currentSemester.semGPA).toFixed(2)}
+                </Text>
+              </View>
               <View
                 style={{
                   flexDirection: 'row',
@@ -210,68 +215,20 @@ const SemesterDistribution = (Props: props) => {
           {/*DISTRIBUTION GRAPH*/}
           <LineChart
             data={semesterGPAs}
-            style={{ height: '25%', width: '100%', zIndex: 1 }}
+            style={{
+              height: '55%',
+              width: '100%',
+              zIndex: 1
+            }}
             svg={{
               strokeWidth: 3,
-              stroke:
-                parseFloat(courseAvg).toFixed(2) >= 3.5
-                  ? colors.BLUE
-                  : parseFloat(courseAvg).toFixed(2) >= 3.0
-                  ? colors.GREEN
-                  : parseFloat(courseAvg).toFixed(2) >= 2.5
-                  ? colors.ORANGE
-                  : colors.RED
+              stroke: gpaColorizer(courseAverage)
             }}
-            contentInset={{ top: 30, bottom: 20, left: 25, right: 25 }}
+            contentInset={{ top: 40, bottom: 40, left: 30, right: 30 }}
             curve={shape.curveCatmullRom}
           >
             <Decorator />
           </LineChart>
-          {/*GPA*/}
-          <View
-            style={{
-              width: '70%',
-              padding: 10,
-              borderRadius: 10,
-              borderWidth: 2,
-              marginTop: 40,
-              borderColor:
-                parseFloat(currentSemester.semGPA).toFixed(2) >= 3.5
-                  ? colors.BLUE
-                  : parseFloat(currentSemester.semGPA).toFixed(2) >= 3.0
-                  ? colors.GREEN
-                  : parseFloat(currentSemester.semGPA).toFixed(2) >= 2.5
-                  ? colors.ORANGE
-                  : colors.RED
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 30,
-                textAlign: 'center',
-                color: 'white',
-                fontWeight: '700'
-              }}
-            >
-              <Text style={{ fontWeight: '400' }}>GPA </Text>
-              {parseFloat(currentSemester.semGPA).toFixed(2)}
-            </Text>
-          </View>
-
-          {/*SELECTED SEMSTER*/}
-          <Text
-            style={{
-              textAlign: 'left',
-              fontSize: 25,
-              color: 'white',
-              marginTop: 10
-            }}
-          >
-            {' '}
-            {currentSemester.semester.length > 0
-              ? currentSemester.semester
-              : 'N/A'}
-          </Text>
 
           {/*SIDE-SCROLL BUTTONS*/}
           <Pressable
@@ -336,13 +293,9 @@ const SemesterDistribution = (Props: props) => {
 // STLYES - NOTE: Convert to inline
 const styles: any = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'black',
-    height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
     paddingHorizontal: Dimensions.get('window').width * 0.05
   },
   courseTitle: {

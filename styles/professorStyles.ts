@@ -6,18 +6,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 'auto',
-    height: '85%',
-    backgroundColor: 'black',
+    height: '95%',
+    backgroundColor: 'black'
   },
   title: {
     textAlign: 'left',
     fontSize: 40,
-    color: 'white',
+    color: 'white'
   },
   departmentTitle: {
     fontSize: 30,
     textAlign: 'center',
-    color: 'white',
+    color: 'white'
   },
   departmentContainer: {
     // marginHorizontal: 30,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '500',
     letterSpacing: 3,
-    paddingVertical: 8,
+    paddingVertical: 8
   },
   departments: {
     // flex: 6,
@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     width: '95%',
-    backgroundColor: 'white',
-  },
+    backgroundColor: 'white'
+  }
 })
 
 export default styles

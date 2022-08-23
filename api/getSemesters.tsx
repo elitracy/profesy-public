@@ -16,6 +16,6 @@ export default async function getSemesters(
       return sortedCourses
     })
     .catch((err) => {
-      console.log(err)
+      console.error(err)
     })
 }

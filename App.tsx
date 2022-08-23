@@ -38,17 +38,38 @@ export default function App() {
           <Navigation />
           <Stack.Navigator
             screenOptions={{
-              headerShown: false
+              headerShown: false,
+              animation: 'default'
             }}
           >
             {/*SCREENS*/}
-            <Stack.Screen name="Favorites" component={Favorites} />
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen
+              name="Favorites"
+              component={Favorites}
+              options={{ animation: 'none' }}
+            />
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{ animation: 'none' }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ animation: 'none' }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{ animation: 'none' }}
+            />
             <Stack.Screen name="Professor" component={Professor} />
             <Stack.Screen name="Course" component={Course} />
-            <Stack.Screen name="Account" component={Account} />
+            <Stack.Screen
+              name="Account"
+              component={Account}
+              options={{ animation: 'none' }}
+            />
             <Stack.Screen name="Courses" component={Courses} />
           </Stack.Navigator>
         </NavigationContainer>

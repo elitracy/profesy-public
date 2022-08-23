@@ -73,7 +73,7 @@ export const Courses = (Props: Props) => {
     <SafeAreaView
       style={{
         backgroundColor: 'black',
-        height: '85%',
+        height: '95%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

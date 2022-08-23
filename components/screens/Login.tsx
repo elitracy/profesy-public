@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
   StatusBar,
-  TouchableOpacity,
+  Pressable
 } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -36,7 +36,7 @@ export function Login() {
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: 'black',
+        backgroundColor: 'black'
       }}
     >
       <View
@@ -45,7 +45,7 @@ export function Login() {
           height: '75%',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
         <StatusBar
@@ -55,8 +55,8 @@ export function Login() {
           showHideTransition={'none'}
         />
 
-        <View style={{ padding: 15 }}>
-          <Text style={styles.titleStyles}>Profesy</Text>
+        <View style={{ width: '70%' }}>
+          <Text style={styles.titleStyles}>Account</Text>
         </View>
         <View style={{ width: '70%' }}>
           <TextInput
@@ -72,8 +72,8 @@ export function Login() {
               {
                 marginBottom: 10,
                 borderColor: 'white',
-                backgroundColor: 'white',
-              },
+                backgroundColor: 'white'
+              }
             ]}
           />
           <TextInput
@@ -86,8 +86,8 @@ export function Login() {
               {
                 marginBottom: 6,
                 borderColor: 'white',
-                backgroundColor: 'white',
-              },
+                backgroundColor: 'white'
+              }
             ]}
             value={password}
             placeholder="Password"
@@ -115,16 +115,16 @@ export function Login() {
 
           {/*SIGN UP*/}
           {/*LOGIN BUTTON*/}
-          <TouchableOpacity
+          <Pressable
             style={{
               borderColor: colors.GREEN,
               width: '100%',
               borderWidth: 2,
-              borderRadius: 20,
-              marginTop: 4,
+              borderRadius: 15,
+              marginTop: 4
             }}
             onPress={() => {
-              loginAPI(username, sha256(password)).then((res) => {
+              loginAPI(username, sha256(password)).then(res => {
                 if (res.loggedIn) {
                   // store user info in cache
                   storeItem('name', res.message.name)
@@ -139,12 +139,12 @@ export function Login() {
             }}
           >
             <Text style={styles.loginStyles}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          </Pressable>
+          <Pressable onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.signupPasswordStyles}>
               {"Don't have an account?"}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -155,7 +155,9 @@ export function Login() {
 const styles = StyleSheet.create({
   titleStyles: {
     color: 'white',
-    fontSize: 80,
+    fontSize: 55,
+    textAlign: 'center',
+    marginBottom: 5
   },
   inputStyles: {
     borderWidth: 2,
@@ -163,28 +165,27 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingLeft: 5,
     fontSize: 15,
-    color: 'black',
+    color: 'black'
   },
   incorrectLoginStyles: {
     textAlign: 'center',
-    color: 'red',
+    color: 'red'
   },
   forgotPasswordStyles: {
     textAlign: 'center',
-    paddingTop: 8,
+    paddingTop: 8
   },
   signupPasswordStyles: {
     textAlign: 'center',
     color: 'white',
-    marginTop: 6,
+    marginTop: 6
   },
   loginStyles: {
     color: 'white',
-    fontSize: 40,
+    fontSize: 30,
     textAlign: 'center',
     padding: 8,
-    paddingBottom: 14,
-    fontWeight: '300',
-    letterSpacing: 5,
-  },
+    paddingBottom: 12,
+    fontWeight: '600',
+  }
 })

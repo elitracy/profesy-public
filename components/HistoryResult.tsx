@@ -10,7 +10,7 @@ interface Props {
       nextScreenParams: any
       displayText: string
       filterItem: any
-      history: never[]
+      history: any[]
       setHistory: (value: any) => any
     }
   }
@@ -25,7 +25,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        padding: 8,
+        padding: 8
       }}
     >
       <Pressable
@@ -38,7 +38,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
           style={{
             color: 'rgba(255,255,255,.8)',
             width: '100%',
-            fontSize: 28,
+            fontSize: 28
           }}
         >
           {Props.displayText}
@@ -47,7 +47,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
       <Pressable
         onPress={() =>
           Props.setHistory(
-            Props.history.filter((elem) => {
+            Props.history.filter(elem => {
               return elem != Props.filterItem
             })
           )
@@ -58,7 +58,7 @@ export const HistoryResult = (Props: Props['route']['params']) => {
           size={20}
           style={{
             color: 'rgba(255,255,255,.8)',
-            paddingTop: 1,
+            paddingTop: 1
           }}
         />
       </Pressable>

@@ -7,7 +7,7 @@ export const getItem = async (key: string, setStateItem: any) => {
     setStateItem(val)
     return val
   } catch (e: any) {
-    console.log('error', e.message)
+    console.error(e.message)
   }
 }
 
@@ -17,6 +17,6 @@ export const storeItem = async (key: string, value: any) => {
     const val = await AsyncStorage.setItem(key, value)
     return val
   } catch (e: any) {
-    console.log('error', e.message)
+    console.error(e.message)
   }
 }

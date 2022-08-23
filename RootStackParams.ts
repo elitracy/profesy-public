@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Favorites: undefined
   Signup: undefined
   Account: undefined
-  Professor: { profName: string; courses: Course[] }
+  Professor: { profName: string; courses: Course[]; courseAverages: string[] }
   Course: {
     course: string
     prof: string
