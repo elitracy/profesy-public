@@ -139,7 +139,7 @@ const SemesterDistribution = (Props: props) => {
                 width: '100%',
                 padding: 20,
                 borderWidth: 2,
-                borderColor: 'rgba(255,255,255,.8)',
+                borderColor: gpaColorizer(currentSemester.semGPA),
                 borderRadius: 10
               }}
               key={undefined}
@@ -270,10 +270,10 @@ const SemesterDistribution = (Props: props) => {
             style={{
               zIndex: 5,
               position: 'absolute',
-              bottom: 0,
+              bottom: "20%",
               right: 0,
-              height: '65%',
-              width: '40%'
+              height: '50%',
+              width: '40%',
             }}
             onPress={() => {
               setSelectedNode(
@@ -290,9 +290,9 @@ const SemesterDistribution = (Props: props) => {
             style={{
               zIndex: 5,
               position: 'absolute',
-              bottom: 0,
+              bottom: "20%",
               left: 0,
-              height: '65%',
+              height: '50%',
               width: '40%'
             }}
             onPress={() => {

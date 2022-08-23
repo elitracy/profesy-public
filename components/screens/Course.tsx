@@ -19,14 +19,14 @@ interface props {
     params: {
       course: string
       prof: string
-      courseAverage?: string
+      courseAverage: string
     }
   }
 }
 
 export function Course(Props: props) {
   // NOTE: will need to update this to check for course average when new db is deployed
-  const { course, prof, courseAverage } = Props.route.params
+  const { course, prof } = Props.route.params
 
   const scrollViewRef = useRef(null)
   const windowHeight = Dimensions.get('window').height
@@ -52,10 +52,15 @@ export function Course(Props: props) {
       {/*HEADER*/}
       <View
         style={{
-          width: '90%',
+          width: '95%',
+          paddingLeft: '3%',
+          paddingBottom: 3,
+          marginBottom: 5,
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'flex-start'
+          justifyContent: 'flex-start',
+          borderBottomWidth: 1,
+          borderBottomColor: 'rgba(255,255,255,.2)'
         }}
       >
         <View style={styles.courseTitle}>
@@ -127,8 +132,8 @@ export function Course(Props: props) {
       </View>
       <ScrollView
         snapToAlignment="start"
-        decelerationRate={'fast'}
-        scrollEventThrottle={1}
+        decelerationRate={0.0001}
+        scrollEventThrottle={2}
         snapToInterval={windowHeight}
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
