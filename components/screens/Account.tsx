@@ -34,22 +34,22 @@ export function Account() {
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: 'black',
-        height: '100%',
+        height: '100%'
       }}
     >
       <View
         style={{
           width: '100%',
-          height: '60%',
+          height: '45%',
           justifyContent: 'flex-end',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
         <Text
           style={{
             color: 'white',
             fontSize: 60,
-            marginBottom: 40,
+            marginBottom: 10
           }}
         >
           Account
@@ -61,7 +61,7 @@ export function Account() {
             style={{
               width: '100%',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
             {/*NAME/USERNAME*/}
@@ -70,20 +70,17 @@ export function Account() {
                 width: '75%',
                 padding: 10,
                 alignItems: 'center',
-                backgroundColor: colors.GREEN,
-                borderRadius: 5,
-                shadowColor: colors.GRAY,
-                shadowOffset: { width: 2, height: 2 },
-                shadowRadius: 0,
-                shadowOpacity: 0,
-                marginBottom: 20,
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor: colors.BLUE,
+                marginBottom: 20
               }}
             >
               <Text
                 style={{
                   fontSize: 25,
                   color: 'white',
-                  fontWeight: '700',
+                  fontWeight: '700'
                 }}
               >
                 {name}
@@ -93,7 +90,7 @@ export function Account() {
                     color: 'white',
                     fontWeight: '400',
                     letterSpacing: 1,
-                    opacity: 0.7,
+                    opacity: 0.7
                   }}
                 >
                   {' '}
@@ -108,14 +105,11 @@ export function Account() {
                 width: '75%',
                 padding: 10,
                 alignItems: 'center',
-                backgroundColor: colors.ORANGE,
-                borderRadius: 5,
-                shadowColor: colors.GRAY,
-                shadowOffset: { width: 2, height: 2 },
-                shadowRadius: 0,
-                shadowOpacity: 0,
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor: 'rgba(255,255,255,.4)',
                 marginTop: 0,
-                marginBottom: 20,
+                marginBottom: 20
               }}
             >
               <Text
@@ -123,7 +117,7 @@ export function Account() {
                   fontSize: 15,
                   color: 'white',
                   fontWeight: '500',
-                  letterSpacing: 1,
+                  letterSpacing: 1
                 }}
               >
                 {email}
@@ -173,9 +167,9 @@ export function Account() {
             paddingBottom: 12,
             alignItems: 'center',
             borderRadius: 15,
-            marginBottom: 40,
-            borderColor: 'white',
-            borderWidth: 2,
+            marginBottom: 25,
+            borderColor: loggedIn === 'true' ? colors.PURPLE : colors.GREEN,
+            borderWidth: 2
           }}
           onPress={() => {
             storeItem('name', 'N/A')
@@ -191,7 +185,7 @@ export function Account() {
               fontSize: 30,
               color: 'white',
               fontWeight: '700',
-              letterSpacing: 1,
+              letterSpacing: 1
             }}
           >
             {loggedIn === 'true' ? 'Logout' : 'Login'}
@@ -207,9 +201,8 @@ export function Account() {
               paddingBottom: 12,
               alignItems: 'center',
               borderRadius: 15,
-              marginBottom: 20,
               borderColor: 'white',
-              borderWidth: 2,
+              borderWidth: 2
             }}
             onPress={() => {
               storeItem('name', 'N/A')
@@ -224,7 +217,7 @@ export function Account() {
                 fontSize: 30,
                 color: 'white',
                 fontWeight: '700',
-                letterSpacing: 1,
+                letterSpacing: 1
               }}
             >
               {'Sign Up'}

@@ -42,7 +42,7 @@ export function Login() {
       <View
         style={{
           width: '100%',
-          height: '75%',
+          height: '70%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
@@ -63,16 +63,15 @@ export function Login() {
             onChangeText={setUsername}
             autoCapitalize="none"
             value={username}
-            clearTextOnFocus={true}
             placeholder="Username"
-            placeholderTextColor={colors.GREY}
+            placeholderTextColor={'rgba(255,255,255,.8)'}
             keyboardAppearance="dark"
             style={[
               styles.inputStyles,
               {
                 marginBottom: 10,
-                borderColor: 'white',
-                backgroundColor: 'white'
+                backgroundColor: 'rgba(128,128,128,.4)',
+                color: 'white'
               }
             ]}
           />
@@ -84,14 +83,14 @@ export function Login() {
             style={[
               styles.inputStyles,
               {
-                marginBottom: 6,
-                borderColor: 'white',
-                backgroundColor: 'white'
+                marginBottom: 10,
+                backgroundColor: 'rgba(128,128,128,.4)',
+                color: 'white'
               }
             ]}
             value={password}
             placeholder="Password"
-            placeholderTextColor={colors.GREY}
+            placeholderTextColor={'rgba(255,255,255,.8)'}
             secureTextEntry={true}
           />
           {badLogin && (
@@ -141,7 +140,7 @@ export function Login() {
             <Text style={styles.loginStyles}>Login</Text>
           </Pressable>
           <Pressable onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.signupPasswordStyles}>
+            <Text style={styles.signupStyles}>
               {"Don't have an account?"}
             </Text>
           </Pressable>
@@ -157,15 +156,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 55,
     textAlign: 'center',
+    fontWeight: '600',
     marginBottom: 5
   },
   inputStyles: {
-    borderWidth: 2,
-    borderRadius: 5,
+    borderRadius: 8,
     padding: 8,
-    paddingLeft: 5,
-    fontSize: 15,
-    color: 'black'
+    paddingLeft: 10,
+    fontSize: 15
   },
   incorrectLoginStyles: {
     textAlign: 'center',
@@ -175,10 +173,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 8
   },
-  signupPasswordStyles: {
+  signupStyles: {
     textAlign: 'center',
     color: 'white',
-    marginTop: 6
+    marginTop: 10,
+    fontSize: 18
+
   },
   loginStyles: {
     color: 'white',
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 8,
     paddingBottom: 12,
-    fontWeight: '600',
+    fontWeight: '600'
   }
 })

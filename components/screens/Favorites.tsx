@@ -38,11 +38,11 @@ export const Favorites = () => {
   const { setCurrentNav } = useContext(GlobalContext)
 
   const isFocused = useIsFocused()
-  useEffect(()=>{
+  useEffect(() => {
     getItem('loggedIn', setLoggedIn)
     getItem('username', setUsername)
     getItem('name', setNameTitle)
-  },[isFocused])
+  }, [isFocused])
 
   useEffect(() => {
     if (username !== '') {
@@ -54,7 +54,6 @@ export const Favorites = () => {
         })
         .catch(() => setLoading(false))
     }
-
   }, [loggedIn, username, refreshFavorites])
 
   return (
@@ -255,17 +254,21 @@ export const Favorites = () => {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
+                marginTop: 80
               }}
             >
+              <Text style={{ color: 'white', fontSize: 18 }}>
+                Please Login or Create an Account.
+              </Text>
               <Pressable
                 style={{
                   width: '40%',
-                  marginTop: 80,
                   borderWidth: 2,
                   borderColor: 'rgba(255,255,255,.4)',
                   padding: 10,
-                  borderRadius: 10
+                  borderRadius: 10,
+                  marginTop: 15
                 }}
                 onPress={() => {
                   navigation.navigate('Account')

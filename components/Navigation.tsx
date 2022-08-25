@@ -70,7 +70,7 @@ export function Navigation() {
           name="favorite-outline"
           size={25}
           color={`${currentNav !== 'favorites' ? 'white' : 'black'}`}
-          style={{ marginTop: 4 }}
+          style={{ marginTop: 2 }}
         />
       </Pressable>
 
