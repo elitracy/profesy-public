@@ -8,7 +8,8 @@ export type RootStackParamList = {
   Course: {
     course: string
     prof: string
-    courseAverage?: string
+    courseAverage: string
+    setRefreshFavorites?: (rF:boolean) => void
   }
   Courses: { courseName: string }
 }

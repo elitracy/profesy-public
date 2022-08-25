@@ -11,15 +11,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { RootStackParamList } from './RootStackParams'
 import { Account } from './components/screens/Account'
 import { Courses } from './components/screens/Courses'
-import React from 'react'
-import NavContext from './utils/NavContext'
+import React, { useState } from 'react'
+import GlobalContext from './utils/NavContext'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 LogBox.ignoreAllLogs()
 
 export default function App() {
-  const [currentNav, setCurrentNav] = React.useState('favorites')
-  const navSettings = {
+  const [currentNav, setCurrentNav] = useState('home')
+
+  let navSettings = {
     currentNav: currentNav,
     setCurrentNav: setCurrentNav
   }
@@ -28,7 +29,7 @@ export default function App() {
     <SafeAreaView
       style={{ height: '100%', width: '100%', backgroundColor: 'black' }}
     >
-      <NavContext.Provider value={navSettings}>
+      <GlobalContext.Provider value={navSettings}>
         <NavigationContainer>
           <StatusBar
             animated={true}
@@ -44,13 +45,13 @@ export default function App() {
           >
             {/*SCREENS*/}
             <Stack.Screen
-              name="Favorites"
-              component={Favorites}
+              name="Home"
+              component={Home}
               options={{ animation: 'none' }}
             />
             <Stack.Screen
-              name="Home"
-              component={Home}
+              name="Favorites"
+              component={Favorites}
               options={{ animation: 'none' }}
             />
             <Stack.Screen
@@ -64,16 +65,16 @@ export default function App() {
               options={{ animation: 'none' }}
             />
             <Stack.Screen name="Professor" component={Professor} />
-            <Stack.Screen name="Course" component={Course} />
+            <Stack.Screen name="Course" component={Course} options={{animation: "slide_from_right"}} />
             <Stack.Screen
               name="Account"
               component={Account}
               options={{ animation: 'none' }}
             />
-            <Stack.Screen name="Courses" component={Courses} />
+            <Stack.Screen name="Courses" component={Courses} options={{animation: "slide_from_right"}}/>
           </Stack.Navigator>
         </NavigationContainer>
-      </NavContext.Provider>
+      </GlobalContext.Provider>
     </SafeAreaView>
   )
 }

@@ -1,11 +1,27 @@
-export const getFavorites = async () => {
-  const courses = [
-    { course: 'CSCE221', prof: 'LEYK T', gpa: '3.42' },
-    { course: 'CSCE314', prof: 'SHELL D', gpa: '2.86' },
-    { course: 'CSCE313', prof: 'AHMED S', gpa: '3.27' },
-    { course: 'STAT421', prof: 'RAHMAN S', gpa: '3.63' },
-    { course: 'CSCE221', prof: 'TYAGI A', gpa: '2.78' }
-  ]
+import API_URL from '../config/env'
 
-  return courses
+export const getFavorites = async (
+  method: string,
+  params: {
+    username: string
+    professor?: string
+    course?: string
+    gpa?: string
+  }
+) => {
+  if (method === 'PUT') {
+    return await fetch(
+      `${API_URL}/favorites?username=${params.username}&professor=${params.professor}&course=${params.course}&gpa=${params.gpa}`,
+      { method: method }
+    ).then(result => result.json())
+  } else if (method === 'DELETE') {
+    return await fetch(
+      `${API_URL}/favorites?username=${params.username}&professor=${params.professor}&course=${params.course}`,
+      { method: method }
+    )
+  } else {
+    return await fetch(`${API_URL}/favorites?username=${params.username}`).then(
+      result => result.json()
+    )
+  }
 }

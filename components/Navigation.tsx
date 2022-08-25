@@ -1,10 +1,10 @@
 // IMPORTS
-import { Image, StyleSheet, Pressable, View } from 'react-native'
+import { StyleSheet, Pressable, View } from 'react-native'
 import { RootStackParamList } from '../RootStackParams'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import NavContext from '../utils/NavContext'
+import GlobalContext from '../utils/NavContext'
 import { MaterialIcons } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
@@ -14,7 +14,10 @@ type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 export function Navigation() {
   // SET STATES
   const navigation = useNavigation<navScreenProp>()
-  const { currentNav, setCurrentNav } = React.useContext(NavContext)
+  const {
+    currentNav,
+    setCurrentNav,
+  } = React.useContext(GlobalContext)
 
   return (
     <View style={styles.navContainer}>

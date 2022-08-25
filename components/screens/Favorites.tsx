@@ -2,19 +2,19 @@ import {
   SafeAreaView,
   View,
   Text,
-  ActivityIndicator,
+  //ActivityIndicator,
   ScrollView,
   Pressable
 } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { getItem } from '../../utils/localStorage'
-import NavContext from '../../utils/NavContext'
+import React, { useState, useEffect, useContext } from 'react'
+import GlobalContext from '../../utils/NavContext'
 import { getFavorites } from '../../api/getFavorites'
 import { gpaColorizer, colors } from '../../utils/colors'
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../RootStackParams'
-import { useIsFocused, useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
+import { getItem } from '../../utils/localStorage'
 
 type favoritesScreenProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -22,34 +22,40 @@ type favoritesScreenProp = NativeStackNavigationProp<
 >
 
 export const Favorites = () => {
-  const [favoriteCourses, setFavoriteCourses] = useState<
-    { prof: string; course: string; gpa: string }[]
+  const [favorites, setFavorites] = useState<
+    { professor: string; course: string; gpa: string }[]
   >([])
+  const [refreshFavorites, setRefreshFavorites] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [username, setUsername] = useState('')
   const [nameTitle, setNameTitle] = useState('')
   const [loggedIn, setLoggedIn] = useState('false')
   const [filter, setFilter] = useState<
-    { prof: string; course: string; gpa: string }[]
+    { professor: string; course: string; gpa: string }[]
   >([])
 
   const navigation = useNavigation<favoritesScreenProp>()
-  const { setCurrentNav } = React.useContext(NavContext)
+  const { setCurrentNav } = useContext(GlobalContext)
 
   const isFocused = useIsFocused()
-  useEffect(() => {
-    getItem('name', setNameTitle)
+  useEffect(()=>{
     getItem('loggedIn', setLoggedIn)
+    getItem('username', setUsername)
+    getItem('name', setNameTitle)
+  },[isFocused])
 
-    if (loggedIn === 'true' && favoriteCourses.length === 0) { //prevent unnecessary update
-      getFavorites().then(results => {
-        setLoading(true)
-        setTimeout(async () => {
-          setFavoriteCourses(results)
+  useEffect(() => {
+    if (username !== '') {
+      setLoading(true)
+      getFavorites('GET', { username: username })
+        .then(result => {
+          result ? setFavorites(result.favorites) : setFavorites([])
           setLoading(false)
-        }, 500)
-      })
+        })
+        .catch(() => setLoading(false))
     }
-  }, [isFocused, loggedIn])
+
+  }, [loggedIn, username, refreshFavorites])
 
   return (
     <SafeAreaView
@@ -90,11 +96,6 @@ export const Favorites = () => {
         </Pressable>
       </View>
       <View style={{ width: '100%', height: '100%' }}>
-        {loading && (
-          <View>
-            <ActivityIndicator />
-          </View>
-        )}
         <ScrollView
           style={{
             width: '100%',
@@ -107,7 +108,7 @@ export const Favorites = () => {
           {loggedIn === 'true' ? (
             <View>
               {!loading &&
-                (filter.length > 0 ? filter : favoriteCourses).map((c, idx) => {
+                (filter.length > 0 ? filter : favorites).map((c, idx) => {
                   return (
                     <Pressable
                       key={idx}
@@ -125,9 +126,10 @@ export const Favorites = () => {
                       }}
                       onPress={() => {
                         navigation.navigate('Course', {
-                          prof: c.prof,
+                          prof: c.professor,
                           course: c.course,
-                          courseAverage: c.gpa
+                          courseAverage: c.gpa,
+                          setRefreshFavorites: setRefreshFavorites
                         })
                         setCurrentNav('home')
                       }}
@@ -144,7 +146,7 @@ export const Favorites = () => {
                           style={{
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'flex-start',
+                            justifyContent: 'flex-start'
                           }}
                         >
                           <Text
@@ -162,13 +164,18 @@ export const Favorites = () => {
                                 setFilter([])
                               } else {
                                 setFilter(
-                                  favoriteCourses.filter(
-                                    course => course.course === c.course
-                                  )
+                                  favorites.filter(course => {
+                                    return course.course === c.course
+                                  })
                                 )
                               }
                             }}
-                            style={{display: 'flex', flexDirection: "row", alignItems: 'center', marginLeft: 15}}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginLeft: 15
+                            }}
                           >
                             <Ionicons
                               name="filter"
@@ -190,7 +197,7 @@ export const Favorites = () => {
                             color: 'white'
                           }}
                         >
-                          {c.prof}
+                          {c.professor}
                         </Text>
                       </View>
                       <View
@@ -205,9 +212,18 @@ export const Favorites = () => {
                       >
                         <Pressable
                           onPress={() => {
-                            console.log('API HIT: remove from list')
-                            setFavoriteCourses(
-                              favoriteCourses.filter(course => c !== course)
+                            getFavorites('DELETE', {
+                              username: username,
+                              professor: c.professor,
+                              course: c.course
+                            })
+                            setFavorites(
+                              favorites.filter(course => {
+                                return (
+                                  c.course !== course.course &&
+                                  c.professor !== course.professor
+                                )
+                              })
                             )
                           }}
                         >
@@ -225,7 +241,7 @@ export const Favorites = () => {
                             fontWeight: '700'
                           }}
                         >
-                          {c.gpa}
+                          {c.gpa.slice(0, 4)}
                         </Text>
                       </View>
                     </Pressable>

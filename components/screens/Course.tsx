@@ -13,6 +13,7 @@ import SemesterDistribution from '../SemesterDistribution'
 import Reviews from '../Reviews'
 import { colors } from '../../utils/colors'
 import { getFavorites } from '../../api/getFavorites'
+import { getItem } from '../../utils/localStorage'
 
 interface props {
   route: {
@@ -20,32 +21,45 @@ interface props {
       course: string
       prof: string
       courseAverage: string
+      setRefreshFavorites?: (rF: boolean) => void
     }
   }
 }
 
 export function Course(Props: props) {
   // NOTE: will need to update this to check for course average when new db is deployed
-  const { course, prof } = Props.route.params
+  const { course, prof, courseAverage, setRefreshFavorites } = Props.route.params
 
   const scrollViewRef = useRef(null)
   const windowHeight = Dimensions.get('window').height
-  const [isFavorite, setIsFavorite] = useState(false)
+  const [inFavorites, setInFavorites] = useState(false)
+  const [username, setUsername] = useState('')
+  const [loggedIn, setLoggedIn] = useState('false')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setLoading(true)
+    getItem('loggedIn', setLoggedIn)
+    getItem('username', setUsername)
 
-    getFavorites().then(results => {
-      setTimeout(() => {
-        setIsFavorite(
-          results.filter(f => f.course === course && f.prof === prof).length > 0
-        )
+    if (username !== '') {
+      setLoading(true)
+      getFavorites('GET', { username: username })
+        .then(results => {
+          setInFavorites(
+            results.favorites.filter(
+              (f: { course: string; professor: string; gpa: string }) =>
+                f.course === course && f.professor === prof
+            ).length > 0
+          )
 
-        setLoading(false)
-      }, 500)
-    })
-  }, [])
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error(err)
+          setLoading(false)
+        })
+    }
+  }, [username])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -84,46 +98,61 @@ export function Course(Props: props) {
                 {course.substring(4, 7)}
               </Text>
             </Text>
-            <Pressable
-              onPress={() => {
-                if (isFavorite) {
-                  console.log('API HIT: REMOVE FROM FAVORITES')
-                  setIsFavorite(false)
-                } else {
-                  console.log('API HIT: ADD TO FAVORITES')
-                  setIsFavorite(true)
-                }
-              }}
-              style={{
-                height: '60%',
-                margin: 8,
-                padding: 5,
-                paddingVertical: 0,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                borderColor: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
-                borderWidth: 2,
-                borderRadius: 10
-              }}
-            >
-              <Text
+            {!loading && loggedIn === 'true' && (
+              <Pressable
+                onPress={() => {
+                  if (inFavorites) {
+                    getFavorites('DELETE', {
+                      course: course,
+                      professor: prof,
+                      username: username
+                    })
+                    setInFavorites(false)
+                    setRefreshFavorites && setRefreshFavorites(true)
+                  } else {
+                    getFavorites('PUT', {
+                      course: course,
+                      professor: prof,
+                      username: username,
+                      gpa: courseAverage
+                    }).then(() => {
+                      setInFavorites(true)
+                    })
+                  }
+                }}
                 style={{
-                  color: isFavorite ? colors.GREEN : 'rgba(255,255,255,.4)',
-                  fontSize: 18,
-                  fontWeight: '500'
+                  height: '60%',
+                  margin: 8,
+                  padding: 5,
+                  paddingVertical: 0,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderColor: inFavorites
+                    ? colors.GREEN
+                    : 'rgba(255,255,255,.4)',
+                  borderWidth: 2,
+                  borderRadius: 10
                 }}
               >
-                {isFavorite ? 'Favorited' : 'Add to Favorites'}
-              </Text>
-            </Pressable>
+                <Text
+                  style={{
+                    color: inFavorites ? colors.GREEN : 'rgba(255,255,255,.4)',
+                    fontSize: 18,
+                    fontWeight: '500'
+                  }}
+                >
+                  {inFavorites ? 'Favorited' : 'Add to Favorites'}
+                </Text>
+              </Pressable>
+            )}
           </View>
           <Text
             style={{
               fontSize: 25,
               fontWeight: '300',
               color: 'white',
-              paddingLeft: 5
+              paddingLeft: 3
             }}
           >
             {prof}

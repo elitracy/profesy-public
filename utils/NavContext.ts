@@ -1,8 +1,11 @@
 import { createContext } from 'react'
 
-const NavContext = createContext<{
+const GlobalContext = createContext<{
   currentNav: string
   setCurrentNav: (nav: string) => void
-}>({ currentNav: 'home', setCurrentNav: () => null })
+}>({
+  currentNav: 'home',
+  setCurrentNav: () => null,
+})
 
-export default NavContext
+export default GlobalContext
