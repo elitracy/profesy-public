@@ -106,7 +106,7 @@ export const Favorites = () => {
         >
           {loggedIn === 'true' ? (
             <View>
-              {!loading &&
+              {!loading && favorites.length > 0 ? (
                 (filter.length > 0 ? filter : favorites).map((c, idx) => {
                   return (
                     <Pressable
@@ -245,7 +245,30 @@ export const Favorites = () => {
                       </View>
                     </Pressable>
                   )
-                })}
+                })
+              ) : (
+                <View
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: 'rgba(255,255,255,.5)',
+                      fontSize: 20,
+                      textAlign: 'center',
+                      marginTop: 20,
+                      padding: 10
+                    }}
+                  >
+                    No favorites yet.
+                  </Text>
+                </View>
+              )}
             </View>
           ) : (
             <View
@@ -255,37 +278,12 @@ export const Favorites = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                marginTop: 80
+                marginTop: 20
               }}
             >
-              <Text style={{ color: 'white', fontSize: 18 }}>
+              <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: 18 }}>
                 Please Login or Create an Account.
               </Text>
-              <Pressable
-                style={{
-                  width: '40%',
-                  borderWidth: 2,
-                  borderColor: 'rgba(255,255,255,.4)',
-                  padding: 10,
-                  borderRadius: 10,
-                  marginTop: 15
-                }}
-                onPress={() => {
-                  navigation.navigate('Account')
-                  setCurrentNav('account')
-                }}
-              >
-                <Text
-                  style={{
-                    color: 'white',
-                    width: '100%',
-                    textAlign: 'center',
-                    fontSize: 32
-                  }}
-                >
-                  Log In
-                </Text>
-              </Pressable>
             </View>
           )}
         </ScrollView>

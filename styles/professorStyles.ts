@@ -41,11 +41,12 @@ const styles = StyleSheet.create({
     // height: '80%',
   },
   inputStyles: {
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
-    fontSize: 15,
+    fontSize: 18,
+    color: 'white',
     width: '95%',
-    backgroundColor: 'white'
+    backgroundColor: 'rgba(255,255,255,.1)'
   }
 })
 

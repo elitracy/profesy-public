@@ -66,6 +66,7 @@ export function Login() {
             placeholder="Username"
             placeholderTextColor={'rgba(255,255,255,.8)'}
             keyboardAppearance="dark"
+            returnKeyType="done"
             style={[
               styles.inputStyles,
               {
@@ -80,6 +81,7 @@ export function Login() {
             autoCapitalize="none"
             clearTextOnFocus={true}
             keyboardAppearance="dark"
+            returnKeyType="done"
             style={[
               styles.inputStyles,
               {
@@ -140,9 +142,7 @@ export function Login() {
             <Text style={styles.loginStyles}>Login</Text>
           </Pressable>
           <Pressable onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.signupStyles}>
-              {"Don't have an account?"}
-            </Text>
+            <Text style={styles.signupStyles}>{"Don't have an account?"}</Text>
           </Pressable>
         </View>
       </View>
@@ -167,7 +167,9 @@ const styles = StyleSheet.create({
   },
   incorrectLoginStyles: {
     textAlign: 'center',
-    color: 'red'
+    color: colors.PURPLE,
+    fontSize: 18,
+    marginBottom: 8
   },
   forgotPasswordStyles: {
     textAlign: 'center',
@@ -178,7 +180,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 10,
     fontSize: 18
-
   },
   loginStyles: {
     color: 'white',

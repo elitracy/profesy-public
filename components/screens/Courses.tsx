@@ -5,7 +5,7 @@ import {
   View,
   TextInput,
   Pressable,
-  ScrollView,
+  ScrollView
 } from 'react-native'
 import { colors } from '../../utils/colors'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -33,7 +33,7 @@ interface Props {
 // handleSearch - Params(text:string)
 const handleSearch = (
   text: string,
-  profList: {name:string, courseAverage:string}[],
+  profList: { name: string; courseAverage: string }[],
   setProfList: any,
   originalProfList: string[]
 ) => {
@@ -76,7 +76,7 @@ export const Courses = (Props: Props) => {
         height: '95%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'center'
       }}
     >
       <View
@@ -85,7 +85,7 @@ export const Courses = (Props: Props) => {
           marginBottom: 5,
           marginLeft: 15,
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'row'
         }}
       >
         <Text
@@ -93,7 +93,7 @@ export const Courses = (Props: Props) => {
             textAlign: 'left',
             color: 'white',
             fontSize: 30,
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }}
         >
           {Props.route.params.courseName}
@@ -104,7 +104,7 @@ export const Courses = (Props: Props) => {
             color: 'white',
             fontSize: 30,
             opacity: 0.85,
-            marginLeft: 5,
+            marginLeft: 5
           }}
         >
           Professors
@@ -118,7 +118,7 @@ export const Courses = (Props: Props) => {
           width: '95%',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
         <View
@@ -126,19 +126,20 @@ export const Courses = (Props: Props) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'white',
-            borderRadius: 5,
+            borderRadius: 10,
             width: '100%',
+            backgroundColor: 'rgba(255,255,255,.1)'
           }}
         >
           <MaterialIcons
             name="search"
             style={{ opacity: 0.5, marginLeft: 10, marginRight: 3 }}
-            size={20}
+            size={24}
+            color={"rgba(255,255,255,.8)"}
           />
           <TextInput
             // queries both at first time for better UX
-            onChangeText={(data) => {
+            onChangeText={data => {
               data.length === 0
                 ? setProfList(originalProfList)
                 : handleSearch(data, profList, setProfList, originalProfList)
@@ -147,6 +148,7 @@ export const Courses = (Props: Props) => {
             }}
             value={wordEntered}
             placeholder="search"
+            placeholderTextColor={"rgba(255,255,255,.6)"}
             keyboardAppearance="dark"
             style={{
               borderWidth: 2,
@@ -154,16 +156,19 @@ export const Courses = (Props: Props) => {
               borderLeftWidth: 0,
               padding: 10,
               paddingLeft: 30,
-              fontSize: 15,
+              fontSize: 18,
               width: '100%',
               marginLeft: -30,
+              color: "white"
             }}
           />
         </View>
         <ScrollView style={{ width: '100%', height: '90%' }}>
           {profList.length !== 0 && profList !== undefined ? (
             profList
-              .sort((a, b) => (a["courseAverage"] > b["courseAverage"] ? -1 : 1))
+              .sort((a, b) =>
+                a['courseAverage'] > b['courseAverage'] ? -1 : 1
+              )
               .map((prof: { name: string; courseAverage: string }) => {
                 return (
                   <Pressable
@@ -175,13 +180,13 @@ export const Courses = (Props: Props) => {
                       flexDirection: 'row',
                       padding: 8,
                       marginVertical: 5,
-                      justifyContent: 'space-between',
+                      justifyContent: 'space-between'
                     }}
                     onPress={() => {
                       navigation.navigate('Course', {
                         course: Props.route.params.courseName,
                         prof: prof.name,
-                        courseAverage: prof.courseAverage,
+                        courseAverage: prof.courseAverage
                       })
                     }}
                   >
@@ -191,7 +196,7 @@ export const Courses = (Props: Props) => {
                         textAlign: 'left',
                         fontSize: 25,
                         fontWeight: '500',
-                        width: '80%',
+                        width: '80%'
                       }}
                     >
                       {prof.name}
@@ -209,7 +214,7 @@ export const Courses = (Props: Props) => {
                             : colors.RED,
                         fontSize: 25,
                         fontWeight: '800',
-                        width: '20%',
+                        width: '20%'
                       }}
                     >
                       {parseFloat(prof.courseAverage).toFixed(2)}
@@ -224,7 +229,7 @@ export const Courses = (Props: Props) => {
                 height: '20%',
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <Text style={{ textAlign: 'center', fontSize: 25, marginTop: 5 }}>

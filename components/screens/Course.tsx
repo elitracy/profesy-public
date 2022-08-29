@@ -28,7 +28,8 @@ interface props {
 
 export function Course(Props: props) {
   // NOTE: will need to update this to check for course average when new db is deployed
-  const { course, prof, courseAverage, setRefreshFavorites } = Props.route.params
+  const { course, prof, courseAverage, setRefreshFavorites } =
+    Props.route.params
 
   const scrollViewRef = useRef(null)
   const windowHeight = Dimensions.get('window').height
@@ -159,18 +160,18 @@ export function Course(Props: props) {
           </Text>
         </View>
       </View>
+
       <ScrollView
         snapToAlignment="start"
-        decelerationRate={0.0001}
-        scrollEventThrottle={2}
+        decelerationRate="fast"
+        scrollEventThrottle={1}
         snapToInterval={windowHeight}
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
-        style={{ height: '65%' }}
       >
         <SemesterDistribution {...Props} />
-        <Reviews {...Props} />
-        <Reviews {...Props} />
+        {/*<Reviews {...Props} />*/}
+        {/*<Reviews {...Props} />*/}
       </ScrollView>
     </SafeAreaView>
   )

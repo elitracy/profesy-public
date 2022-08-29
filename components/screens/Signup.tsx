@@ -6,7 +6,8 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Pressable
+  Pressable,
+  ScrollView
 } from 'react-native'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -18,7 +19,6 @@ import React from 'react'
 import { storeItem } from '../../utils/localStorage'
 import signupAPI from '../../api/signupAPI'
 import { Feather, AntDesign } from '@expo/vector-icons'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import NavContext from '../../utils/NavContext'
 
 type signupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>
@@ -74,40 +74,46 @@ export function Signup() {
         backgroundColor: 'black'
       }}
     >
-      <View
-        style={{
-          paddingHorizontal: '13%',
-          width: '100%',
-          height: '75%',
+      <ScrollView
+        style={{ width: '100%', paddingHorizontal: '13%' }}
+        contentContainerStyle={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          height: '70%'
         }}
       >
         <Text style={styles.titleStyles}>Create Account</Text>
         {/*INPUTS*/}
         {/*Name*/}
-        <TextInput
-          onChangeText={setName}
-          autoCapitalize="none"
-          clearTextOnFocus={true}
-          style={[styles.inputStyles]}
-          value={name}
-          placeholder="Name"
-          placeholderTextColor={'rgba(255,255,255,.8)'}
-          keyboardAppearance="dark"
-        />
+        <View style={{ width: '100%' }}>
+          <TextInput
+            onChangeText={setName}
+            autoCapitalize="none"
+            clearTextOnFocus={true}
+            style={[styles.inputStyles]}
+            value={name}
+            placeholder="Name"
+            placeholderTextColor={'rgba(255,255,255,.8)'}
+            keyboardAppearance="dark"
+            returnKeyType="done"
+          />
+        </View>
         {/*Username*/}
-        <TextInput
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          value={username}
-          clearTextOnFocus={true}
-          placeholder="Username"
-          placeholderTextColor={'rgba(255,255,255,.8)'}
-          style={[styles.inputStyles]}
-          keyboardAppearance="dark"
-        />
+        <View style={{ width: '100%' }}>
+          <TextInput
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            value={username}
+            clearTextOnFocus={true}
+            placeholder="Username"
+            placeholderTextColor={'rgba(255,255,255,.8)'}
+            style={[styles.inputStyles]}
+            keyboardAppearance="dark"
+            returnKeyType="done"
+          />
+        </View>
         {/*username already exists*/}
         {usernameExists && (
           <Text style={styles.incorrectSignupStyles}>
@@ -144,6 +150,7 @@ export function Signup() {
               setValidLen(false)
               setPasswordMatch(false)
             }}
+            onBlur={() => setShowPassReqs(!showPassReqs)}
             autoCapitalize="none"
             clearTextOnFocus={true}
             style={[
@@ -167,6 +174,7 @@ export function Signup() {
             placeholderTextColor={'rgba(255,255,255,.8)'}
             secureTextEntry={!showPass}
             keyboardAppearance="dark"
+            returnKeyType="done"
           />
           <Pressable onPress={() => setShowPass(!showPass)}>
             <Feather
@@ -283,6 +291,7 @@ export function Signup() {
             placeholderTextColor={'rgba(255,255,255,.8)'}
             secureTextEntry={!showConfPass}
             keyboardAppearance="dark"
+            returnKeyType="done"
           />
           <Pressable onPress={() => setShowConfPass(!showConfPass)}>
             <Feather
@@ -301,16 +310,19 @@ export function Signup() {
         )}
 
         {/*Email*/}
-        <TextInput
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          clearTextOnFocus={true}
-          style={[styles.inputStyles]}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor={'rgba(255,255,255,.8)'}
-          keyboardAppearance="dark"
-        />
+        <View style={{ width: '100%' }}>
+          <TextInput
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            clearTextOnFocus={true}
+            style={[styles.inputStyles]}
+            value={email}
+            placeholder="Email"
+            placeholderTextColor={'rgba(255,255,255,.8)'}
+            keyboardAppearance="dark"
+            returnKeyType="done"
+          />
+        </View>
         {/*email already exists*/}
         {emailExists && (
           <Text style={styles.incorrectSignupStyles}>Email already exists</Text>
@@ -324,7 +336,7 @@ export function Signup() {
             borderWidth: 2,
             borderRadius: 15,
             marginTop: 12,
-            borderColor: colors.BLUE
+            borderColor: colors.GREEN
           }}
           onPress={() => {
             if (
@@ -370,7 +382,7 @@ export function Signup() {
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.haveAccount}>Have an account?</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

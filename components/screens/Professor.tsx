@@ -15,10 +15,15 @@ import { useState } from 'react'
 import fuzzysort from 'fuzzysort'
 import React from 'react'
 import styles from '../../styles/professorStyles'
+import { MaterialIcons } from '@expo/vector-icons'
 
 interface Props {
   route: {
-    params: { profName: string; courses: Course[]; courseAverages: {course:string, courseAverage:string}[] }
+    params: {
+      profName: string
+      courses: Course[]
+      courseAverages: { course: string; courseAverage: string }[]
+    }
   }
 }
 
@@ -102,6 +107,7 @@ export function Professor(Props: Props) {
               value={wordEntered}
               clearTextOnFocus={true}
               placeholder="search for course"
+              placeholderTextColor={'rgba(255,255,255,.6)'}
               style={[styles.inputStyles]}
             />
           </View>
