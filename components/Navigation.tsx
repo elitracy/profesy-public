@@ -14,10 +14,7 @@ type navScreenProp = NativeStackNavigationProp<RootStackParamList>
 export function Navigation() {
   // SET STATES
   const navigation = useNavigation<navScreenProp>()
-  const {
-    currentNav,
-    setCurrentNav,
-  } = React.useContext(GlobalContext)
+  const { currentNav, setCurrentNav } = React.useContext(GlobalContext)
 
   return (
     <View style={styles.navContainer}>
