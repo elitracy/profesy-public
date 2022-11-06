@@ -166,6 +166,7 @@ export const Home = () => {
                     }}
                     showsVerticalScrollIndicator={false}
                     onScroll={() => Keyboard.dismiss()}
+                    scrollEventThrottle={16}
                 >
                     {/**Professor Result Container**/}
                     {filterType === 'p' &&

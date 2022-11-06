@@ -17,7 +17,7 @@ import React, { useEffect } from 'react'
 import styles from '../../styles/professorStyles'
 import getProfessor from '../../api/getProfessor'
 
-interface Props {
+interface props {
     route: {
         params: {
             profName: string
@@ -28,12 +28,12 @@ interface Props {
 }
 
 type professorScreenProp = NativeStackNavigationProp<
-RootStackParamList,
-'Professor'
+    RootStackParamList,
+    'Professor'
 >
 
-export function Professor(Props: Props) {
-    const { profName, courseAvgs} = Props.route.params
+export function Professor(Props: props) {
+    const { profName, courseAvgs } = Props.route.params
     // sort all of professor courses
     const allCourses = Array.from([
         ...new Set(
@@ -65,12 +65,12 @@ export function Professor(Props: Props) {
     }
 
     useEffect(() => {
-        if(!courseAvgs){
+        if (!courseAvgs) {
             getProfessor(profName, setProfData).then((data) => {
                 setCourseAverages(data.professors[0].courseAverages)
             })
-        }else setCourseAverages(courseAvgs)
-    },[])
+        } else setCourseAverages(courseAvgs)
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -119,12 +119,12 @@ export function Professor(Props: Props) {
                             placeholder="search for course"
                             placeholderTextColor={'rgba(255,255,255,.6)'}
                             style={[styles.inputStyles]}
-                            />
+                        />
                     </View>
                 </View>
 
                 {/*COURSE LIST*/}
-                <ScrollView style={styles.departments} scrollEventThrottle={1}>
+                <ScrollView style={styles.departments} scrollEventThrottle={16}>
                     {courses.map(course => {
                         return (
                             <TouchableOpacity
@@ -137,7 +137,7 @@ export function Professor(Props: Props) {
                                         course: course,
                                         prof: profName,
                                         courseAverage: courseAverages.find(c => c.course === course)
-                                        .courseAverage
+                                            .courseAverage
                                     })
                                 }}
                                 key={course}
