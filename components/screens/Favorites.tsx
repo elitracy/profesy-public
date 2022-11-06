@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, ScrollView, Pressable } from 'react-native'
+import { SafeAreaView, View, Text, ScrollView,RefreshControl, Pressable } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import GlobalContext from '../../utils/NavContext'
 import { getFavorites } from '../../api/getFavorites'
@@ -97,6 +97,11 @@ export const Favorites = () => {
                         borderBottomWidth: 2,
                     }}
                     showsVerticalScrollIndicator={false}
+                    refreshControl={
+                    <RefreshControl
+                        refreshing={refreshFavorites}
+                        />
+                }
                 >
                     {loggedIn === 'true' ? (
                         <View>
@@ -124,7 +129,7 @@ export const Favorites = () => {
                                                     courseAverage: c.gpa,
                                                     setRefreshFavorites: setRefreshFavorites
                                                 })
-                                                setCurrentNav('home')
+                                                // setCurrentNav('home')
                                             }}
                                         >
                                             <View
