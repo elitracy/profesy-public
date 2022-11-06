@@ -1,35 +1,40 @@
 {
-  "expo": {
-    "name": "Profesy",
-    "slug": "Profesy",
-    "version": "1.2.0",
-    "platforms": ["ios", "android"],
-    "sdkVersion": "46.0.0",
-    "orientation": "portrait",
-    "icon": "./utils/icon_dark.png",
-    "splash": {
-      "image": "./utils/icon_dark.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.elitracy.Profesy"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./utils/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.elitracy.Profesy",
-      "versionCode": 3
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "expo": {
+        "name": "Profesy",
+        "slug": "Profesy",
+        "version": "1.2.1",
+        "platforms": [
+            "ios",
+            "android"
+        ],
+        "sdkVersion": "46.0.0",
+        "orientation": "portrait",
+        "icon": "./utils/icon_dark.png",
+        "splash": {
+            "image": "./utils/icon_dark.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#000000"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.elitracy.Profesy"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./utils/adaptive-icon.png",
+                "backgroundColor": "#FFFFFF"
+            },
+            "package": "com.elitracy.Profesy",
+            "versionCode": 3
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        }
     }
-  }
 }
